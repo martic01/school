@@ -175,7 +175,7 @@ const Navbar = () => {
 
         {/* Desktop CTA Button */}
         <div className="hidden md:flex">
-          <Button className="gap-2 px-6 py-2.5 font-medium" onClick={() => console.log('Enroll clicked')}>
+          <Button className="gap-2 py-6 px-6 font-medium" onClick={() => console.log('Enroll clicked')}>
             <Edit size={18} />
             Enroll Now
           </Button>
