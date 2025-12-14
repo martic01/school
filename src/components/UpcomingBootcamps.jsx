@@ -6,46 +6,9 @@ import {
   FaCalendarAlt,
   FaArrowRight,
 } from "react-icons/fa";
-
+import { upcomingBootcampsData } from "../data/Data";
 // Easily edit / add / remove upcoming bootcamps here
-const upcomingBootcamps = [
-  {
-    id: 1,
-    name: "Frontend Engineering Boot Camp",
-    place: "Lagos, Nigeria (Hybrid)",
-    date: "Jan 20 – Mar 15, 2025",
-    time: "Mon • Wed • Fri • 6pm – 8pm (WAT)",
-    duration: "8 Weeks",
-    benefit:
-      "Learn HTML, CSS, JavaScript, and React by building real interfaces from day one. Graduate with a portfolio ready for junior frontend roles.",
-    image:
-      "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 2,
-    name: "Cybersecurity Essentials Boot Camp",
-    place: "Remote (Live Online)",
-    date: "Feb 3 – Apr 12, 2025",
-    time: "Tue • Thu • Sat • 5pm – 7pm (WAT)",
-    duration: "10 Weeks",
-    benefit:
-      "Understand how systems are attacked and defended, work with real tools in safe labs, and get a strong foundation for security careers.",
-    image:
-      "https://images.unsplash.com/photo-1604079628040-94301bb21b11?w=1200&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 3,
-    name: "Data Analysis Boot Camp",
-    place: "Abuja, Nigeria (Onsite)",
-    date: "Mar 1 – Apr 30, 2025",
-    time: "Sat • 9am – 2pm (WAT)",
-    duration: "8 Weeks",
-    benefit:
-      "Learn Python, SQL, and visualization to turn raw data into clear insights. Perfect for business professionals and aspiring analysts.",
-    image:
-      "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&auto=format&fit=crop&q=80",
-  },
-];
+const upcomingBootcamps = [...upcomingBootcampsData]
 
 const UpcomingBootcamps = () => {
   return (

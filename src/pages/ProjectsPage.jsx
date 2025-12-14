@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { FaYoutube, FaGlobe } from "react-icons/fa";
 import Navbar from "../components/navbar";
-import { projectsData } from "../data/projectsData";
+import { projectsData } from "../data/Data";
 import Footer from "../components/Footer";
 
 const directions = ["left", "right", "up", "down"];

@@ -9,7 +9,7 @@ import {
   FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
-}  from "react-icons/fa";
+} from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
 
@@ -175,14 +175,12 @@ const Navbar = () => {
 
         {/* Desktop CTA Button */}
         <div className="hidden md:flex">
-          <Button className="gap-2 py-6 px-6 font-medium" onClick={() => console.log('Enroll clicked')}>
+          <Button className="gap-2 py-6 px-6 font-medium" onClick={() => navigate('/register')}>
             <Edit size={18} />
             Enroll Now
           </Button>
         </div>
       </motion.nav>
-
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -248,7 +246,7 @@ const Navbar = () => {
                   <Button
                     className="w-full py-3.5 font-medium"
                     onClick={() => {
-                      console.log('Enroll clicked from mobile');
+                      navigate('/register');
                       setIsMenuOpen(false);
                     }}
                   >

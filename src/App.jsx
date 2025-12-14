@@ -3,6 +3,7 @@ import Homepage from "./pages/Homepage";
 import ProjectsShowcasePage from "./pages/ProjectsPage";
 import CoursePage from "./pages/Coursepage";
 import AboutPage from "./pages/Aboutpage";
+import RegisterPage from "./pages/Register";
 import ScrollToTop from "./ScrollToTop";
 
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/course/:id" element={<CoursePage />} />
         <Route path="/projects" element={<ProjectsShowcasePage />} />
+          <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>
   );

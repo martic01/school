@@ -1,7 +1,7 @@
 // src/components/FeaturedProjectsPreview.jsx
 import { FaYoutube, FaGlobe } from "react-icons/fa";
 import { Link } from "react-router-dom"; // if you are using react-router
-import { projectsData } from "../data/projectsData";
+import { projectsData } from "../data/Data";
 import Button from "./AppButton";
 
 const FeaturedProjectsPreview = () => {

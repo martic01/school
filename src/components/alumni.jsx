@@ -1,76 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaArrowLeft, FaArrowRight, FaMapMarkerAlt, FaCode, FaClock, FaUser, FaStar, FaPause, FaPlay } from "react-icons/fa";
-
+import { alumniDatas } from "../data/Data";
 // Alumni data array - easily add/remove alumni here
-const alumniData = [
-  {
-    id: 1,
-    name: "Alex Johnson",
-    skill: "Frontend Developer",
-    location: "San Francisco, USA",
-    company: "Google",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=350&fit=crop&crop=face",
-    quote: "The bootcamp transformed my career from scratch to a full-time developer role.",
-    graduationYear: "2022",
-    rating: 5
-  },
-  {
-    id: 2,
-    name: "Sarah Chen",
-    skill: "Full Stack Engineer",
-    location: "Toronto, Canada",
-    company: "Shopify",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=350&fit=crop&crop=face",
-    quote: "Hands-on projects gave me the confidence to tackle real-world challenges.",
-    graduationYear: "2021",
-    rating: 5
-  },
-  {
-    id: 3,
-    name: "Marcus Rivera",
-    skill: "React Specialist",
-    location: "London, UK",
-    company: "Facebook",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=350&fit=crop&crop=face",
-    quote: "The mentorship and community support were invaluable throughout my journey.",
-    graduationYear: "2023",
-    rating: 5
-  },
-  {
-    id: 4,
-    name: "Priya Sharma",
-    skill: "JavaScript Developer",
-    location: "Bangalore, India",
-    company: "Amazon",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=350&fit=crop&crop=face",
-    quote: "From zero coding experience to landing my dream job in 6 months!",
-    graduationYear: "2022",
-    rating: 5
-  },
-  {
-    id: 5,
-    name: "David Kim",
-    skill: "UI/UX Engineer",
-    location: "Seoul, South Korea",
-    company: "Samsung",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=350&fit=crop&crop=face",
-    quote: "The curriculum perfectly balanced theory with practical application.",
-    graduationYear: "2023",
-    rating: 5
-  },
-  {
-    id: 6,
-    name: "Lisa Wang",
-    skill: "Mobile Developer",
-    location: "Sydney, Australia",
-    company: "Atlassian",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=350&fit=crop&crop=face",
-    quote: "The career guidance helped me negotiate a 40% higher starting salary.",
-    graduationYear: "2021",
-    rating: 5
-  },
-];
+
+const alumniData = [...alumniDatas]
 
 const AlumniCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

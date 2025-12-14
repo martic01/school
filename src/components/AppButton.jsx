@@ -3,7 +3,7 @@ import React from "react";
 
 const baseClasses = `
   flex justify-center items-center font-bold
-  bg-(--text3-c) text-white
+  bg-(--text3-c) text-(--text1-c)
   transition-all duration-300
   hover:bg-white hover:text-(--text3-c)
   hover:border hover:border-(--text3-c)
