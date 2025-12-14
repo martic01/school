@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Share+Tech&display=swap');
+@import "tailwindcss";
+
+
+
+:root {
+  --primary-bc: white;
+  --secondary-bc: black;
+  --third-bc: #770202;
+  --dim:#000000a2;
+  --text1-c: white;
+  --text2-c: black;
+  --text3-c: #a10303;
+  --default-font: "Roboto", sans-serif;
+  --font1: "Poppins", sans-serif;
+  --font2: "Black Ops One", system-ui;
+  --font3: "Share Tech", sans-serif;
+}
+
+body {
+  font-weight: 400;
+  font-family: var(--default-font);
+}
+
+.f1 {
+  font-family: var(--font1);
+}
+
+.f2 {
+  font-family: var(--font2);
+}
+
+.f3 {
+  font-family: var(--font3);
+}
+
+.cent {
+  position: relative;
+  overflow: hidden;
+}
+
+.cent::after {
+  content: '';
+  position: absolute;
+  height: 200%;
+  width: 60%;
+  transform: translateX(-200%);
+  background: linear-gradient(90deg,transparent, #ffffff48, #ffffff34,#00000036,#0000004f,#00000073,#ffffff2c,#ffffff52, transparent);
+  animation: 6s slide linear infinite;
+}
+
+@keyframes slide {
+  to {
+    transform: translateX(200%);
+  }
+}
+
+.dim {
+  position: relative;
+  overflow: hidden;
+}
+
+.dim::after {
+  content: '';
+  position: absolute;
+  height: 120%;
+  width: 120%;
+  background:var(--dim);
+}
+
+/* Add to your global styles or component */
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-shine {
+  animation: shine 3s infinite;
+}
+
+.slide-left {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.slide-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+.slide-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.slide-down {
+  animation: slideInDown 0.6s ease-out;
+}
+
+
+/* Cracked / Broken glass illusion over the image area */
+.cracked-glass {
+  position: relative;
+  isolation: isolate;
+}
+
+.cracked-glass::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background-image:
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.18) 75%,
+      transparent 100%
+    ),
+    linear-gradient(
+      60deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgba(255, 255, 255, 0.22) 100%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Moving reflection / light */
+.cracked-glass::after {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background: radial-gradient(
+    circle at 0 0,
+    rgba(255, 255, 255, 0.35),
+    transparent 55%
+  );
+  mix-blend-mode: screen;
+  animation: glassShine 7s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes glassShine {
+  0% {
+    transform: translate(-40%, -40%) rotate(0deg);
+  }
+  50% {
+    transform: translate(20%, 30%) rotate(10deg);
+  }
+  100% {
+    transform: translate(60%, 60%) rotate(0deg);
+  }
+}
