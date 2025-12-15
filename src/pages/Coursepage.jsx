@@ -82,9 +82,7 @@ const CoursePage = () => {
     };
   }, [selectedCourse]); // fixed-length array as well
 
-  const handleChatAdvisor = () => {
-    alert(`Connecting you to ${selectedCourse.name} advisor...`);
-  };
+
 
   const SelectedIcon = getCourseIcon(selectedCourse);
 
@@ -180,11 +178,10 @@ const CoursePage = () => {
                         whileHover={{ x: 5 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleCourseChange(course)}
-                        className={`w-full text-left p-3 mb-1 rounded-none transition-all duration-300 ${
-                          selectedCourse.id === course.id
+                        className={`w-full text-left p-3 mb-1 rounded-none transition-all duration-300 ${selectedCourse.id === course.id
                             ? "bg-red-600 text-white border-l-4 border-black"
                             : "text-gray-700 hover:bg-red-50 hover:text-red-600"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-3">
                           <CourseIcon className="w-4 h-4" />
@@ -389,15 +386,16 @@ const CoursePage = () => {
                   transition={{ delay: 0.5 }}
                   className="course-section text-center"
                 >
-                  <Button
-                    onClick={handleChatAdvisor}
-                    className="px-8 py-4 text-lg font-bold rounded-none mx-auto infinity-animate"
-                  >
-                    <span className="flex items-center gap-3">
-                      Chat with {selectedCourse.name} Advisor
-                      <FaChevronRight className="w-5 h-5" />
-                    </span>
-                  </Button>
+                  <a href={selectedCourse.link || "#"} target="_blank" rel="noreferrer">
+                    <Button
+                      className="px-8 py-4 text-lg font-bold rounded-none mx-auto infinity-animate"
+                    >
+                      <span className="flex items-center gap-3">
+                        Chat with {selectedCourse.name} Advisor
+                        <FaChevronRight className="w-5 h-5" />
+                      </span>
+                    </Button>
+                  </a>
 
                   <p className="text-gray-600 mt-3 text-sm">
                     Get personalized guidance from our course experts

@@ -28,9 +28,9 @@ const Footer = ({show = true}) => {
   const socialLinks = [
     { icon: FaFacebookF, label: "Facebook", color: "hover:bg-blue-600", link: "https://facebook.com" },
     { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link: "https://linkedin.com" },
-    { icon: FaTwitter, label: "Twitter", color: "hover:bg-blue-400", link: "https://twitter.com" },
-    { icon: FaTiktok, label: "TikTok", color: "hover:bg-black", link: "https://tiktok.com" },
-    { icon: FaYoutube, label: "YouTube", color: "hover:bg-red-600", link: "https://youtube.com" },
+    { icon: FaTwitter, label: "Twitter", color: "hover:bg-blue-400", link: "https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08" },
+    { icon: FaTiktok, label: "TikTok", color: "hover:bg-black", link: "https://www.tiktok.com/@acedu_bootcamp?_r=1&_t=ZS-92F2ZyjTcLw" },
+    { icon: FaYoutube, label: "YouTube", color: "hover:bg-red-600", link: "https://www.instagram.com/acedu_bootcamp?igsh=MTB2NHk1cWF6cTFiZg%3D%3D&utm_source=qr" },
     { icon: FaInstagram, label: "Instagram", color: "hover:bg-linear-to-r from-purple-600 via-pink-600 to-yellow-500", link: "https://instagram.com" }
   ];
 
@@ -144,8 +144,8 @@ const Footer = ({show = true}) => {
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Address</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    5, Matanity busstop, off college road,<br />
-                    ogba, Ikeja (10893),<br />
+                  77 Yaya Abatan Road ,<br />
+                    Maternity Bus-stop ,Ogba Lagos state (101232)<br />
                     Lagos, Nigeria
                   </p>
                 </div>
@@ -162,7 +162,7 @@ const Footer = ({show = true}) => {
                     href="tel:+2344012928235" 
                     className="text-red-600 hover:text-red-700 transition-colors text-lg font-semibold"
                   >
-                    (+234) 8018691235
+                    (+234) 7048606767
                   </a>
                 </div>
               </div>

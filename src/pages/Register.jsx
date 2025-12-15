@@ -2,6 +2,9 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import Button from '../components/AppButton'
+import { useEffect } from 'react';
+import { useAlert } from '../components/AlertContext';
+
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -13,33 +16,38 @@ const RegisterPage = () => {
     surname: '',
     mobilePhone: '',
     email: '',
-    
-    // Contact Information
     contactAddress: '',
-    postalAddress: '',
-    permanentAddress: '',
-    phoneNumber: '',
-    
+
     // Next of Kin
     kinName: '',
     kinAddress: '',
     kinTelephone: '',
     kinRelationship: '',
-    
+
     // Career goals
     careerGoals: '',
-    
+
     // Sponsorship
     sponsorshipMeans: '',
     onScholarship: '',
     scholarshipDonor: '',
-    
+
     // Declaration
     declaration: false,
   })
 
   const [focusedFields, setFocusedFields] = useState({})
   const [errors, setErrors] = useState({})
+  const { showAlert } = useAlert();
+
+  useEffect(() => {
+    showAlert(
+
+      "🎉Please fill all *Space",
+      'info',
+      8000
+    );
+  }, [showAlert]);
 
   // Course options with prices
   const courses = [
@@ -106,37 +114,11 @@ const RegisterPage = () => {
           required: true,
           grid: 'half',
         },
-      ],
-    },
-    {
-      section: 'Contact Information',
-      fields: [
         {
           id: 'contactAddress',
           label: 'Contact Address',
           type: 'text',
-          required: false,
-          grid: 'full',
-        },
-        {
-          id: 'postalAddress',
-          label: 'Postal Address',
-          type: 'text',
-          required: false,
-          grid: 'half',
-        },
-        {
-          id: 'permanentAddress',
-          label: 'Permanent Home Address',
-          type: 'text',
           required: true,
-          grid: 'half',
-        },
-        {
-          id: 'phoneNumber',
-          label: 'Phone Number',
-          type: 'tel',
-          required: false,
           grid: 'full',
         },
       ],
@@ -148,28 +130,28 @@ const RegisterPage = () => {
           id: 'kinName',
           label: 'Name',
           type: 'text',
-          required: false,
+          required: true,
           grid: 'half',
         },
         {
           id: 'kinAddress',
           label: 'Address',
           type: 'text',
-          required: false,
+          required: true,
           grid: 'half',
         },
         {
           id: 'kinTelephone',
           label: 'Telephone Number',
           type: 'tel',
-          required: false,
+          required: true,
           grid: 'half',
         },
         {
           id: 'kinRelationship',
           label: 'Relationship',
           type: 'text',
-          required: false,
+          required: true,
           grid: 'half',
         },
       ],
@@ -253,12 +235,17 @@ const RegisterPage = () => {
 
   const validateForm = () => {
     const newErrors = {}
-    
+
     // Check required fields
     formFields.forEach(section => {
       section.fields.forEach(field => {
         if (field.required && !formData[field.id]) {
           newErrors[field.id] = 'This field is required'
+          showAlert(
+            "🎉This field is required*",
+            'error',
+            4000
+          );
         }
       })
     })
@@ -266,11 +253,21 @@ const RegisterPage = () => {
     // Additional validation for email
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address'
+        showAlert(
+            "🎉Please enter a valid email address*",
+            'error',
+            4000
+          );
     }
 
     // Check declaration
     if (!formData.declaration) {
-      newErrors.declaration = 'You must accept the declaration'
+      newErrors.declaration = ''
+      showAlert(
+            "🎉You must accept the declaration*",
+            'error',
+            4000
+          );
     }
 
     setErrors(newErrors)
@@ -279,13 +276,17 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
+
     if (validateForm()) {
       // Form is valid, submit data
       console.log('Form submitted:', formData)
       // Here you would typically send the data to your backend
-      alert('Registration submitted successfully! We will contact you shortly.')
-      
+      showAlert(
+        "🎉 Enrollment submitted successfully! We'll contact you shortly.",
+        'success',
+        5000
+      );
+
       // Reset form
       setFormData({
         referrerCode: '',
@@ -351,11 +352,10 @@ const RegisterPage = () => {
               />
               <label
                 htmlFor={field.id}
-                className={`absolute left-4 transition-all duration-300 pointer-events-none text-sm md:text-base ${
-                  isFocused 
-                    ? 'top-2 text-xs md:text-xs text-red-600 font-medium' 
-                    : 'top-3 md:top-4 text-gray-500'
-                } ${hasError ? 'text-red-500' : ''}`}
+                className={`absolute left-4 transition-all duration-300 pointer-events-none text-sm md:text-base ${isFocused
+                  ? 'top-2 text-xs md:text-xs text-red-600 font-medium'
+                  : 'top-3 md:top-4 text-gray-500'
+                  } ${hasError ? 'text-red-500' : ''}`}
               >
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
@@ -380,11 +380,10 @@ const RegisterPage = () => {
               </select>
               <label
                 htmlFor={field.id}
-                className={`absolute left-4 transition-all duration-300 pointer-events-none text-sm md:text-base ${
-                  isFocused || formData[field.id] !== ''
-                    ? 'top-2 text-xs md:text-xs text-red-600 font-medium' 
-                    : 'top-3 md:top-4 text-gray-500'
-                } ${hasError ? 'text-red-500' : ''}`}
+                className={`absolute left-4 transition-all duration-300 pointer-events-none text-sm md:text-base ${isFocused || formData[field.id] !== ''
+                  ? 'top-2 text-xs md:text-xs text-red-600 font-medium'
+                  : 'top-3 md:top-4 text-gray-500'
+                  } ${hasError ? 'text-red-500' : ''}`}
               >
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
@@ -410,11 +409,10 @@ const RegisterPage = () => {
               />
               <label
                 htmlFor={field.id}
-                className={`absolute left-4 transition-all duration-300 pointer-events-none text-sm md:text-base ${
-                  isFocused 
-                    ? 'top-2 text-xs md:text-xs text-red-600 font-medium' 
-                    : 'top-3 md:top-4 text-gray-500'
-                } ${hasError ? 'text-red-500' : ''}`}
+                className={`absolute left-4 transition-all duration-300 pointer-events-none text-sm md:text-base ${isFocused
+                  ? 'top-2 text-xs md:text-xs text-red-600 font-medium'
+                  : 'top-3 md:top-4 text-gray-500'
+                  } ${hasError ? 'text-red-500' : ''}`}
               >
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
@@ -422,9 +420,9 @@ const RegisterPage = () => {
             </div>
           )}
         </div>
-        
+
         {hasError && (
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-red-500 text-xs mt-1 ml-1"
@@ -437,7 +435,7 @@ const RegisterPage = () => {
   }
 
   const getGridClass = (grid) => {
-    switch(grid) {
+    switch (grid) {
       case 'third': return 'md:col-span-4 col-span-12'
       case 'half': return 'md:col-span-6 col-span-12'
       case 'full': return 'col-span-12'
@@ -494,7 +492,7 @@ const RegisterPage = () => {
                     <h2 className="text-lg sm:text-xl font-bold text-black mb-4 md:mb-6 pb-2 border-b border-red-100">
                       Declaration
                     </h2>
-                    
+
                     <div className="space-y-3 md:space-y-4">
                       <div className="flex items-start gap-3">
                         <div className="flex items-center h-6 mt-0.5">
@@ -508,16 +506,16 @@ const RegisterPage = () => {
                           />
                         </div>
                         <label htmlFor="declaration" className="text-sm md:text-base text-gray-700 cursor-pointer">
-                          I hereby certify that the information displayed above is correct and 
-                          will therefore not hold the school liable for any mistake contained 
+                          I hereby certify that the information displayed above is correct and
+                          will therefore not hold the school liable for any mistake contained
                           in the detail therein.
                         </label>
                       </div>
-                      
+
                       {errors.declaration && (
                         <p className="text-red-500 text-xs md:text-sm">{errors.declaration}</p>
                       )}
-                      
+
                       <div className="text-xs md:text-sm text-gray-500">
                         <p className="text-red-500">* required fields</p>
                       </div>
@@ -552,7 +550,7 @@ const RegisterPage = () => {
                   transition={{ delay: 0.3 }}
                   className="relative overflow-hidden shadow-lg md:shadow-xl h-48 sm:h-56 md:h-64 lg:h-80 mb-6 md:mb-8"
                 >
-                  <div 
+                  <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{
                       backgroundImage: 'url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")',
@@ -560,11 +558,11 @@ const RegisterPage = () => {
                   >
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-linear-to-br from-red-600/30 to-black/50"></div>
-                    
+
                     {/* Light illustration effect */}
                     <div className="absolute inset-0 bg-linear-to-tr from-white/10 via-transparent to-transparent"></div>
                   </div>
-                  
+
                   <div className="relative z-10 h-full flex items-center justify-center p-4 sm:p-6 md:p-8">
                     <div className="text-center text-white">
                       <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 md:mb-4">
@@ -587,7 +585,7 @@ const RegisterPage = () => {
                   <h3 className="text-lg sm:text-xl font-bold text-black mb-3 md:mb-4">
                     Available Courses
                   </h3>
-                  
+
                   <div className="space-y-2 sm:space-y-3">
                     {courses.slice(1).map((course, index) => (
                       <motion.div
@@ -636,8 +634,8 @@ const RegisterPage = () => {
                     </h4>
                     <p className="text-xs sm:text-sm text-gray-600">
                       Contact us at{' '}
-                      <a 
-                        href="mailto:acedu@gmail.com" 
+                      <a
+                        href="mailto:acedu@gmail.com"
                         className="text-red-600 hover:text-red-700 font-medium"
                       >
                         acedu@gmail.com
@@ -650,7 +648,7 @@ const RegisterPage = () => {
           </motion.div>
         </div>
       </main>
-      
+
     </>
   )
 }

@@ -19,7 +19,9 @@ export const coursesData = [
     chatAdvisor: "html-css-advisor",
     bgImage:
       "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80",
-  },
+  
+      link:"https://wa.me/+2348105642986"
+    },
   {
     id: 2,
     name: "JavaScript",
@@ -45,7 +47,9 @@ export const coursesData = [
     chatAdvisor: "javascript-advisor",
     bgImage:
       "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80",
-  },
+  
+      link:"https://wa.me/+2348105642986"
+    },
   {
     id: 3,
     name: "React",
@@ -71,7 +75,9 @@ export const coursesData = [
     chatAdvisor: "react-advisor",
     bgImage:
       "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80",
-  },
+  
+      link:"https://wa.me/+2348105642986"
+    },
   {
     id: 4,
     name: "C# Programming",
@@ -91,7 +97,9 @@ export const coursesData = [
     chatAdvisor: "csharp-advisor",
     bgImage:
       "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=1200&auto=format&fit=crop&q=80",
-  },
+  
+      link:"https://wa.me/+2348105642986"
+    },
   {
     id: 5,
     name: "Cybersecurity",
@@ -117,7 +125,9 @@ export const coursesData = [
     chatAdvisor: "cybersecurity-advisor",
     bgImage:
       "https://images.unsplash.com/photo-1604079628040-94301bb21b11?w=1200&auto=format&fit=crop&q=80",
-  },
+  
+      link:"https://wa.me/+2347048606767"
+    },
   {
     id: 6,
     name: "Data Analysis",
@@ -137,7 +147,9 @@ export const coursesData = [
     chatAdvisor: "data-analysis-advisor",
     bgImage:
       "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&auto=format&fit=crop&q=80",
-  },
+  
+      link:"https://wa.me/+2347048606767"
+    },
 ];
 
 // src/data/projectsData.js

@@ -32,7 +32,7 @@ const ContactSection = () => {
     // Alternative: check if mailto protocol is supported
     try {
       const link = document.createElement('a');
-      link.href = 'mailto:test@example.com';
+      link.href = 'mailto:Info@acedu.camp';
       setHasEmailClient(link.protocol === 'mailto:');
     } catch (e) {
       setHasEmailClient(false);
@@ -98,7 +98,7 @@ const ContactSection = () => {
     ];
     const body = bodyLines.join("\n");
 
-    const mailtoLink = `mailto:acedu@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoLink = `mailto:Info@acedu.camp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     
     // Create a hidden link to avoid navigation
     const link = document.createElement('a');
@@ -244,7 +244,7 @@ const ContactSection = () => {
               
               {copied && (
                 <p className="mt-2 text-xs text-blue-700">
-                  Message copied! Now paste it into your email client and send to: acedu@gmail.com
+                  Message copied! Now paste it into your email client and send to: Info@acedu.camp
                 </p>
               )}
             </div>
@@ -377,13 +377,13 @@ const ContactSection = () => {
               <div className="text-left">
                 <p className="text-sm font-medium text-gray-700">Email</p>
                 <a 
-                  href="mailto:acedu@gmail.com"
+                  href="mailto:Info@acedu.camp"
                   className="text-red-600 font-bold hover:text-red-700 transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
                     // Open mailto without navigation
                     const link = document.createElement('a');
-                    link.href = 'mailto:acedu@gmail.com';
+                    link.href = 'mailto:Info@acedu.camp';
                     link.style.display = 'none';
                     link.target = '_blank';
                     link.rel = 'noopener noreferrer';
@@ -392,7 +392,7 @@ const ContactSection = () => {
                     document.body.removeChild(link);
                   }}
                 >
-                  acedu@gmail.com
+                  Info@acedu.camp
                 </a>
               </div>
             </div>
@@ -427,7 +427,7 @@ const ContactSection = () => {
                 <li>Fill out the form above</li>
                 <li>We'll open your email client with a pre-filled message</li>
                 <li>If your email doesn't open, use the "Copy Message" button</li>
-                <li>Paste into any email app and send to acedu@gmail.com</li>
+                <li>Paste into any email app and send to Info@acedu.camp</li>
               </ol>
               <p className="mt-2 text-red-600 font-medium">Your page will NOT navigate away!</p>
             </div>

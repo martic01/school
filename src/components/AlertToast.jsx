@@ -1,5 +1,5 @@
 // src/components/AlertToast.jsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   FaCheckCircle,
@@ -23,16 +23,7 @@ const AlertToast = ({
   duration = 4000,
   onClose,
 }) => {
-  // Auto-close after duration
-  useEffect(() => {
-    if (!show || !duration) return;
-
-    const timer = setTimeout(() => {
-      onClose?.();
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, [show, duration, onClose]);
+  // REMOVED the useEffect - auto-closing is now handled in the context
 
   const stylesByType = {
     success: {

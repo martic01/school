@@ -9,6 +9,7 @@ import AboutCEO from '../components/AboutCEO';
 import CourseModulesHome from '../components/CourseModules';
 import UpcomingBootcamps from '../components/UpcomingBootcamps';
 import ContactSection from '../components/ContactSection';
+import AlertToast from '../components/AlertToast';
 
 
 const Homepage = () => {
@@ -99,9 +100,11 @@ const Homepage = () => {
           </p>
 
           {/* Reusable button here */}
-          <Button className="w-full md:w-[280px] h-12 md:h-14 mt-4 text-sm md:text-base">
+         <a href="https://wa.me/+2347048606767" target="_blank" rel="noreferrer">
+           <Button className="w-full md:w-[280px] h-12 md:h-14 mt-4 text-sm md:text-base">
             Chat with a course advisor
           </Button>
+         </a>
         </div>
 
         {/* Right Column - Why Course Items */}

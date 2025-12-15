@@ -10,17 +10,18 @@ import ScrollToTop from "./ScrollToTop";
 import AIAssistant from "./components/AIAssistant";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import { AlertProvider } from "./components/AlertContext";
 
 
 function AppLayout() {
   const location = useLocation();
 
   // List of routes where you DON'T want the footer
- const hideFooterOn = ['/ai-chat', '/register'];
+  const hideFooterOn = ['/ai-chat', '/register'];
   const showFooter = !hideFooterOn.includes(location.pathname);
 
   return (
-    <>
+    < AlertProvider>
       <Navbar />
       <ScrollToTop />
 
@@ -36,7 +37,7 @@ function AppLayout() {
       <AIAssistant />
 
       {showFooter && <Footer show={true} />}
-    </>
+    </ AlertProvider>
   );
 }
 

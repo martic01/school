@@ -41,15 +41,15 @@ const Navbar = () => {
 
   // Track scroll position for navbar background
   const socialIcons = [
-    { icon: FaYoutube, name: "YouTube", bgColor: "hover:bg-red-600" },
-    { icon: FaFacebookF, name: "Facebook", bgColor: "hover:bg-blue-600" },
-    { icon: FaLinkedinIn, name: "LinkedIn", bgColor: "hover:bg-blue-700" },
-    { icon: FaTwitter, name: "Twitter", bgColor: "hover:bg-sky-500" },
+    { icon: FaYoutube, link:"", name: "YouTube", bgColor: "hover:bg-red-600" },
+    { icon: FaFacebookF, link:"", name: "Facebook", bgColor: "hover:bg-blue-600" },
+    { icon: FaLinkedinIn, link:"", name: "LinkedIn", bgColor: "hover:bg-blue-700" },
+    { icon: FaTwitter, link:"https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08", name: "Twitter", bgColor: "hover:bg-sky-500" },
   ];
 
   const contactInfo = [
-    { icon: FaPhone, text: "+234 899 10101" },
-    { icon: FaEnvelope, text: "acedu@gmail.com" },
+    { icon: FaPhone, text: "+234 7048606767" },
+    { icon: FaEnvelope, text: "Info@acedu.camp" },
     { icon: FaMapMarkerAlt, text: "Lagos Nigeria" },
   ];
 
@@ -129,7 +129,7 @@ const Navbar = () => {
           {socialIcons.map((item, index) => (
             <a
               key={index}
-              href="#"
+              href={item.link || '#'}
               className={`flex items-center justify-center h-full px-3 cursor-pointer transition-colors ${item.bgColor} group`}
               aria-label={item.name}
             >
