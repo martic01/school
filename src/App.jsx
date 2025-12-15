@@ -9,7 +9,8 @@ import AIChatPage from "./pages/AIChatPage";
 import ScrollToTop from "./ScrollToTop";
 import AIAssistant from "./components/AIAssistant";
 import Footer from "./components/Footer";
-import Navbar from "./components/navbar";
+import Navbar from "./components/Navbar";
+
 
 function AppLayout() {
   const location = useLocation();
