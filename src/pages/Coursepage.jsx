@@ -5,8 +5,7 @@ import { FaBook, FaChevronRight, FaLaptopCode, FaChartLine } from "react-icons/f
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../components/AppButton";
 import { coursesData } from "../data/Data";
-import Navbar from "../components/navbar";
-import Footer from "../components/Footer";
+
 
 const CoursePage = () => {
   const { id } = useParams();
@@ -91,7 +90,6 @@ const CoursePage = () => {
 
   return (
     <>
-      <Navbar />
 
       <div className="min-h-screen bg-gray-50">
         {/* Course Header */}
@@ -410,7 +408,6 @@ const CoursePage = () => {
           </div>
         </div>
 
-        <Footer />
 
         <style>{`
           @keyframes float {

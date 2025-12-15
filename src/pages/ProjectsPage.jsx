@@ -1,9 +1,7 @@
 // src/pages/ProjectsShowcasePage.jsx
 import { motion } from "framer-motion";
 import { FaYoutube, FaGlobe } from "react-icons/fa";
-import Navbar from "../components/navbar";
 import { projectsData } from "../data/Data";
-import Footer from "../components/Footer";
 
 const directions = ["left", "right", "up", "down"];
 
@@ -40,7 +38,6 @@ const getVariants = (dir) => {
 const ProjectsShowcasePage = () => {
   return (
     <>
-      <Navbar />
       <div className="bg-white min-h-screen text-black">
         <main className="w-[90vw] max-w-6xl mx-auto py-14 md:py-20">
           {/* Heading */}
@@ -146,7 +143,6 @@ const ProjectsShowcasePage = () => {
             })}
           </section>
         </main>
-        <Footer />
       </div>
     </>
   );

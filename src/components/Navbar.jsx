@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from "react-router-dom"; // ⬅ add useLocation
-import { Menu, X, Home, Info, BookOpen, Phone, Edit, ChevronDown } from 'lucide-react';
+import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, Home, Info, BookOpen, Phone, Edit, ChevronDown, Bot } from 'lucide-react';
 import {
   FaFacebookF,
   FaYoutube,
@@ -9,6 +9,7 @@ import {
   FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
+  FaRobot
 } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
@@ -16,15 +17,27 @@ import Button from './AppButton';
 const link = [
   { name: 'Home', link: '/', icon: Home, color: 'hover:text-red-700', action: 'home' },
   { name: 'About us', link: '/about', icon: Info, color: 'hover:text-red-700', action: 'navigate' },
-  { name: 'Course modules', link: '/course/1', icon: BookOpen, color: 'hover:text-yellow-700', action: 'navigate' },
+  { name: 'Courses', link: '/course/1', icon: BookOpen, color: 'hover:text-yellow-700', action: 'navigate' },
+  { name: 'AI Assistant', link: '/ai-chat', icon: Bot, color: 'hover:text-blue-600', action: 'navigate' },
   { name: 'Contact us', link: '/', icon: Phone, color: 'hover:text-red-700', action: 'scrollToFooter' },
 ];
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
-  const location = useLocation(); // ⬅ current route
+  const location = useLocation();
+
+  // Track window width for responsive design
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Track scroll position for navbar background
   const socialIcons = [
@@ -36,10 +49,9 @@ const Navbar = () => {
 
   const contactInfo = [
     { icon: FaPhone, text: "+234 899 10101" },
-    { icon: FaEnvelope, text: "aced@welcome.com" },
+    { icon: FaEnvelope, text: "acedu@gmail.com" },
     { icon: FaMapMarkerAlt, text: "Lagos Nigeria" },
   ];
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,10 +78,8 @@ const Navbar = () => {
     } else {
       // Home action
       if (location.pathname !== '/') {
-        // If we're not on home, navigate to home
         navigate('/');
       } else {
-        // If already on home, just scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       setIsMenuOpen(false);
@@ -104,6 +114,13 @@ const Navbar = () => {
     }
   };
 
+  // Responsive text sizes based on window width
+  const getNavTextSize = () => {
+    if (windowWidth < 640) return 'hidden'; // Hide on mobile, show menu button
+    if (windowWidth < 900) return 'text-sm'; // Small screens (640px - 899px)
+    return 'text-base'; // Large screens (900px+)
+  };
+
   return (
     <>
       <div className="max-[400px]:hidden flex justify-between items-center w-full h-10 bg-linear-to-r from-gray-200 to-transparent px-4 md:px-8">
@@ -134,6 +151,7 @@ const Navbar = () => {
           ))}
         </div>
       </div>
+      
       <motion.nav
         className="flex w-full h-17 sticky top-0 z-50 md:h-20 justify-between items-center border-b border-red-200 px-4 md:px-8"
         initial="top"
@@ -151,16 +169,37 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Desktop Navigation */}
-        <div className='hidden md:flex items-center space-x-8'>
+        {/* Desktop Navigation - Responsive */}
+        <div className={`hidden md:flex items-center ${windowWidth < 900 ? 'space-x-4' : 'space-x-8'}`}>
           {link.map((item, index) => (
             <button
               key={index}
               onClick={() => handleNavClick(item)}
-              className={`text-gray-700 font-medium transition-all duration-300 hover:text-red-600 relative group ${item.color}`}
+              className={`flex items-center gap-1.5 ${getNavTextSize()} text-gray-700 font-medium transition-all duration-300 hover:text-red-600 relative group ${item.color}`}
             >
-              {item.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300"></span>
+              {/* Show icons only on small screens (below 900px) */}
+              {windowWidth < 900 && (
+                <>
+                  {item.name === 'AI Assistant' ? (
+                    <div className="relative">
+                      <FaRobot className="w-3.5 h-3.5" />
+                      <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <item.icon className="w-3.5 h-3.5" />
+                  )}
+                </>
+              )}
+              
+              {/* Show text */}
+              <span className={windowWidth < 900 ? 'hidden sm:inline' : ''}>
+                {item.name === 'Courses' && windowWidth < 900 ? 'Courses' : item.name}
+              </span>
+              
+              {/* Underline effect */}
+              <span className={`absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300 ${
+                item.name === 'AI Assistant' ? 'bg-blue-600' : 'bg-red-600'
+              }`}></span>
             </button>
           ))}
         </div>
@@ -173,14 +212,20 @@ const Navbar = () => {
           <Menu className='w-6 h-6 text-gray-700' />
         </button>
 
-        {/* Desktop CTA Button */}
-        <div className="hidden md:flex">
-          <Button className="gap-2 py-6 px-6 font-medium" onClick={() => navigate('/register')}>
-            <Edit size={18} />
-            Enroll Now
+        {/* Desktop CTA Button - Responsive */}
+        <div className="hidden md:flex items-center space-x-3">
+          <Button 
+            className={`gap-2 font-medium ${
+              windowWidth < 900 ? 'py-5 px-4 text-sm' : 'py-6 px-6'
+            }`} 
+            onClick={() => navigate('/register')}
+          >
+            <Edit size={windowWidth < 900 ? 16 : 18} />
+            {windowWidth < 900 ? 'Enroll' : 'Enroll Now'}
           </Button>
         </div>
       </motion.nav>
+      
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -204,7 +249,7 @@ const Navbar = () => {
             >
               {/* Menu Header */}
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-red-600">Moat Academy</h2>
+                <h2 className="text-xl font-bold text-red-600">ACEDU Bootcamp</h2>
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -222,16 +267,36 @@ const Navbar = () => {
                     initial="closed"
                     animate="open"
                     transition={{ delay: index * 0.1 }}
-                    className={`flex items-center justify-between w-full p-4 rounded-lg hover:bg-red-50 transition-all duration-300 ${item.color}`}
+                    className={`flex items-center justify-between w-full p-4 rounded-lg hover:bg-red-50 transition-all duration-300 ${item.color} ${
+                      item.name === 'AI Assistant' ? 'hover:bg-blue-50' : ''
+                    }`}
                     onClick={() => handleNavClick(item)}
                   >
                     <div className="flex items-center space-x-3">
-                      <item.icon className="w-5 h-5" />
-                      <span className="font-medium">{item.name}</span>
+                      {item.name === 'AI Assistant' ? (
+                        <div className="relative">
+                          <FaRobot className="w-5 h-5 text-blue-600" />
+                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        </div>
+                      ) : (
+                        <item.icon className="w-5 h-5" />
+                      )}
+                      <span className={`font-medium ${
+                        item.name === 'AI Assistant' ? 'text-blue-600' : ''
+                      }`}>
+                        {item.name}
+                        {item.name === 'AI Assistant' && (
+                          <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                            NEW
+                          </span>
+                        )}
+                      </span>
                     </div>
-                    {item.action === 'scrollToFooter' && (
+                    {item.action === 'scrollToFooter' ? (
                       <ChevronDown className="w-4 h-4" />
-                    )}
+                    ) : item.name === 'AI Assistant' ? (
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    ) : null}
                   </motion.button>
                 ))}
               </div>
@@ -242,6 +307,7 @@ const Navbar = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
+                  className="space-y-3"
                 >
                   <Button
                     className="w-full py-3.5 font-medium"
@@ -254,9 +320,6 @@ const Navbar = () => {
                     Enroll Now
                   </Button>
                 </motion.div>
-                <p className="text-center text-gray-500 text-sm mt-3">
-                  Transforming IT Education
-                </p>
               </div>
             </motion.div>
           </>

@@ -1,7 +1,5 @@
 // src/pages/EnrollmentPage.jsx
 import React, { useState } from 'react'
-import Navbar from '../components/navbar'
-import Footer from '../components/Footer'
 import { motion } from 'framer-motion'
 import Button from '../components/AppButton'
 
@@ -449,8 +447,6 @@ const RegisterPage = () => {
 
   return (
     <>
-      <Navbar />
-      
       <main className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-12">
           <motion.div
@@ -655,7 +651,6 @@ const RegisterPage = () => {
         </div>
       </main>
       
-      <Footer />
     </>
   )
 }

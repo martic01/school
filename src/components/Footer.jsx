@@ -24,7 +24,7 @@ const floatingDots = Array.from({ length: 8 }, () => ({
 // Pre-calc current year once (optional but also keeps render pure)
 const CURRENT_YEAR = new Date().getFullYear();
 
-const Footer = () => {
+const Footer = ({show = true}) => {
   const socialLinks = [
     { icon: FaFacebookF, label: "Facebook", color: "hover:bg-blue-600", link: "https://facebook.com" },
     { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link: "https://linkedin.com" },
@@ -35,7 +35,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer id="footer" className="w-full bg-white text-gray-800 relative overflow-hidden border-t border-gray-200">
+    <footer id="footer" className={` ${show ? 'block' : 'hidden'}  w-full bg-white text-gray-800 relative overflow-hidden border-t border-gray-200`}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-red-600 rounded-full blur-3xl"></div>

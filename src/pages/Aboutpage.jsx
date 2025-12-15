@@ -1,8 +1,6 @@
 // src/pages/AboutPage.jsx
 import React from "react";
 import { motion } from "framer-motion";
-import Navbar from "../components/navbar";
-import Footer from "../components/Footer";
 import { ScanEye } from "lucide-react";
 import {
   FaBullseye,
@@ -35,8 +33,6 @@ const AboutPage = () => {
 
   return (
     <>
-      <Navbar />
-
       {/* Hero Section */}
       <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
         <div
@@ -262,8 +258,6 @@ const AboutPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </>
   );
 };
