@@ -206,6 +206,7 @@ const Footer = ({show = true}) => {
                 ))}
               </div>
             </div>
+    {/* <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d126839.06821658298!2d3.3488896!3d6.5568768!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x103b917dd312f1cd%3A0x2490eb1ec589e652!2s77%20Yaya%20Abatan%20Rd%2C%20Ogba%2C%20Lagos%20101232%2C%20Lagos!3m2!1d6.635971!2d3.3353303!5e0!3m2!1sen!2sng!4v1765799813310!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> */}
 
             {/* Copyright */}
             <motion.div
