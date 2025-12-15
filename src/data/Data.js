@@ -1,7 +1,4 @@
 // src/data/coursesData.js
-import { FaChartLine, FaLaptopCode,FaAward,FaLightbulb,FaRocket,FaBullseye,FaHandshake } from "react-icons/fa";
-
-
 export const coursesData = [
   {
     id: 1,

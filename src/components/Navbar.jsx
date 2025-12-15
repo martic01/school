@@ -177,9 +177,6 @@ const Navbar = () => {
               onClick={() => handleNavClick(item)}
               className={`flex items-center gap-1.5 ${getNavTextSize()} text-gray-700 font-medium transition-all duration-300 hover:text-red-600 relative group ${item.color}`}
             >
-              {/* Show icons only on small screens (below 900px) */}
-              {windowWidth < 900 && (
-                <>
                   {item.name === 'AI Assistant' ? (
                     <div className="relative">
                       <FaRobot className="w-3.5 h-3.5" />
@@ -187,18 +184,15 @@ const Navbar = () => {
                     </div>
                   ) : (
                     <item.icon className="w-3.5 h-3.5" />
-                  )}
-                </>
               )}
-              
-              {/* Show text */}
-              <span className={windowWidth < 900 ? 'hidden sm:inline' : ''}>
-                {item.name === 'Courses' && windowWidth < 900 ? 'Courses' : item.name}
+              <span className={`${item.color}`}>
+                {item.name} 
               </span>
               
               {/* Underline effect */}
               <span className={`absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300 ${
-                item.name === 'AI Assistant' ? 'bg-blue-600' : 'bg-red-600'
+                item.name === 'AI Assistant' ? 'bg-blue-600' : 'bg-red-600',
+                item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
               }`}></span>
             </button>
           ))}
