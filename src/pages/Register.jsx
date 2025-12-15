@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Button from '../components/AppButton'
 import { useEffect } from 'react';
 import { useAlert } from '../components/AlertContext';
+import { Dot } from 'lucide-react';
 
 
 const RegisterPage = () => {
@@ -52,12 +53,23 @@ const RegisterPage = () => {
   // Course options with prices
   const courses = [
     { id: '', name: '--Select a Course--', price: '' },
-    { id: 'html-css', name: 'HTML & CSS', price: '190k' },
-    { id: 'javascript', name: 'JavaScript', price: '200k' },
-    { id: 'react', name: 'React', price: '300k' },
-    { id: 'cybersecurity', name: 'Cyber Security', price: '300k' },
-    { id: 'data-analysis', name: 'Data Analysis', price: '370k' },
-  ]
+    
+    // Your 6 original courses
+    { id: 'html-css', name: 'HTML & CSS', price: '190,000' },
+    { id: 'javascript', name: 'JavaScript', price: '200,000' },
+    { id: 'react', name: 'React', price: '300,000' },
+    { id: 'csharp', name: 'C# Programming', price: '688,500' },
+    { id: 'cybersecurity', name: 'Cyber Security', price: '300,000' },
+    { id: 'data-analysis', name: 'Data Analysis', price: '370,000' },
+    
+    // Additional key courses from document
+    { id: 'frontend-full', name: 'Frontend Developer Full Stack', price: '97,500 - ₦127,500' },
+    { id: 'intermediate-js', name: 'Intermediate JavaScript', price: '170,000' },
+    { id: 'data-analytics', name: 'Data Analytics (Excel/Power BI)', price: '150,000' },
+    { id: 'uiux-design', name: 'UI/UX Product Design', price: '150,000 - ₦200,000' },
+    { id: 'react-native', name: 'React Native Mobile Dev', price: '350,000' },
+    { id: 'microsoft-office', name: 'Microsoft Office', price: '150,000' }
+];
 
   // Form configuration array for dynamic rendering
   const formFields = [
@@ -374,7 +386,7 @@ const RegisterPage = () => {
               >
                 {field.options.map(option => (
                   <option key={option.id} value={option.id}>
-                    {option.name} {option.price ? `- ₦${option.price}` : ''}
+                    {option.name}
                   </option>
                 ))}
               </select>

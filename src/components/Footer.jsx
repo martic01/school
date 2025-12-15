@@ -1,17 +1,18 @@
 import { motion } from "framer-motion";
-import { 
-  FaFacebookF, 
-  FaLinkedinIn, 
-  FaTwitter, 
-  FaTiktok, 
-  FaYoutube, 
+import {
+  FaFacebookF,
+  FaLinkedinIn,
+  FaTwitter,
+  FaTiktok,
+  FaYoutube,
   FaInstagram,
   FaPhone,
   FaMapMarkerAlt,
   FaShieldAlt,
   FaPaintBrush,
   FaHeart,
-  FaGraduationCap
+  FaGraduationCap,
+  FaMap
 } from "react-icons/fa";
 
 // Pre-generate floating dot positions & durations once (outside render)
@@ -24,7 +25,7 @@ const floatingDots = Array.from({ length: 8 }, () => ({
 // Pre-calc current year once (optional but also keeps render pure)
 const CURRENT_YEAR = new Date().getFullYear();
 
-const Footer = ({show = true}) => {
+const Footer = ({ show = true }) => {
   const socialLinks = [
     { icon: FaFacebookF, label: "Facebook", color: "hover:bg-blue-600", link: "https://facebook.com" },
     { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link: "https://linkedin.com" },
@@ -35,7 +36,7 @@ const Footer = ({show = true}) => {
   ];
 
   return (
-    <footer id="footer" className={` ${show ? 'block' : 'hidden'}  w-full bg-white text-gray-800 relative overflow-hidden border-t border-gray-200`}>
+    <footer id="footer" className={`${show ? 'block' : 'hidden'} w-full bg-white text-gray-800 relative overflow-hidden border-t border-gray-200`}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-red-600 rounded-full blur-3xl"></div>
@@ -66,8 +67,8 @@ const Footer = ({show = true}) => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
-          {/* What We Stand For Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 md:gap-12">
+          {/* What We Stand For Section - Now col-span-2 */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -85,19 +86,19 @@ const Footer = ({show = true}) => {
                 <div className="w-16 h-1 bg-red-600 mb-4"></div>
               </div>
             </div>
-            
+
             <div className="bg-linear-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-red-100 relative overflow-hidden shadow-sm">
               {/* Decorative Corner */}
               <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-600"></div>
               <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600"></div>
-              
+
               <p className="text-gray-700 leading-relaxed text-lg">
-                Just as <span className="font-bold text-red-600">ACEDU</span> provides security and ornaments when built around a castle, 
-                we at <span className="font-bold text-red-600">ACEDU Boot Camp</span> seek to beautify and secure businesses using Information Technology. 
-                With <span className="font-bold text-red-600">quality</span> and <span className="font-bold text-red-600">security</span> in mind, 
+                Just as <span className="font-bold text-red-600">ACEDU</span> provides security and ornaments when built around a castle,
+                we at <span className="font-bold text-red-600">ACEDU Boot Camp</span> seek to beautify and secure businesses using Information Technology.
+                With <span className="font-bold text-red-600">quality</span> and <span className="font-bold text-red-600">security</span> in mind,
                 as reflected in our color scheme representing stability and excellence.
               </p>
-              
+
               {/* Icon Row */}
               <div className="flex items-center gap-4 mt-6">
                 <div className="flex items-center gap-2">
@@ -122,7 +123,7 @@ const Footer = ({show = true}) => {
             </div>
           </motion.div>
 
-          {/* Contact Us Section */}
+          {/* Contact Us Section - Now col-span-1 */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -134,7 +135,7 @@ const Footer = ({show = true}) => {
               </h3>
               <div className="w-16 h-1 bg-red-600 mb-6"></div>
             </div>
-            
+
             {/* Address */}
             <div className="space-y-6">
               <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 transition-colors shadow-sm">
@@ -144,13 +145,13 @@ const Footer = ({show = true}) => {
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Address</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                  77 Yaya Abatan Road ,<br />
+                    77 Yaya Abatan Road ,<br />
                     Maternity Bus-stop ,Ogba Lagos state (101232)<br />
                     Lagos, Nigeria
                   </p>
                 </div>
               </div>
-              
+
               {/* Phone */}
               <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 transition-colors shadow-sm">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center shrink-0">
@@ -158,8 +159,8 @@ const Footer = ({show = true}) => {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Phone</h4>
-                  <a 
-                    href="tel:+2344012928235" 
+                  <a
+                    href="tel:+2344012928235"
                     className="text-red-600 hover:text-red-700 transition-colors text-lg font-semibold"
                   >
                     (+234) 7048606767
@@ -180,6 +181,65 @@ const Footer = ({show = true}) => {
                 </div>
               </div>
             </div>
+          </motion.div>
+
+          {/* Google Maps Section - New col-span-1 */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="lg:col-span-1"
+          >
+            <div className="mb-6">
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                <span className="text-red-600">Find</span> Us
+              </h3>
+              <div className="w-16 h-1 bg-red-600 mb-6"></div>
+            </div>
+
+            {/* Map Container */}
+            <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              {/* Map Header */}
+              <div className="flex items-center gap-3 p-4 bg-red-600 text-white">
+                <FaMap className="w-5 h-5" />
+                <span className="font-bold">Our Location</span>
+              </div>
+
+              {/* Responsive Google Map */}
+              <div className="relative w-full overflow-hidden" style={{ paddingBottom: '75%' }}> {/* 4:3 Aspect Ratio */}
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d126839.06821658298!2d3.3488896!3d6.5568768!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x103b917dd312f1cd%3A0x2490eb1ec589e652!2s77%20Yaya%20Abatan%20Rd%2C%20Ogba%2C%20Lagos%20101232%2C%20Lagos!3m2!1d6.635971!2d3.3353303!5e0!3m2!1sen!2sng!4v1765799813310!5m2!1sen!2sng"
+                  width="100%"
+                  height="100%"
+                  className="absolute top-0 left-0 w-full h-full border-0"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="ACEDU Boot Camp Location Map"
+                  style={{ minHeight: '250px' }}
+                />
+              </div>
+
+              {/* Map Footer */}
+              <div className="p-3 bg-gray-50 border-t border-gray-200">
+                <p className="text-xs text-gray-600 text-center">
+                  <span className="font-medium">📍 77 Yaya Abatan Road, Ogba, Lagos</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Directions Button */}
+            <motion.a
+              href="https://www.google.com/maps/dir/?api=1&destination=77+Yaya+Abatan+Rd,+Ogba,+Lagos+101232,+Lagos"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg"
+            >
+              <FaMapMarkerAlt className="w-4 h-4" />
+              Get Directions
+            </motion.a>
           </motion.div>
         </div>
 
@@ -206,7 +266,6 @@ const Footer = ({show = true}) => {
                 ))}
               </div>
             </div>
-    {/* <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d126839.06821658298!2d3.3488896!3d6.5568768!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x103b917dd312f1cd%3A0x2490eb1ec589e652!2s77%20Yaya%20Abatan%20Rd%2C%20Ogba%2C%20Lagos%20101232%2C%20Lagos!3m2!1d6.635971!2d3.3353303!5e0!3m2!1sen!2sng!4v1765799813310!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> */}
 
             {/* Copyright */}
             <motion.div

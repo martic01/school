@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
+import { images } from '../constant';
 
 const link = [
   { name: 'Home', link: '/', icon: Home, color: 'hover:text-red-700', action: 'home' },
@@ -165,7 +166,11 @@ const Navbar = () => {
             className='text-2xl md:text-3xl font-bold text-red-600 cursor-pointer'
             onClick={() => handleNavClick({ action: 'home' })}
           >
-            ACEDU BC
+            <img 
+            src={images.logo} 
+            alt="ACEDU Bootcamp Logo" 
+            className='w-32 md:w-40 object-contain cursor-pointer' 
+            />
           </div>
         </div>
 

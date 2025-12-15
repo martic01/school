@@ -1,11 +1,14 @@
-// src/pages/CoursePage.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { FaBook, FaChevronRight, FaLaptopCode, FaChartLine } from "react-icons/fa";
+import {
+  FaBook,
+  FaChevronRight,
+  FaLaptopCode,
+  FaChartLine,
+} from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../components/AppButton";
-import { coursesData } from "../data/Data";
-
+import { coursesData, courseCategories } from "../data/Data";
 
 const CoursePage = () => {
   const { id } = useParams();
@@ -23,6 +26,12 @@ const CoursePage = () => {
     return coursesData[0];
   });
 
+  // Sidebar: which categories are expanded
+  const [openCategories, setOpenCategories] = useState(() => {
+    const initialCat = selectedCourse?.category;
+    return initialCat ? [initialCat] : [];
+  });
+
   // Sync selectedCourse when URL :id changes
   useEffect(() => {
     if (!id) return;
@@ -31,16 +40,35 @@ const CoursePage = () => {
       setSelectedCourse(course);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]); // ⬅ dependency array has fixed size 1
+  }, [id]);
+
+  // Ensure selected course's category is always open
+  useEffect(() => {
+    if (!selectedCourse?.category) return;
+    setOpenCategories((prev) =>
+      prev.includes(selectedCourse.category)
+        ? prev
+        : [...prev, selectedCourse.category]
+    );
+  }, [selectedCourse]);
 
   const handleCourseChange = (course) => {
     navigate(`/course/${course.id}`, { replace: true });
     setSelectedCourse(course);
   };
 
+  // Toggle category in sidebar
+  const toggleCategory = (category) => {
+    setOpenCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
   // Icon chooser for header & sidebar
   const getCourseIcon = (course) => {
-    if (course.name === "Data Analysis") return FaChartLine;
+    if (course.name.toLowerCase().includes("data")) return FaChartLine;
     return FaLaptopCode;
   };
 
@@ -63,7 +91,7 @@ const CoursePage = () => {
     return () => {
       sections.forEach((section) => observer.unobserve(section));
     };
-  }, [selectedCourse]); // still a fixed-length array (1 dependency)
+  }, [selectedCourse]);
 
   // Infinity animations
   useEffect(() => {
@@ -80,15 +108,12 @@ const CoursePage = () => {
         el.style.animation = "";
       });
     };
-  }, [selectedCourse]); // fixed-length array as well
-
-
+  }, [selectedCourse]);
 
   const SelectedIcon = getCourseIcon(selectedCourse);
 
   return (
     <>
-
       <div className="min-h-screen bg-gray-50">
         {/* Course Header */}
         <div className="bg-white border border-gray-200 shadow-lg mb-8 relative overflow-hidden">
@@ -114,7 +139,9 @@ const CoursePage = () => {
                     <h2 className="text-2xl md:text-3xl font-black text-black">
                       {selectedCourse.name}
                     </h2>
-                    <p className="text-gray-600">Master the skills that matter</p>
+                    <p className="text-gray-600">
+                      Master the skills that matter
+                    </p>
                   </div>
                 </div>
 
@@ -166,31 +193,78 @@ const CoursePage = () => {
             <div className="lg:w-1/4">
               <div className="bg-white border border-gray-200 shadow-lg sticky top-24">
                 <div className="p-4 border-b border-gray-200">
-                  <h3 className="text-lg font-black text-black">Available Courses</h3>
+                  <h3 className="text-lg font-black text-black">
+                    Available Courses
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Click a category to view its courses
+                  </p>
                 </div>
 
                 <div className="p-2">
-                  {coursesData.map((course) => {
-                    const CourseIcon = getCourseIcon(course);
+                  {courseCategories.map((category) => {
+                    const categoryCourses = coursesData.filter(
+                      (course) => course.category === category
+                    );
+                    if (!categoryCourses.length) return null;
+
+                    const isOpen = openCategories.includes(category);
+
                     return (
-                      <motion.button
-                        key={course.id}
-                        whileHover={{ x: 5 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleCourseChange(course)}
-                        className={`w-full text-left p-3 mb-1 rounded-none transition-all duration-300 ${selectedCourse.id === course.id
-                            ? "bg-red-600 text-white border-l-4 border-black"
-                            : "text-gray-700 hover:bg-red-50 hover:text-red-600"
-                          }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <CourseIcon className="w-4 h-4" />
-                          <span className="font-medium">{course.name}</span>
-                          {selectedCourse.id === course.id && (
-                            <FaChevronRight className="w-3 h-3 ml-auto" />
-                          )}
-                        </div>
-                      </motion.button>
+                      <div key={category} className="mb-2 border-b border-gray-100">
+                        {/* Category header */}
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(category)}
+                          className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 hover:bg-red-50 text-[11px] font-semibold tracking-wide uppercase text-gray-700 transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            <FaBook className="w-3.5 h-3.5 text-red-600" />
+                            <span>{category}</span>
+                          </span>
+                          <motion.span
+                            animate={{ rotate: isOpen ? 90 : 0 }}
+                            transition={{ duration: 0.15 }}
+                            className="text-gray-500"
+                          >
+                            <FaChevronRight className="w-3 h-3" />
+                          </motion.span>
+                        </button>
+
+                        {/* Courses under this category */}
+                        {isOpen && (
+                          <div className="mt-1">
+                            {categoryCourses.map((course) => {
+                              const CourseIcon = getCourseIcon(course);
+                              const isSelected = selectedCourse.id === course.id;
+
+                              return (
+                                <motion.button
+                                  key={course.id}
+                                  whileHover={{ x: 5 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={() => handleCourseChange(course)}
+                                  className={`w-full text-left pl-5 pr-3 py-2 mb-0.5 text-xs transition-all duration-300 border-l-2 ${
+                                    isSelected
+                                      ? "bg-red-600 text-white border-black"
+                                      : "border-transparent text-gray-700 hover:bg-red-50 hover:text-red-700"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <CourseIcon className="w-3.5 h-3.5" />
+                                    <span className="font-medium text-[12px]">
+                                      {course.name}
+                                    </span>
+                                    {isSelected && (
+                                      <FaChevronRight className="w-3 h-3 ml-auto" />
+                                    )}
+                                  </div>
+                                </motion.button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -386,10 +460,12 @@ const CoursePage = () => {
                   transition={{ delay: 0.5 }}
                   className="course-section text-center"
                 >
-                  <a href={selectedCourse.link || "#"} target="_blank" rel="noreferrer">
-                    <Button
-                      className="px-8 py-4 text-lg font-bold rounded-none mx-auto infinity-animate"
-                    >
+                  <a
+                    href={selectedCourse.link || "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Button className="px-8 py-4 text-lg font-bold rounded-none mx-auto infinity-animate">
                       <span className="flex items-center gap-3">
                         Chat with {selectedCourse.name} Advisor
                         <FaChevronRight className="w-5 h-5" />
@@ -405,7 +481,6 @@ const CoursePage = () => {
             </div>
           </div>
         </div>
-
 
         <style>{`
           @keyframes float {
