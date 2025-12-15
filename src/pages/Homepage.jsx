@@ -1,6 +1,5 @@
 // src/pages/Homepage.jsx
 import { FaPen } from 'react-icons/fa';
-import { images } from '../constant';
 import VSCodePreview from '../components/VsCodePreview';
 import AlumniCarousel from '../components/alumni';
 import Button from '../components/AppButton';
@@ -9,7 +8,7 @@ import AboutCEO from '../components/AboutCEO';
 import CourseModulesHome from '../components/CourseModules';
 import UpcomingBootcamps from '../components/UpcomingBootcamps';
 import ContactSection from '../components/ContactSection';
-import AlertToast from '../components/AlertToast';
+import bgImg from "../assets/images/check.jpg";
 
 
 const Homepage = () => {
@@ -34,7 +33,7 @@ const Homepage = () => {
       <div className="w-full bg-gray-50" id="hero-section">
         <div
           style={{
-            backgroundImage: `url(${images.bgImg})`,
+            backgroundImage: `url(${bgImg})`,
             backgroundSize: 'cover',
             backgroundAttachment: 'fixed',
           }}
