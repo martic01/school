@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/acd.png";
 
 const link = [
   { name: 'Home', link: '/', icon: Home, color: 'hover:text-red-700', action: 'home' },
