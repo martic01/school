@@ -620,10 +620,6 @@ const RegisterPage = () => {
                     <div className="space-y-2 md:space-y-3 text-xs sm:text-sm text-gray-600">
                       <p className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full shrink-0"></span>
-                        <span>13-week intensive bootcamp</span>
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full shrink-0"></span>
                         <span>100% practical, job-oriented training</span>
                       </p>
                       <p className="flex items-center gap-2">
@@ -648,7 +644,7 @@ const RegisterPage = () => {
                         href="mailto:acedu@gmail.com"
                         className="text-red-600 hover:text-red-700 font-medium"
                       >
-                        acedu@gmail.com
+                       Info@acedu.camp
                       </a>
                     </p>
                   </div>
