@@ -398,16 +398,17 @@ export function getFakeAssistantResponse(userInput) {
     /(about acedu|about the program|about the bootcamp|about this program|about this bootcamp|what is acedu|who are you|tell me about acedu|about your company)/.test(lower) ||
     (/^about$/.test(lower) && !/(ceo|founder|owner)/.test(lower))
   ) {
+    let response;
+    aboutContentData.forEach((b) => {
+      const loop = b.values || []
+      let subres = '';
+       loop.forEach((w) => { subres += `${w.title || ""}\n\n${w.text || ""}\n` });
+      response += `• ${b.titleMain || b.titleHighlight || b.title || b.type || 'include'}\n${b.paragraphs || b.introText || b.text || subres ||  "Acedu"}\n`;
+    });
     return {
       text:
-        "Great question! Let me show you all about Acedu BootCamp 🚀\n\n" +
-        "I've opened our About page where you can learn:\n\n" +
-        "• Our story and mission 📖\n" +
-        "• Why we chose the bootcamp model 🎯\n" +
-        "• Core values and principles ❤️\n" +
-        "• Our teaching approach 🧑‍🏫\n" +
-        "• Student success stories 🏆\n\n" +
-        "Feel free to ask me specific questions after exploring!",
+        response || " About Acedu BootCamp: we're a software developer hotbed focused on turning beginners into job‑ready developers.\n\n" +
+        "I've navigated you to our About page where you can learn more about our story, mission, and values.",
       navigateTo: '/about',
     };
   }
@@ -479,7 +480,7 @@ export function getFakeAssistantResponse(userInput) {
         "• Or use the contact form and links in the footer section.\n\n" +
         "I've scrolled you down so you can see all the contact options clearly.",
       navigateTo: '/',
-      scrollToSectionId: 'footer-section',
+      scrollToSectionId: 'footer',
     };
   }
 
@@ -564,6 +565,16 @@ export function getFakeAssistantResponse(userInput) {
       scrollToSectionId: 'courses-section',
     };
   }
+
+if (/(location|acedu location|where is acedu|how to locate acedu|map)/.test(lower)) {
+    return {
+      text:
+        "Acedu is located at 77 Yaya Abatan Road, Ogba, Lagos - Nigeria📊.",
+      navigateTo: '/',
+      scrollToSectionId: 'footer',
+    };
+  }
+
 
   if (/(cyber|security)/.test(lower)) {
     const cyberCourse = coursesData.find((c) =>

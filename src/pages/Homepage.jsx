@@ -12,19 +12,13 @@ import bgImg from "../assets/images/check.jpg";
 
 
 const Homepage = () => {
-  
+
   const whyCourse = [
-    { text: ' Aspiring Font-end Software Developers seeking a comprehensive skill set.' },
-    { text: ' Career Changers looking to enter a dynamic and in-demand field.' },
-    {
-      text:
-        ' Freelancers aiming to offer front-end software development services to companies across the world from anywhere.',
-    },
-    { text: 'Business Owners & Entrepreneurs wanting to build a start-up.' },
-    {
-      text:
-        ' Tech Professionals looking to up skill or specialize in Front-end Engineering.',
-    },
+    { text: 'Beginners starting their tech journey.' },
+    { text: 'Students building future-proof digital skills' },
+    {text:'Career changers transitioning into tech' },
+    { text: 'Entrepreneurs building tech-enabled products' },
+    { text:' Tech professionals looking to upskill or specialize'},
   ];
 
   return (
@@ -51,7 +45,7 @@ const Homepage = () => {
             {/* Left content */}
             <div className="w-full md:w-2/3 h-auto md:h-full mb-4 md:mb-0 md:mr-6 rounded-lg p-6 md:p-8 flex flex-col justify-center">
               <h1 className="f1 font-extrabold text-red-600 mb-4 text-3xl sm:text-4xl md:text-5xl">
-                Welcome to Acedu.BootCamp
+                Welcome to  ACEDU Coding Bootcamp
               </h1>
               <p className="text-white mt-2 text-base sm:text-lg md:text-xl mb-4 md:mb-6">
                 Transforming tech education with hands-on learning experiences.
@@ -85,25 +79,22 @@ const Homepage = () => {
         {/* Left Column */}
         <div className="w-full md:w-[55%] lg:w-[600px] flex flex-col justify-start gap-4 md:gap-6">
           <p className="text-sm md:text-base ml-2 md:ml-7 font-bold text-(--text3-c)">
-            Why this Course...
+            Why choose ACEDU...
           </p>
           <h1 className="f2 font-bold leading-tight text-3xl sm:text-4xl md:text-5xl lg:text-7xl">
-            Is this path right for You
+            Is ACEDU right for You
             <span className="text-(--text3-c)">?</span>
           </h1>
-          <p className="text-base md:text-lg text-gray-700 mt-3">
-            Hundreds join our courses to make a fast impact. Software
-            development is a forever in-demand field, and LinkedIn&apos;s 2025
-            rankings list it among the top paying jobs. The course equips you
-            with the expertise to achieve your goals.
+          <p className="text-base md:text-md text-gray-700 mt-3">
+            At ACEDU Coding Bootcamp, we believe effective tech education blends clear structure, hands-on practice, and consistent guidance. Our programs are designed to help learners not only understand concepts, but also apply them confidently through practical projects and mentorship.
           </p>
 
           {/* Reusable button here */}
-         <a href="https://wa.me/+2347048606767" target="_blank" rel="noreferrer">
-           <Button className="w-full md:w-[280px] h-12 md:h-14 mt-4 text-sm md:text-base">
-            Chat with a course advisor
-          </Button>
-         </a>
+          <a href="https://wa.me/+2347048606767" target="_blank" rel="noreferrer">
+            <Button className="w-full md:w-[280px] h-12 md:h-14 mt-4 text-sm md:text-base">
+              Chat with a course advisor
+            </Button>
+          </a>
         </div>
 
         {/* Right Column - Why Course Items */}
@@ -114,7 +105,7 @@ const Homepage = () => {
               className="flex items-start bg-red-50 hover:bg-amber-100 transition-colors"
             >
               <FaPen className="mr-3 mt-1 shrink-0 size-5 md:size-6 text-(--text3-c)" />
-              <p className="text-sm md:text-base lg:text-lg text-red-800/70">
+              <p className="text-sm md:text-base lg:text-2xl text-red-800/70">
                 {item.text}
               </p>
             </div>

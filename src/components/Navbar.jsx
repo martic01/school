@@ -44,7 +44,7 @@ const Navbar = () => {
   const socialIcons = [
     { icon: FaYoutube, link:"", name: "YouTube", bgColor: "hover:bg-red-600" },
     { icon: FaFacebookF, link:"", name: "Facebook", bgColor: "hover:bg-blue-600" },
-    { icon: FaLinkedinIn, link:"", name: "LinkedIn", bgColor: "hover:bg-blue-700" },
+    { icon: FaLinkedinIn, link:"https://www.linkedin.com/company/acedu-coding-bootcamp", name: "LinkedIn", bgColor: "hover:bg-blue-700" },
     { icon: FaTwitter, link:"https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08", name: "Twitter", bgColor: "hover:bg-sky-500" },
   ];
 
@@ -168,7 +168,7 @@ const Navbar = () => {
           >
             <img 
             src={logo} 
-            alt="ACEDU Bootcamp Logo" 
+            alt="ACEDU Coding Bootcamp Logo" 
             className='w-32 md:w-40 object-contain cursor-pointer' 
             />
           </div>
@@ -248,7 +248,7 @@ const Navbar = () => {
             >
               {/* Menu Header */}
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-red-600">ACEDU Bootcamp</h2>
+                <h2 className="text-xl font-bold text-red-600">ACEDU Coding Bootcamp</h2>
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors"

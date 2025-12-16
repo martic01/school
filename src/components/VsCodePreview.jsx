@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const paragraphTexts = [
-  "We are Acedu BootCamp, a modern learning studio helping people build real-world tech skills from day one.",
+  "We are ACEDU Coding Bootcamp, a modern learning studio helping people build real-world tech skills from day one.",
   "Our mentors and curated curriculum guide you from the basics into building projects that recruiters notice.",
   "Join a vibrant community where code, creativity, and career growth come together.",
 ];
@@ -31,7 +31,7 @@ const ulBlock =
       <li>React</li>
       <li>C#</li>
       <li>Cybersecurity</li>
-      <li>Data Analysis</li>
+      <li>Data Analysis</li>LOADING MORE...
     </ul>
 `;
 

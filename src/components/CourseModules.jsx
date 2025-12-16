@@ -60,8 +60,7 @@ const CourseModulesHome = () => {
             <p className="text-red-600 cent">Modules</p>
           </h2>
           <span className="inline-block text-xs md:text-sm font-bold px-4 py-1.5 text-black/50 uppercase tracking-wider mb-4">
-            YOUR COMPLETE JOURNEY FROM ZERO CODING EXPERIENCE TO TECH
-            PROFESSIONAL READINESS
+          Your structured learning path from beginner to industry-ready professional
           </span>
         </motion.div>
 

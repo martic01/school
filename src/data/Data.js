@@ -1,13 +1,12 @@
-// src/data/coursesData.js
-
-import { List } from "lucide-react";
-
+import pro1 from "../assets/images/code.jpg"
+import pro2 from "../assets/images/cyber.png"
+import pro3 from "../assets/images/smmer.jpg"
 // src/data/Data.js (or wherever your coursesData is located)
 export const coursesData = [
   // ========== FRONTEND DEVELOPER CATEGORY ==========
   {
     id: 1,
-    name: "Frontend Developer (Full Stack)",
+    name: "Frontend Developer (Full Stack- HTML, CSS, JS)",
     category: "Frontend Development",
     description: "Master the complete frontend stack including Git, HTML, CSS, Bootstrap, jQuery, and JavaScript for modern web development.",
     duration: "4 Weeks", // 6 weeks option available
@@ -350,7 +349,7 @@ export const ceoDatas = {
     "Google Developer Expert",
   ],
   social: {
-    linkedin: "https://linkedin.com/in/ceo",
+    linkedin: "https://www.linkedin.com/in/bolasaheed?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
     twitter: "https://twitter.com/ceo",
   },
   stats: [
@@ -360,44 +359,43 @@ export const ceoDatas = {
 };
 
  export const upcomingBootcampsData = [
-  {
-    id: 1,
-    name: "Frontend Engineering Boot Camp",
-    place: "Lagos, Nigeria (Hybrid)",
-    date: "Jan 20 – Mar 15, 2025",
-    time: "Mon • Wed • Fri • 6pm – 8pm (WAT)",
-    duration: "8 Weeks",
+   {
+    id: 2,
+    name: "ACEDU Coding Bootcamp",
+    place: "77 Yaya Abatan Road, Maternity Bus-Stop Ogba Lagos",
+    date: "Monday - Thursday & Friday",
+    time: "Mon-Thu: 3:30PM – 5:00PM • Fri: 3:00PM – 5:00PM",
+    duration: "Regular Sessions",
     benefit:
-      "Learn HTML, CSS, JavaScript, and React by building real interfaces from day one. Graduate with a portfolio ready for junior frontend roles.",
-    image:
-      "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&auto=format&fit=crop&q=80",
+      "After-school coding program with conducive hostel accommodation available for full-time students. Structured learning in a supportive environment with experienced mentors.",
+    image:pro1,
+    link: "/register",
   },
   {
     id: 2,
-    name: "Cybersecurity Essentials Boot Camp",
-    place: "Remote (Live Online)",
-    date: "Feb 3 – Apr 12, 2025",
-    time: "Tue • Thu • Sat • 5pm – 7pm (WAT)",
-    duration: "10 Weeks",
+    name: "Free Cybersecurity Bootcamp",
+    place: "Virtual : Google Meet",
+    date: "Date(s) will be communicated on WhatsApp",
+    time: "Time will be communicated on WhatsApp Platform",
+    duration: "Flexible Schedule",
     benefit:
-      "Understand how systems are attacked and defended, work with real tools in safe labs, and get a strong foundation for security careers.",
-    image:
-      "https://images.unsplash.com/photo-1604079628040-94301bb21b11?w=1200&auto=format&fit=crop&q=80",
+      "Go from Zero to Splunk Hero before 2026. Learn Splunk Fundamentals, Search Processing Language (SPL), and Splunk for SIEM. Perfect foundation for cybersecurity careers.",
+    image:pro2,
+    link: "https://forms.gle/tVNLQhiZvUXW6WEz6",
   },
-  {
-    id: 3,
-    name: "Data Analysis Boot Camp",
-    place: "Abuja, Nigeria (Onsite)",
-    date: "Mar 1 – Apr 30, 2025",
-    time: "Sat • 9am – 2pm (WAT)",
-    duration: "8 Weeks",
-    benefit:
-      "Learn Python, SQL, and visualization to turn raw data into clear insights. Perfect for business professionals and aspiring analysts.",
-    image:
-      "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&auto=format&fit=crop&q=80",
-  },
+ {
+  id: 3,
+  name: "Summer Coding Program",
+  place: "77 Yaya Abatan Road, Ogba Lagos (Onsite)",
+  date: "June 3 – August 9, 2025",
+  time: "Mon-Fri • 9:00AM – 3:00PM (WAT)",
+  duration: "10 Weeks",
+  benefit:
+    "Full-day summer coding immersion for students. Learn programming fundamentals, web development, and problem-solving skills in a fun, project-based environment with daily hands-on activities.",
+  image: pro3,
+  link: "/register",
+}
 ];
-
 
 export const alumniDatas = [
   {
@@ -474,7 +472,7 @@ export const aboutContentData = [
     id: "hero",
     type: "hero",
     titleMain: "About",
-    titleHighlight: "Acedu BootCamp",
+    titleHighlight: "ACEDU Coding Bootcamp",
     subtitle: "Shaping the Future of Software Development Education",
     backgroundImage:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
@@ -585,7 +583,7 @@ export const aboutContentData = [
     type: "cta",
     title: "Ready to Transform Your Future?",
     text:
-      "Join Acedu BootCamp and become part of the next generation of software developers",
+      "Join ACEDU Coding Bootcamp and become part of the next generation of software developers",
     buttonText: "View Our Courses",
     buttonHref: "/course/1",
   },

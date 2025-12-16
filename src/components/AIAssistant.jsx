@@ -261,6 +261,7 @@ const AIAssistant = () => {
     'SHOW ME AROUND',
     'Scholarships available?',
     'Prerequisites?',
+    'Location?',
   ];
 
   const handleQuickQuestion = (question) => {

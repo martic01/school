@@ -17,13 +17,13 @@ const UpcomingBootcamps = () => {
         {/* Heading */}
         <div className="text-center mb-10 md:mb-14">
           <p className="uppercase tracking-[0.25em] text-xs md:text-sm text-red-300 mb-2">
-            Upcoming Boot Camps
+           Our Programmes
           </p>
           <h2 className="f2 text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-white">
-            Upcoming Boot Camps
+           Our Programmes
           </h2>
           <p className="text-sm md:text-base text-red-100/80 max-w-2xl mx-auto">
-            Join the next cohort of Acedu BootCamp participants. Learn in a
+            Join the cohort of ACEDU Coding Bootcamp participants. Learn in a
             structured, project‑based environment with mentors guiding you at
             every step.
           </p>
@@ -50,7 +50,7 @@ const UpcomingBootcamps = () => {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-2 left-3 text-[11px] uppercase tracking-[0.2em] text-red-200">
-                  Acedu BootCamp
+                  ACEDU Coding Bootcamp
                 </div>
               </div>
 
@@ -94,10 +94,12 @@ const UpcomingBootcamps = () => {
                   <span className="text-gray-700 font-semibold">
                     Limited spots available
                   </span>
-                  <span className="flex items-center gap-1 text-red-600 font-bold text-[11px] sm:text-xs">
-                    Learn more
-                    <FaArrowRight className="w-3 h-3" />
-                  </span>
+                  <a href={bootcamp.link} target="_blank" rel="noopener noreferrer">
+                    <span className="flex items-center gap-1 text-red-600 font-bold text-[11px] sm:text-xs">
+                      Apply Now
+                      <FaArrowRight className="w-3 h-3" />
+                    </span>
+                  </a>
                 </div>
               </div>
             </motion.article>
@@ -109,3 +111,4 @@ const UpcomingBootcamps = () => {
 };
 
 export default UpcomingBootcamps;
+

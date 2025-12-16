@@ -14,6 +14,7 @@ import {
   FaGraduationCap,
   FaMap
 } from "react-icons/fa";
+import Button from './AppButton';
 
 // Pre-generate floating dot positions & durations once (outside render)
 const floatingDots = Array.from({ length: 8 }, () => ({
@@ -28,7 +29,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const Footer = ({ show = true }) => {
   const socialLinks = [
     { icon: FaFacebookF, label: "Facebook", color: "hover:bg-blue-600", link: "https://facebook.com" },
-    { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link: "https://linkedin.com" },
+    { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link: "https://www.linkedin.com/company/acedu-coding-bootcamp" },
     { icon: FaTwitter, label: "Twitter", color: "hover:bg-blue-400", link: "https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08" },
     { icon: FaTiktok, label: "TikTok", color: "hover:bg-black", link: "https://www.tiktok.com/@acedu_bootcamp?_r=1&_t=ZS-92F2ZyjTcLw" },
     { icon: FaYoutube, label: "YouTube", color: "hover:bg-red-600", link: "https://www.instagram.com/acedu_bootcamp?igsh=MTB2NHk1cWF6cTFiZg%3D%3D&utm_source=qr" },
@@ -92,33 +93,42 @@ const Footer = ({ show = true }) => {
               <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-600"></div>
               <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600"></div>
 
-              <p className="text-gray-700 leading-relaxed text-lg">
-                Just as <span className="font-bold text-red-600">ACEDU</span> provides security and ornaments when built around a castle,
-                we at <span className="font-bold text-red-600">ACEDU Boot Camp</span> seek to beautify and secure businesses using Information Technology.
-                With <span className="font-bold text-red-600">quality</span> and <span className="font-bold text-red-600">security</span> in mind,
-                as reflected in our color scheme representing stability and excellence.
-              </p>
+              {/* Vision Section */}
+              <div className="flex items-start gap-4 mb-6 p-4 bg-white/80 rounded-lg border border-red-100 shadow-sm">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0 vision-icon-glow">
+                    <FaGraduationCap className="w-5 h-5 text-red-600" />
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-red-700 mb-2">VISION</h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    To help at least 5,000 individuals yearly to become IT Experts.
+                  </p>
+                </div>
+              </div>
 
-              {/* Icon Row */}
-              <div className="flex items-center gap-4 mt-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                    <FaShieldAlt className="w-4 h-4 text-red-600" />
+              {/* Mission Section */}
+              <div className="flex items-start gap-4 p-4 bg-white/80 rounded-lg border border-red-100 shadow-sm">
+                <div className="relative">
+                  <div className="mission-icon-glow w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0 ">
+                    <FaShieldAlt className="w-5 h-5 text-red-600" />
                   </div>
-                  <span className="text-sm font-medium text-red-700">Security</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                    <FaPaintBrush className="w-4 h-4 text-red-600" />
-                  </div>
-                  <span className="text-sm font-medium text-red-700">Beautify</span>
+                <div>
+                  <h4 className="text-lg font-bold text-red-700 mb-2">MISSION</h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    To produce IT Experts locally that will compete well anywhere in the world.
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                    <FaGraduationCap className="w-4 h-4 text-red-600" />
-                  </div>
-                  <span className="text-sm font-medium text-red-700">Education</span>
-                </div>
+              </div>
+
+              {/* ACEDU Description */}
+              <div className="mt-6 pt-4 border-t border-red-100">
+                <p className="text-gray-700 leading-relaxed text-center italic">
+                  At <span className="font-bold text-red-600">ACEDU Coding Bootcamp</span>,
+                  we build the foundation for global IT excellence, one expert at a time.
+                </p>
               </div>
             </div>
           </motion.div>
@@ -169,14 +179,14 @@ const Footer = ({ show = true }) => {
               </div>
             </div>
 
-            {/* ACEDU Boot Camp Logo/Badge */}
+            {/* ACEDU Coding Bootcamp Logo/Badge */}
             <div className="mt-8 p-4 bg-linear-to-r from-red-50 to-gray-50 rounded-lg border border-red-100">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
                   <FaGraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900">ACEDU Boot Camp</h4>
+                  <h4 className="font-bold text-gray-900">ACEDU Coding Bootcamp</h4>
                   <p className="text-sm text-gray-600">Excellence in IT Education</p>
                 </div>
               </div>
@@ -200,7 +210,7 @@ const Footer = ({ show = true }) => {
             {/* Map Container */}
             <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
               {/* Map Header */}
-              <div className="flex items-center gap-3 p-4 bg-red-600 text-white">
+              <div className="flex items-center gap-3 p-4 bg-red-800 text-white">
                 <FaMap className="w-5 h-5" />
                 <span className="font-bold">Our Location</span>
               </div>
@@ -215,7 +225,7 @@ const Footer = ({ show = true }) => {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="ACEDU Boot Camp Location Map"
+                  title="ACEDU Coding Bootcamp Location Map"
                   style={{ minHeight: '250px' }}
                 />
               </div>
@@ -233,12 +243,16 @@ const Footer = ({ show = true }) => {
               href="https://www.google.com/maps/dir/?api=1&destination=77+Yaya+Abatan+Rd,+Ogba,+Lagos+101232,+Lagos"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg"
+
+              className=""
             >
-              <FaMapMarkerAlt className="w-4 h-4" />
-              Get Directions
+              <Button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="mt-4 w-full inline-flex items-center justify-center gap-2 font-bold py-3 px-4  transition-colors shadow-md hover:shadow-lg">
+                <FaMapMarkerAlt className="w-4 h-4" />
+                Get Directions
+              </Button>
             </motion.a>
           </motion.div>
         </div>
@@ -248,7 +262,7 @@ const Footer = ({ show = true }) => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             {/* Social Media Icons */}
             <div className="flex items-center gap-3">
-              <span className="text-gray-600 font-medium mr-2">Follow ACEDU Boot Camp:</span>
+              <span className="text-gray-600 font-medium mr-2">Follow ACEDU Coding Bootcamp:</span>
               <div className="flex items-center gap-2">
                 {socialLinks.map((social, index) => (
                   <motion.a
@@ -282,11 +296,11 @@ const Footer = ({ show = true }) => {
                 >
                   <FaHeart className="w-4 h-4 text-red-500" />
                 </motion.div>
-                <span>by ACEDU Boot Camp</span>
+                <span>by ACEDU Coding Bootcamp</span>
               </div>
               <p className="text-sm text-gray-600">
                 Copyright © 2011 - {CURRENT_YEAR}{" "}
-                <span className="font-bold text-red-600">ACEDU Boot Camp</span>. All rights reserved.
+                <span className="font-bold text-red-600">ACEDU Coding Bootcamp</span>. All rights reserved.
               </p>
             </motion.div>
           </div>

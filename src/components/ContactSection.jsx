@@ -45,7 +45,7 @@ const ContactSection = () => {
   };
 
   // Google Form URL (you need to create one and update this URL)
-  const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform";
+  const GOOGLE_FORM_URL = "https://forms.gle/m3PDtKm2DPAphcvR8";
 
   const copyToClipboard = () => {
     const subject = `New message from ${form.name || "Acedu BootCamp Website"}`;
