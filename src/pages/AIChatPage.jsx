@@ -12,29 +12,13 @@ import {
   FaSpinner,
 } from 'react-icons/fa';
 import { getFakeAssistantResponse } from '../ai/fakeAssistant';
+import { contactInfoData } from '../data/Data';
 
 // Inline styles for custom chat scrollbar
-const ChatScrollStyles = () => (
-  <style>{`
-    .ai-chat-scroll {
-      scrollbar-width: thin;
-      scrollbar-color: #f87171 #000000;
-    }
-    .ai-chat-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    .ai-chat-scroll::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.85);
-    }
-    .ai-chat-scroll::-webkit-scrollbar-thumb {
-      background: #f87171; /* red-400 */
-      border-radius: 9999px;
-    }
-    .ai-chat-scroll::-webkit-scrollbar-thumb:hover {
-      background: #ef4444; /* red-500 */
-    }
-  `}</style>
-);
+
+  
+ 
+
 
 const AIChatPage = () => {
   const [messages, setMessages] = useState([
@@ -47,6 +31,7 @@ const AIChatPage = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const contact = contactInfoData;
   // Ref for the scrollable chat container (not the whole page)
   const chatContainerRef = useRef(null);
 
@@ -93,8 +78,6 @@ const AIChatPage = () => {
 
   return (
     <>
-      <ChatScrollStyles />
-
       <div className="min-h-screen bg-gradient-to-br from-black via-red-950 to-black py-10">
         <div className="max-w-6xl mx-auto px-4 lg:px-0">
           {/* Top Header */}
@@ -111,7 +94,7 @@ const AIChatPage = () => {
               </h1>
               <p className="text-sm md:text-base text-gray-200/90 max-w-xl">
                 Ask questions about our bootcamps, courses, pricing, schedule, or your learning
-                path. I’ll give you clear, practical answers based on ACEDU Coding Bootcamp information.
+                path. I’ll give you clear, practical answers based on  About ACEDU Coding information.
               </p>
             </div>
 
@@ -340,7 +323,7 @@ const AIChatPage = () => {
               <div className="text-[11px] text-gray-200/90 bg-black/80 border border-red-900 rounded-2xl px-4 py-3">
                 Acedu AI gives guidance based on the bootcamp information provided. For anything
                 sensitive (payments, special cases, sponsorships), you can also reach us directly at{' '}
-                <span className="font-semibold text-red-200">acedu@gmail.com</span>.
+                <span className="font-semibold text-red-200">{contact.email}</span>.
               </div>
             </div>
           </div>

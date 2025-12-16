@@ -5,9 +5,13 @@ import Button from '../components/AppButton'
 import { useEffect } from 'react';
 import { useAlert } from '../components/AlertContext';
 import { Dot } from 'lucide-react';
+import { contactInfoData } from '../data/Data';
 
+
+  
 
 const RegisterPage = () => {
+  const contact = contactInfoData;
   const [formData, setFormData] = useState({
     // Personal Information
     referrerCode: '',
@@ -641,10 +645,10 @@ const RegisterPage = () => {
                     <p className="text-xs sm:text-sm text-gray-600">
                       Contact us at{' '}
                       <a
-                        href="mailto:acedu@gmail.com"
+                        href={`mailto:${contact.email}`}
                         className="text-red-600 hover:text-red-700 font-medium"
                       >
-                       Info@acedu.camp
+                       { contact.email}
                       </a>
                     </p>
                   </div>

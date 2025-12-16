@@ -1,3 +1,4 @@
+import { ins } from "framer-motion/client";
 import pro1 from "../assets/images/code.jpg"
 import pro2 from "../assets/images/cyber.png"
 import pro3 from "../assets/images/smmer.jpg"
@@ -235,7 +236,7 @@ export const getCoursesByCategory = (category) => {
 // Export all categories as an array
 export const courseCategories = [
   "Frontend Development",
-  "Backend Development", 
+  "Backend Development",
   "Data Science",
   "Design",
   "Cybersecurity",
@@ -358,8 +359,8 @@ export const ceoDatas = {
   ],
 };
 
- export const upcomingBootcampsData = [
-   {
+export const upcomingBootcampsData = [
+  {
     id: 2,
     name: "ACEDU Coding Bootcamp",
     place: "77 Yaya Abatan Road, Maternity Bus-Stop Ogba Lagos",
@@ -368,7 +369,7 @@ export const ceoDatas = {
     duration: "Regular Sessions",
     benefit:
       "After-school coding program with conducive hostel accommodation available for full-time students. Structured learning in a supportive environment with experienced mentors.",
-    image:pro1,
+    image: pro1,
     link: "/register",
   },
   {
@@ -380,21 +381,21 @@ export const ceoDatas = {
     duration: "Flexible Schedule",
     benefit:
       "Go from Zero to Splunk Hero before 2026. Learn Splunk Fundamentals, Search Processing Language (SPL), and Splunk for SIEM. Perfect foundation for cybersecurity careers.",
-    image:pro2,
+    image: pro2,
     link: "https://forms.gle/tVNLQhiZvUXW6WEz6",
   },
- {
-  id: 3,
-  name: "Summer Coding Program",
-  place: "77 Yaya Abatan Road, Ogba Lagos (Onsite)",
-  date: "June 3 – August 9, 2025",
-  time: "Mon-Fri • 9:00AM – 3:00PM (WAT)",
-  duration: "10 Weeks",
-  benefit:
-    "Full-day summer coding immersion for students. Learn programming fundamentals, web development, and problem-solving skills in a fun, project-based environment with daily hands-on activities.",
-  image: pro3,
-  link: "/register",
-}
+  {
+    id: 3,
+    name: "Summer Coding Program",
+    place: "77 Yaya Abatan Road, Ogba Lagos (Onsite)",
+    date: "June 3 – August 9, 2025",
+    time: "Mon-Fri • 9:00AM – 3:00PM (WAT)",
+    duration: "10 Weeks",
+    benefit:
+      "Full-day summer coding immersion for students. Learn programming fundamentals, web development, and problem-solving skills in a fun, project-based environment with daily hands-on activities.",
+    image: pro3,
+    link: "/register",
+  }
 ];
 
 export const alumniDatas = [
@@ -589,3 +590,28 @@ export const aboutContentData = [
   },
 ];
 
+export const contactInfoData = {
+  name: "ACEDU Coding Bootcamp",
+  road: "77 Yaya Abatan Road,",
+  busStop: "Maternity Bus-Stop, Ogba Lagos state(101232).",
+  country: "Lagos Nigeria",
+  phone: "+234 810 564 2986",
+  email: "Info@acedu.camp",
+  facebook: "https://www.facebook.com/acedu.camp",
+  twitter: "https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08",
+  linkedin: "https://www.linkedin.com/company/acedu-coding-bootcamp",
+  instagram: "https://www.instagram.com/acedu_bootcamp?igsh=MTB2NHk1cWF6cTFiZg%3D%3D&utm_source=qr",
+  tiktok: "https://www.tiktok.com/@acedu_bootcamp?_r=1&_t=ZS-92F2ZyjTcLw",
+  youtube: "https://www.youtube.com/@acedu_coding_bootcamp",
+
+  ceoPhone: "+234 704 860 6767",
+  ceoEmail: "ceo@acedu.camp",
+  ceoLinkdin: "https://www.linkedin.com/in/bolasaheed?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+  ceoTwitter: "#",
+  ceoInstagram: "#",
+  ceoTiktok: "#",
+  ceoYoutube: "#",
+  ceoFacebook: "#",
+
+  mapLink: "https://www.google.com/maps/dir/?api=1&destination=77+Yaya+Abatan+Rd,+Ogba,+Lagos+101232,+Lagos",
+};   

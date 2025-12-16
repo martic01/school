@@ -15,6 +15,8 @@ import {
   FaMap
 } from "react-icons/fa";
 import Button from './AppButton';
+import { contactInfoData } from "../data/Data";
+import {Contact} from 'lucide-react';
 
 // Pre-generate floating dot positions & durations once (outside render)
 const floatingDots = Array.from({ length: 8 }, () => ({
@@ -26,14 +28,17 @@ const floatingDots = Array.from({ length: 8 }, () => ({
 // Pre-calc current year once (optional but also keeps render pure)
 const CURRENT_YEAR = new Date().getFullYear();
 
+const mediaLink = contactInfoData;
+  const contact = contactInfoData;
+
 const Footer = ({ show = true }) => {
   const socialLinks = [
-    { icon: FaFacebookF, label: "Facebook", color: "hover:bg-blue-600", link: "https://facebook.com" },
-    { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link: "https://www.linkedin.com/company/acedu-coding-bootcamp" },
-    { icon: FaTwitter, label: "Twitter", color: "hover:bg-blue-400", link: "https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08" },
-    { icon: FaTiktok, label: "TikTok", color: "hover:bg-black", link: "https://www.tiktok.com/@acedu_bootcamp?_r=1&_t=ZS-92F2ZyjTcLw" },
-    { icon: FaYoutube, label: "YouTube", color: "hover:bg-red-600", link: "https://www.instagram.com/acedu_bootcamp?igsh=MTB2NHk1cWF6cTFiZg%3D%3D&utm_source=qr" },
-    { icon: FaInstagram, label: "Instagram", color: "hover:bg-linear-to-r from-purple-600 via-pink-600 to-yellow-500", link: "https://instagram.com" }
+    { icon: FaFacebookF, label: "Facebook", color: "hover:bg-blue-600", link:mediaLink.facebook },
+    { icon: FaLinkedinIn, label: "LinkedIn", color: "hover:bg-blue-700", link:mediaLink.linkedin },
+    { icon: FaTwitter, label: "Twitter", color: "hover:bg-blue-400", link: mediaLink.twitter },
+    { icon: FaTiktok, label: "TikTok", color: "hover:bg-black", link: mediaLink.tiktok },
+    { icon: FaYoutube, label: "YouTube", color: "hover:bg-red-600", link: mediaLink.youtube },
+    { icon: FaInstagram, label: "Instagram", color: "hover:bg-linear-to-r from-purple-600 via-pink-600 to-yellow-500", link: mediaLink.instagram },
   ];
 
   return (
@@ -126,7 +131,7 @@ const Footer = ({ show = true }) => {
               {/* ACEDU Description */}
               <div className="mt-6 pt-4 border-t border-red-100">
                 <p className="text-gray-700 leading-relaxed text-center italic">
-                  At <span className="font-bold text-red-600">ACEDU Coding Bootcamp</span>,
+                  At <span className="font-bold text-red-600"> About ACEDU Coding</span>,
                   we build the foundation for global IT excellence, one expert at a time.
                 </p>
               </div>
@@ -155,9 +160,9 @@ const Footer = ({ show = true }) => {
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Address</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    77 Yaya Abatan Road ,<br />
-                    Maternity Bus-stop ,Ogba Lagos state (101232)<br />
-                    Lagos, Nigeria
+                    {contact.road}<br />
+                    {contact.busStop}<br />
+                    {contact.country}
                   </p>
                 </div>
               </div>
@@ -170,23 +175,23 @@ const Footer = ({ show = true }) => {
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Phone</h4>
                   <a
-                    href="tel:+2344012928235"
+                    href={`tel:${contact.phone}`}
                     className="text-red-600 hover:text-red-700 transition-colors text-lg font-semibold"
                   >
-                    (+234) 7048606767
+                    {contact.phone}
                   </a>
                 </div>
               </div>
             </div>
 
-            {/* ACEDU Coding Bootcamp Logo/Badge */}
+            {/*  About ACEDU Coding Logo/Badge */}
             <div className="mt-8 p-4 bg-linear-to-r from-red-50 to-gray-50 rounded-lg border border-red-100">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
                   <FaGraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900">ACEDU Coding Bootcamp</h4>
+                  <h4 className="font-bold text-gray-900">{contact.name}</h4>
                   <p className="text-sm text-gray-600">Excellence in IT Education</p>
                 </div>
               </div>
@@ -225,7 +230,7 @@ const Footer = ({ show = true }) => {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="ACEDU Coding Bootcamp Location Map"
+                  title={`${contact.name} Location Map`}
                   style={{ minHeight: '250px' }}
                 />
               </div>
@@ -233,18 +238,16 @@ const Footer = ({ show = true }) => {
               {/* Map Footer */}
               <div className="p-3 bg-gray-50 border-t border-gray-200">
                 <p className="text-xs text-gray-600 text-center">
-                  <span className="font-medium">📍 77 Yaya Abatan Road, Ogba, Lagos</span>
+                  <span className="font-medium">📍 {contact.road} {contact.busStop}, {contact.country}</span>
                 </p>
               </div>
             </div>
 
             {/* Directions Button */}
             <motion.a
-              href="https://www.google.com/maps/dir/?api=1&destination=77+Yaya+Abatan+Rd,+Ogba,+Lagos+101232,+Lagos"
+              href={contact.mapLink}
               target="_blank"
               rel="noopener noreferrer"
-
-              className=""
             >
               <Button
                 whileHover={{ scale: 1.05 }}
@@ -262,7 +265,7 @@ const Footer = ({ show = true }) => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             {/* Social Media Icons */}
             <div className="flex items-center gap-3">
-              <span className="text-gray-600 font-medium mr-2">Follow ACEDU Coding Bootcamp:</span>
+              <span className="text-gray-600 font-medium mr-2">Follow About ACEDU Coding:</span>
               <div className="flex items-center gap-2">
                 {socialLinks.map((social, index) => (
                   <motion.a
@@ -296,11 +299,11 @@ const Footer = ({ show = true }) => {
                 >
                   <FaHeart className="w-4 h-4 text-red-500" />
                 </motion.div>
-                <span>by ACEDU Coding Bootcamp</span>
+                <span>by About ACEDU Coding</span>
               </div>
               <p className="text-sm text-gray-600">
                 Copyright © 2011 - {CURRENT_YEAR}{" "}
-                <span className="font-bold text-red-600">ACEDU Coding Bootcamp</span>. All rights reserved.
+                <span className="font-bold text-red-600">{contact.name}</span>. All rights reserved.
               </p>
             </motion.div>
           </div>

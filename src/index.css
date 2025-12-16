@@ -320,3 +320,21 @@ body {
     transform: translate(-50%, -50%) scale(1.2);
   }
 }
+
+ .ai-chat-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #f87171 #000000;
+    }
+    .ai-chat-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .ai-chat-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.85);
+    }
+    .ai-chat-scroll::-webkit-scrollbar-thumb {
+      background: #f87171; /* red-400 */
+      border-radius: 9999px;
+    }
+    .ai-chat-scroll::-webkit-scrollbar-thumb:hover {
+      background: #ef4444; /* red-500 */
+    }

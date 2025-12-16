@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
+import { contactInfoData } from '../data/Data';
 import logo from "../assets/images/acd.png";
 
 const link = [
@@ -40,18 +41,20 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const mediaLink = contactInfoData;
+  const contact = contactInfoData;
   // Track scroll position for navbar background
   const socialIcons = [
-    { icon: FaYoutube, link:"", name: "YouTube", bgColor: "hover:bg-red-600" },
-    { icon: FaFacebookF, link:"", name: "Facebook", bgColor: "hover:bg-blue-600" },
-    { icon: FaLinkedinIn, link:"https://www.linkedin.com/company/acedu-coding-bootcamp", name: "LinkedIn", bgColor: "hover:bg-blue-700" },
-    { icon: FaTwitter, link:"https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08", name: "Twitter", bgColor: "hover:bg-sky-500" },
+    { icon: FaYoutube, link:mediaLink.youtube, name: "YouTube", bgColor: "hover:bg-red-600" },
+    { icon: FaFacebookF, link:mediaLink.facebook, name: "Facebook", bgColor: "hover:bg-blue-600" },
+    { icon: FaLinkedinIn, link:mediaLink.linkedin, name: "LinkedIn", bgColor: "hover:bg-blue-700" },
+    { icon: FaTwitter, link:mediaLink.twitter, name: "Twitter", bgColor: "hover:bg-sky-500" },
   ];
 
   const contactInfo = [
-    { icon: FaPhone, text: "+234 7048606767" },
-    { icon: FaEnvelope, text: "Info@acedu.camp" },
-    { icon: FaMapMarkerAlt, text: "Lagos Nigeria" },
+    { icon: FaPhone, text:contact.phone },
+    { icon: FaEnvelope, text:contact.email },
+    { icon: FaMapMarkerAlt, text:contact.country},
   ];
 
   useEffect(() => {
@@ -168,7 +171,7 @@ const Navbar = () => {
           >
             <img 
             src={logo} 
-            alt="ACEDU Coding Bootcamp Logo" 
+            alt=" About ACEDU Coding Logo" 
             className='w-32 md:w-40 object-contain cursor-pointer' 
             />
           </div>
@@ -248,7 +251,7 @@ const Navbar = () => {
             >
               {/* Menu Header */}
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-red-600">ACEDU Coding Bootcamp</h2>
+                <h2 className="text-xl font-bold text-red-600"> About ACEDU Coding</h2>
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors"
