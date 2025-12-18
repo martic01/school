@@ -68,7 +68,7 @@ const ProductsPage = () => {
       <section
         className="relative min-h-[90vh] flex items-center justify-center py-43"
         style={{
-          backgroundImage: `linear-linear(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${cleverSchoolData.product.heroImage})`,
+           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('${cleverSchoolData.product.heroImage}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
