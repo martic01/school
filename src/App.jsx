@@ -6,6 +6,8 @@ import CoursePage from "./pages/Coursepage";
 import AboutPage from "./pages/Aboutpage";
 import RegisterPage from "./pages/Register";
 import AIChatPage from "./pages/AIChatPage";
+import HostelPage from "./pages/HostelPage";
+import ProductsPage from "./pages/ProductsPage";
 import ScrollToTop from "./ScrollToTop";
 import AIAssistant from "./components/AIAssistant";
 import Footer from "./components/Footer";
@@ -18,11 +20,14 @@ function AppLayout() {
 
   // List of routes where you DON'T want the footer
   const hideFooterOn = ['/ai-chat', '/register'];
+  const hideHostelOn = '/hostel'
+  const showHostelon = !hideHostelOn.includes(location.pathname);
   const showFooter = !hideFooterOn.includes(location.pathname);
-
+  let check = false
   return (
     < AlertProvider>
-      <Navbar />
+     
+      <Navbar showHostel={location.pathname === '/hostel'}  />
       <ScrollToTop />
 
       <Routes>
@@ -32,6 +37,8 @@ function AppLayout() {
         <Route path="/projects" element={<ProjectsShowcasePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/ai-chat" element={<AIChatPage />} />
+        <Route path="/hostel" element={<HostelPage />} />
+        <Route path="/products" element={<ProductsPage />} />
       </Routes>
 
       <AIAssistant />

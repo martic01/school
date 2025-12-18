@@ -18,15 +18,13 @@ const UpcomingBootcamps = () => {
         {/* Heading */}
         <div className="text-center mb-10 md:mb-14">
           <p className="uppercase tracking-[0.25em] text-xs md:text-sm text-red-300 mb-2">
-            Our Programmes
+            ACEDU CODING BOOTCAMP
           </p>
           <h2 className="f2 text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-white">
-            Our Programmes
+            OUR PLUS PROGRAMS
           </h2>
           <p className="text-sm md:text-base text-red-100/80 max-w-2xl mx-auto">
-            Join the cohort of  About ACEDU Coding participants. Learn in a
-            structured, project‑based environment with mentors guiding you at
-            every step.
+          You can apply and register for any of these programmes—or enroll your ward today. They’re special opportunities to learn, build, and grow beyond the core curriculum.
           </p>
         </div>
 
@@ -51,7 +49,7 @@ const UpcomingBootcamps = () => {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-2 left-3 text-[11px] uppercase tracking-[0.2em] text-red-200">
-                  About ACEDU Coding
+                   ACEDU Coding BootCamp
                 </div>
               </div>
 
@@ -93,7 +91,7 @@ const UpcomingBootcamps = () => {
                 {/* Call to action text (purely visual) */}
                 <div className="mt-3 pt-2 border-t border-red-100 flex items-center justify-between text-xs sm:text-sm">
                   <span className="text-gray-700 font-semibold">
-                    Limited spots available
+                    {bootcamp.spot}
                   </span>
                   <a href={bootcamp.link} target="_blank" rel="noopener noreferrer">
                     <span className="flex items-center gap-1 text-red-600 font-bold text-[11px] sm:text-xs">

@@ -1,6 +1,6 @@
 import { ins } from "framer-motion/client";
 import pro1 from "../assets/images/code.jpg"
-import pro2 from "../assets/images/cyber.png"
+import pro2 from "../assets/images/websimg.png"
 import pro3 from "../assets/images/smmer.jpg"
 // src/data/Data.js (or wherever your coursesData is located)
 export const coursesData = [
@@ -371,6 +371,7 @@ export const upcomingBootcampsData = [
       "After-school coding program with conducive hostel accommodation available for full-time students. Structured learning in a supportive environment with experienced mentors.",
     image: pro1,
     link: "/register",
+    spot: "Unlimited Spots Available",
   },
   {
     id: 2,
@@ -383,6 +384,7 @@ export const upcomingBootcampsData = [
       "Go from Zero to Splunk Hero before 2026. Learn Splunk Fundamentals, Search Processing Language (SPL), and Splunk for SIEM. Perfect foundation for cybersecurity careers.",
     image: pro2,
     link: "https://forms.gle/tVNLQhiZvUXW6WEz6",
+     spot: "Limited Spots Available",
   },
   {
     id: 3,
@@ -390,11 +392,12 @@ export const upcomingBootcampsData = [
     place: "77 Yaya Abatan Road, Ogba Lagos (Onsite)",
     date: "June 3 – August 9, 2025",
     time: "Mon-Fri • 9:00AM – 3:00PM (WAT)",
-    duration: "10 Weeks",
+    duration: "Regular Sessions",
     benefit:
       "Full-day summer coding immersion for students. Learn programming fundamentals, web development, and problem-solving skills in a fun, project-based environment with daily hands-on activities.",
     image: pro3,
     link: "/register",
+    spot: "Limited Spots Available",
   }
 ];
 
@@ -615,3 +618,241 @@ export const contactInfoData = {
 
   mapLink: "https://www.google.com/maps/dir/?api=1&destination=77+Yaya+Abatan+Rd,+Ogba,+Lagos+101232,+Lagos",
 };   
+
+// src/data/productsData.js
+export const productsData = [
+  {
+    id: 1,
+    name: "Tech Education & Training",
+    category: "Education",
+    description: "Comprehensive IT training programs from beginner to expert level",
+    fullDescription: "At ACEDU, we provide world-class tech education with hands-on training in software development, cybersecurity, data analytics, and more. Our bootcamp model ensures students gain practical skills that are immediately applicable in the real world.",
+    benefits: [
+      "Industry-relevant curriculum",
+      "Hands-on project-based learning",
+      "Experienced industry instructors",
+      "Career support and placement",
+      "Flexible learning schedules"
+    ],
+    reasonsToUse: [
+      "Bridge the gap between education and industry needs",
+      "Learn from professionals actively working in the field",
+      "Build a portfolio of real projects",
+      "Join a community of like-minded learners",
+      "Get job-ready in months, not years"
+    ],
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
+    icon: "graduation-cap",
+    color: "bg-red-50",
+    textColor: "text-red-600"
+  },
+  {
+    id: 2,
+    name: "Custom Software Development",
+    category: "Development",
+    description: "Tailored software solutions for businesses of all sizes",
+    fullDescription: "We build custom software applications that solve specific business challenges. From web applications to mobile apps and enterprise systems, our development team creates scalable, secure, and efficient solutions.",
+    benefits: [
+      "Customized to your business needs",
+      "Scalable architecture",
+      "Ongoing support and maintenance",
+      "Modern tech stack",
+      "Cross-platform compatibility"
+    ],
+    reasonsToUse: [
+      "Streamline business operations",
+      "Improve customer experience",
+      "Increase operational efficiency",
+      "Gain competitive advantage",
+      "Reduce manual workload"
+    ],
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80",
+    icon: "code",
+    color: "bg-blue-50",
+    textColor: "text-blue-600"
+  },
+  {
+    id: 3,
+    name: "Website Development & Management",
+    category: "Web",
+    description: "Professional websites with ongoing maintenance and support",
+    fullDescription: "We design and develop responsive, SEO-friendly websites that convert visitors into customers. Our complete solution includes hosting, security, updates, and performance optimization.",
+    benefits: [
+      "Responsive design",
+      "SEO optimization",
+      "Fast loading times",
+      "Security monitoring",
+      "Regular updates"
+    ],
+    reasonsToUse: [
+      "Establish online presence",
+      "Showcase products/services",
+      "Generate leads 24/7",
+      "Build brand credibility",
+      "Competitive pricing"
+    ],
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
+    icon: "globe",
+    color: "bg-green-50",
+    textColor: "text-green-600"
+  },
+  {
+    id: 4,
+    name: "Clever School Portal",
+    category: "Education Management",
+    description: "Comprehensive school management system for universities and secondary schools",
+    fullDescription: "Our Clever School Portal is an all-in-one solution for educational institutions. It manages admissions, academics, finances, communication, and administration in one integrated platform.",
+    features: [
+      "Student Information Management",
+      "Fee Collection & Payment Processing",
+      "Result Processing & Report Cards",
+      "Timetable & Attendance Management",
+      "Library Management System",
+      "Staff & Parent Portals",
+      "Examination Management",
+      "Certificate Generation"
+    ],
+    benefitsToSchools: [
+      "Reduced administrative workload by 70%",
+      "Improved parent-school communication",
+      "Real-time financial tracking",
+      "Enhanced data security",
+      "Mobile access for parents and students",
+      "Automated report generation"
+    ],
+    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80",
+    icon: "school",
+    color: "bg-purple-50",
+    textColor: "text-purple-600",
+    portalLink: "https://cleverschool.acedu.comp",
+    managedSchools: [
+      {
+        name: "Prestige High School",
+        type: "Secondary",
+        location: "Lagos",
+        rating: 4.8,
+        testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
+        improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"]
+      },
+      {
+        name: "Global University",
+        type: "University",
+        location: "Abuja",
+        rating: 4.9,
+        testimonial: "The best decision we made. Managing 5,000+ students is now effortless.",
+        improvements: ["Automated result processing", "Online admission system", "Real-time attendance tracking"]
+      },
+      {
+        name: "Excel College",
+        type: "Secondary",
+        location: "Port Harcourt",
+        rating: 4.7,
+        testimonial: "Our teachers love the easy grade input system. Parents appreciate the transparency.",
+        improvements: ["Paperless operations", "Instant notifications", "Secure data management"]
+      }
+    ],
+    successMetrics: {
+      schoolsManaged: 15,
+      studentsServed: 25000,
+      successRate: 95,
+      satisfactionRate: 94
+    }
+  }
+];
+
+// src/data/hostelData.js
+export const hostelData = {
+  overview: {
+    title: "ACEDU Student Hostel",
+    subtitle: "Your Home Away From Home",
+    description: "Experience comfortable, secure, and conducive living designed specifically for tech students. Our hostel provides the perfect environment for focused learning and community building.",
+    mainImage: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&auto=format&fit=crop&q=80"
+  },
+  
+  sections: [
+    {
+      id: "welcome",
+      title: "Welcome to ACEDU Hostel",
+      description: "A purpose-built accommodation facility for tech students pursuing excellence. Our hostel is more than just a place to stay - it's a community of like-minded individuals.",
+      image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Welcome to ACEDU Hostel - Your perfect home for tech learning and growth."
+    },
+    {
+      id: "accommodation",
+      title: "Comfortable Accommodation",
+      description: "Spacious rooms with comfortable beds, study desks, wardrobe, and proper ventilation. Choose from single or shared rooms based on your preference.",
+      features: ["Comfortable beds", "Study desks", "Ample storage", "Natural lighting"],
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Enjoy comfortable accommodation with study desks and ample storage in well-ventilated rooms."
+    },
+    {
+      id: "study",
+      title: "Dedicated Study Areas",
+      description: "24/7 access to quiet study zones, computer labs, and group discussion rooms. Perfect environment for coding marathons and project work.",
+      features: ["24/7 access", "High-speed internet", "Quiet zones", "Group study rooms"],
+      image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Our dedicated study areas provide 24/7 access with high-speed internet for uninterrupted learning."
+    },
+    {
+      id: "amenities",
+      title: "Modern Amenities",
+      description: "Enjoy high-speed WiFi, 24/7 electricity backup, clean water supply, laundry services, and recreational facilities.",
+      features: ["High-speed WiFi", "24/7 Power backup", "Clean water", "Laundry service"],
+      image: "https://images.unsplash.com/photo-1558036117-15e82a2c9a9a?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Modern amenities including high-speed WiFi, 24/7 power backup, and laundry services are available."
+    },
+    {
+      id: "security",
+      title: "Safety & Security",
+      description: "24/7 security personnel, CCTV surveillance, secure access systems, and emergency response protocols ensure your safety at all times.",
+      features: ["24/7 Security", "CCTV Surveillance", "Secure Access", "Emergency Response"],
+      image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Your safety is our priority with 24/7 security, CCTV surveillance, and emergency response systems."
+    },
+    {
+      id: "community",
+      title: "Vibrant Community",
+      description: "Join a community of passionate tech students. Network, collaborate on projects, and build lifelong connections with future tech leaders.",
+      features: ["Peer learning", "Networking events", "Project collaboration", "Social activities"],
+      image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Join our vibrant community of tech students for networking, collaboration, and peer learning."
+    },
+    {
+      id: "location",
+      title: "Prime Location",
+      description: "Located close to ACEDU campus, markets, restaurants, and transportation hubs. Easy access to all essential services.",
+      features: ["Near campus", "Transport access", "Markets nearby", "Restaurants close"],
+      image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&auto=format&fit=crop&q=80",
+      audioText: "Our prime location offers easy access to campus, markets, and transportation hubs."
+    }
+  ],
+  
+  benefits: [
+    {
+      title: "Focused Learning Environment",
+      description: "Minimal distractions, maximum productivity",
+      icon: "focus"
+    },
+    {
+      title: "Cost Effective",
+      description: "Affordable rates with all amenities included",
+      icon: "savings"
+    },
+    {
+      title: "Networking Opportunities",
+      description: "Connect with fellow tech enthusiasts",
+      icon: "network"
+    },
+    {
+      title: "Convenient Location",
+      description: "Walking distance to campus and amenities",
+      icon: "location"
+    }
+  ],
+  
+  pricing: {
+    sharedRoom: "₦50,000/month",
+    privateRoom: "₦80,000/month",
+    includes: ["WiFi", "Electricity", "Water", "Security", "Cleaning"]
+  }
+};

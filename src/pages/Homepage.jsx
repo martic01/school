@@ -8,6 +8,7 @@ import AboutCEO from '../components/AboutCEO';
 import CourseModulesHome from '../components/CourseModules';
 import UpcomingBootcamps from '../components/UpcomingBootcamps';
 import ContactSection from '../components/ContactSection';
+import ProductsShowcase from '../components/ProductsShowcase';
 import bgImg from "../assets/images/check.jpg";
 
 
@@ -17,9 +18,9 @@ const Homepage = () => {
   const whyCourse = [
     { text: 'Beginners starting their tech journey.' },
     { text: 'Students building future-proof digital skills' },
-    {text:'Career changers transitioning into tech' },
+    { text: 'Career changers transitioning into tech' },
     { text: 'Entrepreneurs building tech-enabled products' },
-    { text:' Tech professionals looking to upskill or specialize'},
+    { text: ' Tech professionals looking to upskill or specialize' },
   ];
 
   return (
@@ -46,7 +47,7 @@ const Homepage = () => {
             {/* Left content */}
             <div className="w-full md:w-2/3 h-auto md:h-full mb-4 md:mb-0 md:mr-6 rounded-lg p-6 md:p-8 flex flex-col justify-center">
               <h1 className="f1 font-extrabold text-red-600 mb-4 text-3xl sm:text-4xl md:text-5xl">
-                Welcome to   About ACEDU Coding
+                Welcome to ACEDU Coding BootCamp
               </h1>
               <p className="text-white mt-2 text-base sm:text-lg md:text-xl mb-4 md:mb-6">
                 Transforming tech education with hands-on learning experiences.
@@ -87,12 +88,12 @@ const Homepage = () => {
             <span className="text-(--text3-c)">?</span>
           </h1>
           <p className="text-base md:text-md text-gray-700 mt-3">
-            At  About ACEDU Coding, we believe effective tech education blends clear structure, hands-on practice, and consistent guidance. Our programs are designed to help learners not only understand concepts, but also apply them confidently through practical projects and mentorship.
+            At   ACEDU Coding BootCamp, we believe effective tech education blends clear structure, hands-on practice, and consistent guidance. Our programs are designed to help learners not only understand concepts, but also apply them confidently through practical projects and mentorship.
           </p>
 
           {/* Reusable button here */}
           <a href="https://wa.me/+2347048606767" target="_blank" rel="noreferrer">
-            <Button className="w-full md:w-[280px] h-12 md:h-14 mt-4 text-sm md:text-base">
+            <Button icon='chat' className="w-full md:w-[280px] h-12 md:h-14 mt-4 text-sm md:text-base">
               Chat with a course advisor
             </Button>
           </a>
@@ -113,8 +114,9 @@ const Homepage = () => {
           ))}
         </div>
       </div>
-
-      {/* Alumni */}
+      <div className="w-full h-fit" id="product-section">
+        <ProductsShowcase />
+      </div>
       <div className="w-full h-fit" id="alumni-section">
         <AlumniCarousel />
       </div>
@@ -143,7 +145,6 @@ const Homepage = () => {
       <div className="w-full h-fit" id="contact-section">
         <ContactSection />
       </div>
-
     </>
   );
 };

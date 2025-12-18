@@ -1,5 +1,7 @@
 // src/components/ui/AppButton.jsx
-import React from "react";
+import { useState } from "react";
+import { Edit } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 const baseClasses = `
   flex justify-center items-center font-bold
@@ -10,7 +12,8 @@ const baseClasses = `
   disabled:opacity-60 disabled:cursor-not-allowed
 `;
 
-const Button = ({ children, className = "", type = "button", ...props }) => {
+const Button = ({ children,icon = "no" , className = "", type = "button", ...props }) => {
+
   return (
     <button
       type={type}
@@ -18,7 +21,9 @@ const Button = ({ children, className = "", type = "button", ...props }) => {
       {...props}
     >
       <span className="flex cent items-center gap-2 py-px">
+        <Edit  className={icon === "edit" ? "block" : "hidden"} />
         {children}
+        <FaWhatsapp  className={icon === "chat" ? "block" : "hidden"} />
       </span>
     </button>
   );

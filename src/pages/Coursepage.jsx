@@ -465,10 +465,9 @@ const CoursePage = () => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Button className="px-8 py-4 text-lg font-bold rounded-none mx-auto infinity-animate">
+                    <Button icon="chat" className="px-8 py-4 text-lg font-bold rounded-none mx-auto infinity-animate">
                       <span className="flex items-center gap-3">
                         Chat with {selectedCourse.name} Advisor
-                        <FaChevronRight className="w-5 h-5" />
                       </span>
                     </Button>
                   </a>
@@ -481,29 +480,6 @@ const CoursePage = () => {
             </div>
           </div>
         </div>
-
-        <style>{`
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-          }
-          @keyframes slide-in {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          .animate-slide-in {
-            animation: slide-in 0.6s ease-out forwards;
-          }
-          .infinity-animate {
-            animation: float 3s infinite ease-in-out;
-          }
-        `}</style>
       </div>
     </>
   );

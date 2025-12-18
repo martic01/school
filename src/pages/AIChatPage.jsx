@@ -94,7 +94,7 @@ const AIChatPage = () => {
               </h1>
               <p className="text-sm md:text-base text-gray-200/90 max-w-xl">
                 Ask questions about our bootcamps, courses, pricing, schedule, or your learning
-                path. I’ll give you clear, practical answers based on  About ACEDU Coding information.
+                path. I’ll give you clear, practical answers based on   ACEDU Coding BootCamp information.
               </p>
             </div>
 
