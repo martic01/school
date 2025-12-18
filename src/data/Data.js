@@ -1,7 +1,7 @@
 import { ins } from "framer-motion/client";
 import pro1 from "../assets/images/code.jpg"
 import pro2 from "../assets/images/websimg.png"
-import pro3 from "../assets/images/smmer.jpg"
+import pro3 from "../assets/images/summerimg.jpg"
 // src/data/Data.js (or wherever your coursesData is located)
 export const coursesData = [
   // ========== FRONTEND DEVELOPER CATEGORY ==========
@@ -10,7 +10,7 @@ export const coursesData = [
     name: "Frontend Developer (Full Stack- HTML, CSS, JS)",
     category: "Frontend Development",
     description: "Master the complete frontend stack including Git, HTML, CSS, Bootstrap, jQuery, and JavaScript for modern web development.",
-    duration: "4 Weeks", // 6 weeks option available
+    duration: "4 Weeks - Monday-Friday", // 6 weeks option available
     time: "9AM - 2PM",
     stages: ["Git & Version Control", "HTML5 & CSS3", "Bootstrap Framework", "jQuery", "JavaScript Fundamentals", "Responsive Design"],
     longDescription: "This comprehensive frontend course covers everything from basic HTML/CSS to advanced JavaScript. You'll learn Git for version control, Bootstrap for rapid prototyping, jQuery for DOM manipulation, and modern JavaScript for interactive web applications. Perfect for beginners starting their web development journey.",
@@ -32,7 +32,7 @@ export const coursesData = [
     name: "Intermediate JavaScript",
     category: "Frontend Development",
     description: "Deep dive into advanced JavaScript concepts, ES6+ features, asynchronous programming, and modern JS patterns.",
-    duration: "9 Weeks",
+    duration: "9 Weeks - Monday-Friday",
     time: "9AM - 2PM",
     stages: ["ES6+ Features", "Async Programming", "DOM Manipulation", "APIs & Fetch", "Modern Patterns", "Advanced Concepts"],
     longDescription: "Take your JavaScript skills to the next level with this intermediate course. Learn modern ES6+ syntax, asynchronous programming with async/await, fetch API, advanced DOM manipulation, and design patterns used in professional development.",
@@ -50,7 +50,7 @@ export const coursesData = [
     name: "React Development",
     category: "Frontend Development",
     description: "Build modern web applications with React.js. Learn components, hooks, state management, and routing.",
-    duration: "8 Weeks",
+    duration: "8 Weeks - Monday-Friday",
     time: "9AM - 2PM",
     stages: ["React Components", "Hooks & State", "React Router", "Context API", "API Integration", "Advanced Patterns"],
     longDescription: "React is the most popular library for building modern user interfaces. Learn how to create reusable components, manage state with hooks, implement routing, and connect to backend APIs. Build scalable frontend applications used by companies worldwide.",
@@ -70,7 +70,7 @@ export const coursesData = [
     name: "Backend Developer (C# .NET)",
     category: "Backend Development",
     description: "Master backend development with C# and .NET. Learn database integration, API development, and server-side programming.",
-    duration: "12 Weeks",
+    duration: "12 Weeks - Monday-Friday",
     time: "9AM - 2PM",
     stages: ["C# Fundamentals", "Object-Oriented Programming", ".NET Core", "Database Design", "API Development", "Security & Deployment"],
     longDescription: "Become a professional backend developer with C# and .NET. Learn to build robust APIs, work with databases, implement authentication, and deploy scalable applications. C# is widely used in enterprise applications, fintech, and large-scale systems.",
@@ -90,7 +90,7 @@ export const coursesData = [
     name: "Data Analytics",
     category: "Data Science",
     description: "Master data analysis with Excel, Power BI, and SQL. Learn to extract insights and create visual dashboards.",
-    duration: "8 Weeks",
+    duration: "8 Weeks - 3x in a Week",
     time: "10AM - 2PM",
     stages: ["Excel Advanced", "Power BI", "SQL Queries", "Data Visualization", "Dashboard Design", "Business Insights"],
     longDescription: "Transform raw data into actionable insights. Learn advanced Excel functions, create interactive dashboards with Power BI, write SQL queries for data extraction, and present findings to stakeholders. Essential for business analysts, marketers, and decision-makers.",
@@ -110,7 +110,7 @@ export const coursesData = [
     name: "Product Design (UI/UX) - Beginner to Intermediate",
     category: "Design",
     description: "Learn user interface and user experience design fundamentals. Create intuitive, beautiful digital products.",
-    duration: "6 Weeks",
+    duration: "6 Weeks - 3x in a Week",
     time: "10AM - 2PM",
     stages: ["Design Principles", "User Research", "Wireframing", "Prototyping", "UI Design", "Design Systems"],
     longDescription: "Master the complete product design process from user research to final UI. Learn design thinking, create wireframes and prototypes, design beautiful interfaces, and understand how to build design systems used by top companies.",
@@ -128,7 +128,7 @@ export const coursesData = [
     name: "Product Design (UI/UX) - Advanced",
     category: "Design",
     description: "Advanced UI/UX techniques, design systems, prototyping, and product strategy for experienced designers.",
-    duration: "6 Weeks",
+    duration: "6 Weeks - 3x in a Week",
     time: "10AM - 2PM",
     stages: ["Advanced Prototyping", "Design Systems", "UX Research", "Product Strategy", "Team Leadership", "Portfolio Development"],
     longDescription: "Take your design skills to expert level. Learn advanced prototyping techniques, build comprehensive design systems, conduct user research, develop product strategy, and lead design teams. For designers ready to move into senior roles.",
@@ -148,7 +148,7 @@ export const coursesData = [
     name: "Cybersecurity - Beginner to Intermediate",
     category: "Cybersecurity",
     description: "Learn networking fundamentals, operating system security, cryptography, and security best practices.",
-    duration: "6 Weeks",
+    duration: "6 Weeks - Monday-Wednesday",
     time: "10AM - 1PM",
     stages: ["Networking Fundamentals", "OS Security", "Cryptography Basics", "Threat Analysis", "Security Best Practices", "Vulnerability Assessment"],
     longDescription: "Start your cybersecurity career with this comprehensive beginner course. Learn how networks work, secure operating systems, understand encryption, identify threats and vulnerabilities, and implement security best practices. Build a strong foundation for advanced security roles.",
@@ -166,7 +166,7 @@ export const coursesData = [
     name: "Cybersecurity - Advanced",
     category: "Cybersecurity",
     description: "Advanced threat analysis, incident response, Splunk, and AI in security for cybersecurity professionals.",
-    duration: "6 Weeks",
+    duration: "6 Weeks - Monday-Wednesday",
     time: "10AM - 1PM",
     stages: ["Advanced Threat Analysis", "Incident Response", "Splunk & SIEM", "AI in Security", "Penetration Testing", "Security Architecture"],
     longDescription: "Master advanced cybersecurity concepts including sophisticated threat analysis, incident response procedures, working with Splunk for security monitoring, and understanding how AI is transforming security. For professionals ready to tackle complex security challenges.",
@@ -186,7 +186,7 @@ export const coursesData = [
     name: "Computer Applications (Microsoft Office)",
     category: "Office Skills",
     description: "Master Microsoft Word, Excel, and PowerPoint for professional and business use.",
-    duration: "6 Weeks",
+    duration: "6 Weeks - 3x in a week",
     time: "10AM - 1PM",
     stages: ["Microsoft Word", "Microsoft Excel", "PowerPoint", "Document Formatting", "Data Analysis", "Professional Presentations"],
     longDescription: "Become proficient in the Microsoft Office suite essential for every professional. Learn advanced Word formatting, Excel formulas and data analysis, and create compelling PowerPoint presentations. These skills are fundamental for office jobs across all industries.",
@@ -206,7 +206,7 @@ export const coursesData = [
     name: "React Native App Development",
     category: "Mobile Development",
     description: "Build cross-platform mobile apps with React Native and Firebase. Frontend + Backend mobile development.",
-    duration: "12 Weeks",
+    duration: "12 Weeks - 3x in a week",
     time: "10AM - 2PM",
     stages: ["React Native Basics", "Mobile UI Design", "Navigation", "Firebase Integration", "State Management", "App Deployment"],
     longDescription: "Learn to build professional mobile applications for both iOS and Android using React Native. Create beautiful mobile interfaces, implement navigation, integrate Firebase for backend services, manage app state, and deploy to app stores. Build once, run on both platforms.",
@@ -361,17 +361,19 @@ export const ceoDatas = {
 
 export const upcomingBootcampsData = [
   {
-    id: 2,
+    id: 1,
     name: "ACEDU Coding Bootcamp",
     place: "77 Yaya Abatan Road, Maternity Bus-Stop Ogba Lagos",
     date: "Monday - Thursday & Friday",
     time: "Mon-Thu: 3:30PM – 5:00PM • Fri: 3:00PM – 5:00PM",
     duration: "Regular Sessions",
-    benefit:
-      "After-school coding program with conducive hostel accommodation available for full-time students. Structured learning in a supportive environment with experienced mentors.",
+    benefit: ["Why register your child/children?",
+      "Engaging After-School Coding Sessions",
+      "Structured curriculum with expert mentors",
+      "Boost creativity, logic, and tech skills"],
     image: pro1,
     link: "/register",
-    spot: "Unlimited Spots Available",
+    spot: "",
   },
   {
     id: 2,
@@ -384,20 +386,20 @@ export const upcomingBootcampsData = [
       "Go from Zero to Splunk Hero before 2026. Learn Splunk Fundamentals, Search Processing Language (SPL), and Splunk for SIEM. Perfect foundation for cybersecurity careers.",
     image: pro2,
     link: "https://forms.gle/tVNLQhiZvUXW6WEz6",
-     spot: "Limited Spots Available",
+    spot: "Limited Spots Available",
   },
   {
     id: 3,
     name: "Summer Coding Program",
     place: "77 Yaya Abatan Road, Ogba Lagos (Onsite)",
-    date: "June 3 – August 9, 2025",
+    date: "2026 in view",
     time: "Mon-Fri • 9:00AM – 3:00PM (WAT)",
     duration: "Regular Sessions",
     benefit:
       "Full-day summer coding immersion for students. Learn programming fundamentals, web development, and problem-solving skills in a fun, project-based environment with daily hands-on activities.",
     image: pro3,
     link: "/register",
-    spot: "Limited Spots Available",
+    spot: "",
   }
 ];
 
@@ -598,7 +600,7 @@ export const contactInfoData = {
   road: "77 Yaya Abatan Road,",
   busStop: "Maternity Bus-Stop, Ogba Lagos state(101232).",
   country: "Lagos Nigeria",
-  phone: "+234 810 564 2986",
+  phone: "+234 704 860 6767",
   email: "Info@acedu.camp",
   facebook: "https://www.facebook.com/acedu.camp",
   twitter: "https://x.com/acedu_Bootcamp?t=-dRFdZYTAgwl8hn1PSlD8A&s=08",
@@ -617,37 +619,167 @@ export const contactInfoData = {
   ceoFacebook: "#",
 
   mapLink: "https://www.google.com/maps/dir/?api=1&destination=77+Yaya+Abatan+Rd,+Ogba,+Lagos+101232,+Lagos",
-};   
+};
+
+// src/data/productsData.js
+// src/data/cleverSchoolData.js
+export const cleverSchoolData = {
+  product: {
+    id: 1,
+    name: "CleverSchools.NET",
+    shortName: "CleverSchool",
+    tagline: "A bespoke School Management Software for your schools",
+    question: "Is your school future ready?",
+    category: "Education Management",
+    description: "Comprehensive school management system for universities and secondary schools",
+    fullDescription: "Our Clever School Portal is an all-in-one solution for educational institutions. It manages admissions, academics, finances, communication, and administration in one integrated platform.",
+    icon: "school",
+    color: "bg-gradient-to-br from-blue-50 to-purple-50",
+    textColor: "text-purple-600",
+    borderColor: "border-purple-200",
+    bgColor: "from-blue-600 to-purple-600",
+    portalLink: "http://www.cleverschools.net",
+    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80",
+    heroImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=2000&auto=format&fit=crop&q=80"
+  },
+  company: {
+    name: "Adroitsoft Nigeria Limited",
+    rc: "452565",
+    address: "No 77, Yaya Abatan Road, Ogba, Lagos."
+  },
+  contact: {
+    phone: "07048606767",
+    email: "info@adroitsoft.ng"
+  },
+  websites: {
+    main: "www.adroitsoft.ng",
+    portal: "www.cleverschools.net"
+  },
+  targetUsers: ["Parents", "Students", "Teachers", "School Administrators"],
+  valueProps: [
+    "Focus On Core Activities",
+    "Overcome Lack of experts",
+    "Lower cost and better quality",
+    "Access to skilled resources"
+  ],
+  modules: [
+    "Staff Management",
+    "Lesson Planning",
+    "Virtual Classroom",
+    "Computer Based Test",
+    "Subject Management",
+    "Promotion Management",
+    "Reports Management",
+    "Class Management",
+    "Examination Management",
+    "Noticeboard Management",
+    "School Clinic Management",
+    "Users Management",
+    "Parent Management",
+    "Transportation Management",
+    "Result Management",
+    "Welfare Management",
+    "Attendance Management",
+    "School Fees Management",
+    "Boarding Management",
+    "Notification Management",
+    "Progress Reports Management"
+  ],
+  features: [
+    "Student Information Management",
+    "Fee Collection & Payment Processing",
+    "Result Processing & Report Cards",
+    "Timetable & Attendance Management",
+    "Library Management System",
+    "Staff & Parent Portals",
+    "Examination Management",
+    "Certificate Generation"
+  ],
+  benefitsToSchools: [
+    "Reduced administrative workload by 70%",
+    "Improved parent-school communication",
+    "Real-time financial tracking",
+    "Enhanced data security",
+    "Mobile access for parents and students",
+    "Automated report generation"
+  ],
+  capabilities: {
+    processes: [
+      "End-to-end School Processes Management",
+      "Completely Integrated",
+      "Locally made but International Standards"
+    ],
+    technology: [
+      "Robust Technology",
+      "Customizable to your needs",
+      "Expandable Functionalities",
+      "Secured Information Exchange"
+    ],
+    easeAndAnalytics: [
+      "Integrate your school with ease",
+      "Accessible Everywhere",
+      "Comprehensive Reports and Analysis"
+    ]
+  },
+  managedSchools: [
+    {
+      id: 1,
+      name: "Prestige High School",
+      type: "Secondary",
+      location: "Lagos",
+      rating: 4.8,
+      testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
+      improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
+      yearsActive: 3,
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      id: 2,
+      name: "Global University",
+      type: "University",
+      location: "Abuja",
+      rating: 4.9,
+      testimonial: "The best decision we made. Managing 5,000+ students is now effortless.",
+      improvements: ["Automated result processing", "Online admission system", "Real-time attendance tracking"],
+      yearsActive: 4,
+      image: "https://images.unsplash.com/photo-1562774053-701939374585?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      id: 3,
+      name: "Excel College",
+      type: "Secondary",
+      location: "Port Harcourt",
+      rating: 4.7,
+      testimonial: "Our teachers love the easy grade input system. Parents appreciate the transparency.",
+      improvements: ["Paperless operations", "Instant notifications", "Secure data management"],
+      yearsActive: 2,
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      id: 4,
+      name: "Royal Academy",
+      type: "International",
+      location: "Ibadan",
+      rating: 4.9,
+      testimonial: "Completely revolutionized how we manage our boarding school operations.",
+      improvements: ["Boarding management simplified", "Parent communication improved", "Academic performance tracking"],
+      yearsActive: 3,
+      image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80"
+    }
+  ],
+  successMetrics: {
+    schoolsManaged: 15,
+    studentsServed: 25000,
+    successRate: 95,
+    satisfactionRate: 94,
+    yearsExperience: 5
+  }
+};
 
 // src/data/productsData.js
 export const productsData = [
   {
     id: 1,
-    name: "Tech Education & Training",
-    category: "Education",
-    description: "Comprehensive IT training programs from beginner to expert level",
-    fullDescription: "At ACEDU, we provide world-class tech education with hands-on training in software development, cybersecurity, data analytics, and more. Our bootcamp model ensures students gain practical skills that are immediately applicable in the real world.",
-    benefits: [
-      "Industry-relevant curriculum",
-      "Hands-on project-based learning",
-      "Experienced industry instructors",
-      "Career support and placement",
-      "Flexible learning schedules"
-    ],
-    reasonsToUse: [
-      "Bridge the gap between education and industry needs",
-      "Learn from professionals actively working in the field",
-      "Build a portfolio of real projects",
-      "Join a community of like-minded learners",
-      "Get job-ready in months, not years"
-    ],
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
-    icon: "graduation-cap",
-    color: "bg-red-50",
-    textColor: "text-red-600"
-  },
-  {
-    id: 2,
     name: "Custom Software Development",
     category: "Development",
     description: "Tailored software solutions for businesses of all sizes",
@@ -668,11 +800,14 @@ export const productsData = [
     ],
     image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80",
     icon: "code",
-    color: "bg-blue-50",
-    textColor: "text-blue-600"
+    color: "bg-gradient-to-br from-blue-50 to-cyan-50",
+    textColor: "text-blue-600",
+    borderColor: "border-blue-200",
+    bgColor: "from-blue-400 to-cyan-400",
+    ctaText: "Build Your Solution"
   },
   {
-    id: 3,
+    id: 2,
     name: "Website Development & Management",
     category: "Web",
     description: "Professional websites with ongoing maintenance and support",
@@ -693,70 +828,11 @@ export const productsData = [
     ],
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
     icon: "globe",
-    color: "bg-green-50",
-    textColor: "text-green-600"
-  },
-  {
-    id: 4,
-    name: "Clever School Portal",
-    category: "Education Management",
-    description: "Comprehensive school management system for universities and secondary schools",
-    fullDescription: "Our Clever School Portal is an all-in-one solution for educational institutions. It manages admissions, academics, finances, communication, and administration in one integrated platform.",
-    features: [
-      "Student Information Management",
-      "Fee Collection & Payment Processing",
-      "Result Processing & Report Cards",
-      "Timetable & Attendance Management",
-      "Library Management System",
-      "Staff & Parent Portals",
-      "Examination Management",
-      "Certificate Generation"
-    ],
-    benefitsToSchools: [
-      "Reduced administrative workload by 70%",
-      "Improved parent-school communication",
-      "Real-time financial tracking",
-      "Enhanced data security",
-      "Mobile access for parents and students",
-      "Automated report generation"
-    ],
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80",
-    icon: "school",
-    color: "bg-purple-50",
-    textColor: "text-purple-600",
-    portalLink: "https://cleverschool.acedu.comp",
-    managedSchools: [
-      {
-        name: "Prestige High School",
-        type: "Secondary",
-        location: "Lagos",
-        rating: 4.8,
-        testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
-        improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"]
-      },
-      {
-        name: "Global University",
-        type: "University",
-        location: "Abuja",
-        rating: 4.9,
-        testimonial: "The best decision we made. Managing 5,000+ students is now effortless.",
-        improvements: ["Automated result processing", "Online admission system", "Real-time attendance tracking"]
-      },
-      {
-        name: "Excel College",
-        type: "Secondary",
-        location: "Port Harcourt",
-        rating: 4.7,
-        testimonial: "Our teachers love the easy grade input system. Parents appreciate the transparency.",
-        improvements: ["Paperless operations", "Instant notifications", "Secure data management"]
-      }
-    ],
-    successMetrics: {
-      schoolsManaged: 15,
-      studentsServed: 25000,
-      successRate: 95,
-      satisfactionRate: 94
-    }
+    color: "bg-gradient-to-br from-green-50 to-emerald-50",
+    textColor: "text-green-600",
+    borderColor: "border-green-200",
+    bgColor: "from-green-400 to-emerald-400",
+    ctaText: "Launch Your Website"
   }
 ];
 
@@ -768,7 +844,7 @@ export const hostelData = {
     description: "Experience comfortable, secure, and conducive living designed specifically for tech students. Our hostel provides the perfect environment for focused learning and community building.",
     mainImage: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&auto=format&fit=crop&q=80"
   },
-  
+
   sections: [
     {
       id: "welcome",
@@ -826,7 +902,7 @@ export const hostelData = {
       audioText: "Our prime location offers easy access to campus, markets, and transportation hubs."
     }
   ],
-  
+
   benefits: [
     {
       title: "Focused Learning Environment",
@@ -849,7 +925,7 @@ export const hostelData = {
       icon: "location"
     }
   ],
-  
+
   pricing: {
     sharedRoom: "₦50,000/month",
     privateRoom: "₦80,000/month",

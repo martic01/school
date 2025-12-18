@@ -6,17 +6,20 @@ import {
   upcomingBootcampsData,
   alumniDatas,
   aboutContentData,
+  productsData,
+  hostelData,
   getCoursesByCategory,
   getCourseCategories
 } from '../data/Data';
 
-// ---------- Tutor System ----------
+// ---------- Enhanced Tutor System ----------
 const TUTOR_STORAGE_KEY = 'acedu_tutor_state';
-const TUTOR_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+const TUTOR_TIMEOUT = 30 * 60 * 1000; // 30 minutes (extended)
 
-const tutorPages = ['home', 'about', 'course', 'project', 'AIpage', 'Enroll'];
+// Updated tutor pages to include new sections
+const tutorPages = ['home', 'about', 'course', 'projects', 'products', 'hostel', 'AIpage', 'Enroll'];
 
-// Tutor state structure - SINGLE SOURCE OF TRUTH
+// Tutor state structure
 let tutorState = null;
 
 // Load tutor state from localStorage
@@ -28,7 +31,7 @@ function loadTutorState() {
     const state = JSON.parse(saved);
     const now = Date.now();
     
-    // Check if state is expired (older than 10 minutes)
+    // Check if state is expired
     if (now - state.lastUpdated > TUTOR_TIMEOUT) {
       localStorage.removeItem(TUTOR_STORAGE_KEY);
       return null;
@@ -60,47 +63,47 @@ function resetTutorState() {
     scrollProgress: 0,
     startedAt: null,
     lastUpdated: null,
-    isAutoScrolling: false
+    isAutoScrolling: false,
+    completedPages: []
   };
 }
 
 // Get route for page name
 function getPageRoute(pageName) {
-  switch(pageName) {
-    case 'home': return '/';
-    case 'about': return '/about';
-    case 'course': return '/course/1';
-    case 'project': return '/projects';
-    case 'AIpage': return '/ai-chat';
-    case 'Enroll': return '/register';
-    default: return '/';
-  }
+  const routes = {
+    'home': '/',
+    'about': '/about',
+    'course': '/course/1',
+    'projects': '/projects',
+    'products': '/products',
+    'hostel': '/hostel',
+    'AIpage': '/ai-chat',
+    'Enroll': '/register'
+  };
+  return routes[pageName] || '/';
 }
 
-// Get descriptions for each page
+// Get descriptions for each page with new data
 function getPageDescription(pageName) {
-  switch(pageName) {
-    case 'home':
-      return `🏠 Home Page\n\nWelcome to ACEDU Coding Bootcamp! This is our main landing page where you can:\n• See our vision to train 5,000+ IT experts yearly\n• Explore all 11 available courses across 7 categories\n• View real student projects with live demos\n• Check upcoming bootcamps including free cybersecurity training\n• Learn about our alumni success stories\n• Meet our founder and team\n• Find contact information and location`;
+  const descriptions = {
+    'home': `🏠 Home Page\n\nWelcome to ACEDU Coding Bootcamp! This is our main landing page where you can:\n• See our vision to train 5,000+ IT experts yearly\n• Explore all ${coursesData.length} available courses across ${getCourseCategories().length} categories\n• View real student projects with live demos\n• Check upcoming bootcamps including free cybersecurity training\n• Learn about our alumni success stories\n• Meet our founder and team\n• Find contact information and location`,
     
-    case 'about':
-      return `ℹ️ About Page\n\nLearn more about ACEDU Coding Bootcamp:\n• Our story and mission to produce globally competitive IT experts\n• Why we chose the bootcamp model over traditional education\n• Our D.I.G.I.T.A.L core values\n• Team and leadership\n• Student success stories\n• Our hands-on apprenticeship approach`;
+    'about': `ℹ️ About Page\n\nLearn more about ACEDU Coding Bootcamp:\n• Our story and mission to produce globally competitive IT experts\n• Why we chose the bootcamp model over traditional education\n• Our D.I.G.I.T.A.L core values\n• Team and leadership\n• Student success stories\n• Our hands-on apprenticeship approach`,
     
-    case 'course':
-      return `📚 Courses Page\n\nExplore all our 11 courses across 7 categories:\n• Frontend Development (HTML, CSS, JS, React)\n• Backend Development (C# .NET)\n• Data Analytics (Excel, Power BI, SQL)\n• Product Design (UI/UX)\n• Cybersecurity (Beginner to Advanced)\n• Computer Applications (Microsoft Office)\n• Mobile Development (React Native)\n• Detailed curriculum, duration, and pricing for each`;
+    'course': `📚 Courses Page\n\nExplore all our ${coursesData.length} courses across ${getCourseCategories().length} categories:\n• Frontend Development (HTML, CSS, JS, React)\n• Backend Development (C# .NET)\n• Data Analytics (Excel, Power BI, SQL)\n• Product Design (UI/UX)\n• Cybersecurity (Beginner to Advanced)\n• Computer Applications (Microsoft Office)\n• Mobile Development (React Native)\n• Detailed curriculum, duration, and pricing for each`,
     
-    case 'project':
-      return `🚀 Projects Page\n\nSee what our students have built:\n• CampusConnect - Campus social platform\n• SafePay Wallet - Digital payment system\n• HealthTrackr - Wellness dashboard\n• FarmLink Marketplace - Farmer-to-buyer platform\n• TaskFlow Pro - Project management tool\n• Technology stacks: React, Vue, Node.js, Firebase, etc.\n• Real student portfolios with live demos`;
+    'projects': `🚀 Projects Page\n\nSee what our students have built:\n${projectsData.slice(0, 3).map(p => `• ${p.projectName} - ${p.reason}`).join('\n')}\n• Technology stacks: React, Vue, Node.js, Firebase, etc.\n• Real student portfolios with live demos`,
     
-    case 'AIpage':
-      return `🤖 AI Chat Page\n\nChat with me (ACEDU AI) anytime:\n• Ask questions about all 11 courses\n• Get enrollment guidance and pricing\n• Technical assistance and career advice\n• Learn about our location and facilities\n• Information about our D.I.G.I.T.A.L values\n• Available 24/7 for support`;
+    'products': `🛒 Products Page\n\nDiscover ACEDU's comprehensive solutions:\n${productsData.map(p => `• ${p.name} - ${p.description}`).join('\n')}\n• Clever School Portal for educational institutions\n• Custom software development\n• Website development and management`,
     
-    case 'Enroll':
-      return `📝 Enrollment Page\n\nReady to join ACEDU Coding Bootcamp?\n• Fill out enrollment form\n• Choose from 11 available courses\n• Select payment options (4-week or 6-week plans available)\n• Pick your schedule (Mon-Fri or thrice weekly)\n• Access hostel accommodation for full-time students\n• Start your IT journey from beginner to expert`;
+    'hostel': `🏠 Hostel Page\n\nExplore our student accommodation facilities:\n• Comfortable hostel accommodation for full-time students\n• ${hostelData.sections.length} key sections including study areas, amenities, and security\n• Interactive audio tour with female voice narration\n• Affordable pricing options (${hostelData.pricing.sharedRoom} - ${hostelData.pricing.privateRoom})\n• All plans include: ${hostelData.pricing.includes.join(', ')}`,
     
-    default:
-      return `Exploring ${pageName} page`;
-  }
+    'AIpage': `🤖 AI Chat Page\n\nChat with me (ACEDU AI) anytime:\n• Ask questions about all ${coursesData.length} courses\n• Get enrollment guidance and pricing\n• Technical assistance and career advice\n• Learn about our location and facilities\n• Information about our D.I.G.I.T.A.L values\n• Available 24/7 for support`,
+    
+    'Enroll': `📝 Enrollment Page\n\nReady to join ACEDU Coding Bootcamp?\n• Fill out enrollment form\n• Choose from ${coursesData.length} available courses\n• Select payment options (4-week or 6-week plans available)\n• Pick your schedule (Mon-Fri or thrice weekly)\n• Access hostel accommodation for full-time students\n• Start your IT journey from beginner to expert`
+  };
+  
+  return descriptions[pageName] || `Exploring ${pageName} page`;
 }
 
 // Start or continue tutor
@@ -119,7 +122,7 @@ function handleTutorCommand(input) {
       saveTutorState(currentState);
     }
     return {
-      text: "✅ Tutor paused. I've saved your progress.\n\nSay 'continue tutor' to resume where you left off, or 'restart tutor' to start over.\n\nYou can also ask me specific questions about courses or enrollment!",
+      text: "✅ Tutor paused. I've saved your progress.\n\nSay 'continue tutor' to resume where you left off, or 'restart tutor' to start over.\n\nYou can also ask me specific questions about courses, products, or hostel accommodation!",
       navigateTo: null,
       startTutor: false,
       continueTutor: false,
@@ -157,7 +160,7 @@ function handleTutorCommand(input) {
     
     const firstPage = tutorPages[0];
     return {
-      text: `🎬 Welcome to ACEDU Tutor Mode! 🎬\n\nI'll guide you through our website page by page:\n\n1. Home Page 🏠\n2. About Page ℹ️\n3. Courses 📚\n4. Projects 🚀\n5. AI Chat 🤖\n6. Enrollment 📝\n\nI'll automatically scroll through each page from top to bottom.\n\nSay "next" to go to the next page, or "stop" to pause at any time.\n\nLet's begin with the Home Page!`,
+      text: `🎬 Welcome to ACEDU Tutor Mode! 🎬\n\nI'll guide you through our website page by page:\n\n1. Home Page 🏠\n2. About Page ℹ️\n3. Courses 📚\n4. Projects 🚀\n5. Products 🛒\n6. Hostel 🏠\n7. AI Chat 🤖\n8. Enrollment 📝\n\nI'll automatically scroll through each page from top to bottom.\n\nSay "next" to go to the next page, or "stop" to pause at any time.\n\nLet's begin with the Home Page!`,
       navigateTo: getPageRoute(firstPage),
       startTutor: true,
       continueTutor: false,
@@ -171,7 +174,7 @@ function handleTutorCommand(input) {
     // Check if there's an existing state
     if (currentState) {
       return {
-        text: `📚 Welcome back to ACEDU Tutor!\n\nI found your previous progress.\n\nSay:\n• "continue tutor" to resume where you left off\n• "restart tutor" to start fresh\n• "stop tutor" to cancel`,
+        text: `📚 Welcome back to ACEDU Tutor!\n\nI found your previous progress. You were on page ${currentState.currentPage + 1} of ${tutorPages.length}.\n\nSay:\n• "continue tutor" to resume where you left off\n• "restart tutor" to start fresh\n• "stop tutor" to cancel`,
         navigateTo: null,
         startTutor: false,
         continueTutor: false,
@@ -186,13 +189,14 @@ function handleTutorCommand(input) {
       scrollProgress: 0,
       startedAt: Date.now(),
       lastUpdated: Date.now(),
-      isAutoScrolling: true
+      isAutoScrolling: true,
+      completedPages: []
     };
     saveTutorState(newState);
     
     const firstPage = tutorPages[0];
     return {
-      text: `🎬 Welcome to ACEDU Tutor Mode! 🎬\n\nI'll guide you through our website page by page:\n\n1. Home Page 🏠\n2. About Page ℹ️\n3. Courses 📚\n4. Projects 🚀\n5. AI Chat 🤖\n6. Enrollment 📝\n\nI'll automatically scroll through each page from top to bottom.\n\nSay "next" to go to the next page, or "stop" to pause at any time.\n\nLet's begin with the Home Page!`,
+      text: `🎬 Welcome to ACEDU Tutor Mode! 🎬\n\nI'll guide you through our website page by page:\n\n1. Home Page 🏠\n2. About Page ℹ️\n3. Courses 📚\n4. Projects 🚀\n5. Products 🛒\n6. Hostel 🏠\n7. AI Chat 🤖\n8. Enrollment 📝\n\nI'll automatically scroll through each page from top to bottom.\n\nSay "next" to go to the next page, or "stop" to pause at any time.\n\nLet's begin with the Home Page!`,
       navigateTo: getPageRoute(firstPage),
       startTutor: true,
       continueTutor: false,
@@ -204,6 +208,10 @@ function handleTutorCommand(input) {
   // Next page command
   if (/^(next|continue tutor|go next|next page)/.test(lower)) {
     if (currentState && currentState.active) {
+      // Mark current page as completed
+      if (!currentState.completedPages) currentState.completedPages = [];
+      currentState.completedPages.push(tutorPages[currentState.currentPage]);
+      
       // Move to next page
       currentState.currentPage++;
       currentState.scrollProgress = 0;
@@ -211,9 +219,10 @@ function handleTutorCommand(input) {
       
       // Check if we've finished all pages
       if (currentState.currentPage >= tutorPages.length) {
+        const completionTime = Math.round((Date.now() - currentState.startedAt) / 1000 / 60);
         resetTutorState();
         return {
-          text: `🎉 Tutor Complete! 🎉\n\nYou've successfully explored all of ACEDU Coding Bootcamp!\n\nWhat you've seen:\n✅ Home Page - Our main landing with vision to train 5,000+ IT experts yearly\n✅ About Page - Our D.I.G.I.T.A.L values and mission\n✅ Courses Page - All 11 courses across 7 categories\n✅ Projects Page - Real student portfolio with live demos\n✅ AI Chat Page - Interactive assistant (that's me!)\n✅ Enrollment Page - Join our bootcamp with flexible options\n\nNow you can:\n• Ask me specific questions about any course\n• Visit any page again for more details\n• Start the enrollment process\n• Explore hostel accommodation options\n\nThank you for taking the tour! 🙏`,
+          text: `🎉 Tutor Complete! 🎉\n\nYou've successfully explored all of ACEDU Coding Bootcamp in ${completionTime} minutes!\n\nWhat you've seen:\n✅ Home Page - Our main landing with vision to train 5,000+ IT experts yearly\n✅ About Page - Our D.I.G.I.T.A.L values and mission\n✅ Courses Page - All ${coursesData.length} courses across ${getCourseCategories().length} categories\n✅ Projects Page - Real student portfolio with live demos\n✅ Products Page - Comprehensive tech solutions for businesses and schools\n✅ Hostel Page - Student accommodation with interactive audio tour\n✅ AI Chat Page - Interactive assistant (that's me!)\n✅ Enrollment Page - Join our bootcamp with flexible options\n\nNow you can:\n• Ask me specific questions about any course or product\n• Visit any page again for more details\n• Start the enrollment process\n• Explore hostel accommodation options\n• Schedule a campus tour\n\nThank you for taking the tour! 🙏`,
           navigateTo: null,
           startTutor: false,
           continueTutor: false,
@@ -225,13 +234,59 @@ function handleTutorCommand(input) {
       saveTutorState(currentState);
       
       const nextPageName = tutorPages[currentState.currentPage];
+      const progress = Math.round((currentState.currentPage / tutorPages.length) * 100);
+      
       return {
-        text: `➡️ Moving to ${nextPageName.toUpperCase()} Page\n\n${getPageDescription(nextPageName)}\n\nI'll now auto-scroll through this page. Say "next" when ready for next page, or "stop" to pause.`,
+        text: `➡️ Moving to Page ${currentState.currentPage + 1}/${tutorPages.length} (${progress}% Complete)\n\n${getPageDescription(nextPageName)}\n\nI'll now auto-scroll through this page. Say "next" when ready for next page, or "stop" to pause.`,
         navigateTo: getPageRoute(nextPageName),
         startTutor: false,
         continueTutor: true,
         autoScroll: true,
         pageName: nextPageName
+      };
+    }
+  }
+  
+  // Previous page command
+  if (/^(previous|back|go back)/.test(lower)) {
+    if (currentState && currentState.active && currentState.currentPage > 0) {
+      currentState.currentPage--;
+      currentState.scrollProgress = 0;
+      saveTutorState(currentState);
+      
+      const prevPageName = tutorPages[currentState.currentPage];
+      return {
+        text: `⬅️ Going back to ${prevPageName.toUpperCase()} Page\n\n${getPageDescription(prevPageName)}\n\nI'll auto-scroll through this page again. Say "next" to continue.`,
+        navigateTo: getPageRoute(prevPageName),
+        startTutor: false,
+        continueTutor: true,
+        autoScroll: true,
+        pageName: prevPageName
+      };
+    }
+  }
+  
+  // Jump to specific page
+  const pageMatch = lower.match(/(go to|show|open) (home|about|courses?|projects?|products?|hostel|ai|enroll)/);
+  if (pageMatch) {
+    const pageName = pageMatch[2];
+    const pageIndex = tutorPages.findIndex(p => p.toLowerCase().includes(pageName.toLowerCase()));
+    
+    if (pageIndex !== -1) {
+      const state = currentState || resetTutorState();
+      state.currentPage = pageIndex;
+      state.scrollProgress = 0;
+      state.active = true;
+      state.isAutoScrolling = true;
+      saveTutorState(state);
+      
+      return {
+        text: `🎯 Jumping to ${tutorPages[pageIndex].toUpperCase()} Page\n\n${getPageDescription(tutorPages[pageIndex])}\n\nI'll auto-scroll through this page. Say "next" to continue the tour.`,
+        navigateTo: getPageRoute(tutorPages[pageIndex]),
+        startTutor: false,
+        continueTutor: true,
+        autoScroll: true,
+        pageName: tutorPages[pageIndex]
       };
     }
   }
@@ -242,10 +297,10 @@ function handleTutorCommand(input) {
 // Check if input is a tutor navigation command
 function isTutorNavigationCommand(input) {
   const lower = input.toLowerCase().trim();
-  return /^(next|continue|keep going|more|show me more|stop|pause|restart|start over|continue tutor|restart tutor|stop tutor|go next|next page)/.test(lower);
+  return /^(next|previous|back|continue|keep going|more|show me more|stop|pause|restart|start over|continue tutor|restart tutor|stop tutor|go next|next page|go to|show|open)/.test(lower);
 }
 
-// ---------- Updated helpers with dynamic data ----------
+// ---------- Enhanced Course System ----------
 // Build course price map dynamically from coursesData
 function buildCoursePriceMap() {
   const priceMap = {};
@@ -266,38 +321,38 @@ function buildCourseKeywords() {
       keywordSet.push(course.category.toLowerCase());
     }
     
-    // Add specific tech keywords based on course content
+    // Add specific tech keywords
     if (course.name.includes('HTML') || course.name.includes('CSS')) {
-      keywordSet.push('html', 'css', 'frontend', 'web development');
+      keywordSet.push('html', 'css', 'frontend', 'web development', 'website');
     }
     if (course.name.includes('JavaScript') || course.name.includes('JS')) {
-      keywordSet.push('javascript', 'js', 'frontend');
+      keywordSet.push('javascript', 'js', 'frontend', 'programming');
     }
     if (course.name.includes('React')) {
-      keywordSet.push('react', 'reactjs', 'frontend', 'ui');
+      keywordSet.push('react', 'reactjs', 'frontend', 'ui', 'framework');
     }
     if (course.name.includes('C#')) {
-      keywordSet.push('c#', 'c sharp', 'csharp', 'dotnet', '.net', 'backend');
+      keywordSet.push('c#', 'c sharp', 'csharp', 'dotnet', '.net', 'backend', 'server');
     }
     if (course.name.includes('Data')) {
-      keywordSet.push('data', 'analytics', 'analysis', 'excel', 'power bi', 'sql');
+      keywordSet.push('data', 'analytics', 'analysis', 'excel', 'power bi', 'sql', 'database');
     }
     if (course.name.includes('Product Design') || course.name.includes('UI/UX')) {
-      keywordSet.push('design', 'ui', 'ux', 'product design', 'figma');
+      keywordSet.push('design', 'ui', 'ux', 'product design', 'figma', 'prototype', 'wireframe');
     }
     if (course.name.includes('Cybersecurity')) {
-      keywordSet.push('cybersecurity', 'security', 'cyber', 'hacking', 'splunk');
+      keywordSet.push('cybersecurity', 'security', 'cyber', 'hacking', 'splunk', 'siem', 'ethical hacking');
     }
     if (course.name.includes('Computer Applications') || course.name.includes('Microsoft Office')) {
-      keywordSet.push('office', 'microsoft', 'word', 'excel', 'powerpoint');
+      keywordSet.push('office', 'microsoft', 'word', 'excel', 'powerpoint', 'ms office', 'computer basics');
     }
     if (course.name.includes('React Native')) {
-      keywordSet.push('react native', 'mobile', 'app', 'android', 'ios');
+      keywordSet.push('react native', 'mobile', 'app', 'android', 'ios', 'mobile development');
     }
     
     keywords.push({
       id: course.id,
-      keywords: [...new Set(keywordSet)] // Remove duplicates
+      keywords: [...new Set(keywordSet)]
     });
   });
   return keywords;
@@ -329,10 +384,10 @@ function buildCoursesOverview(includePrices = true) {
     categories[course.category].push(course);
   });
   
-  let overview = "Here are all our courses organized by category:\n\n";
+  let overview = `Here are all our ${coursesData.length} courses organized by ${Object.keys(categories).length} categories:\n\n`;
   
   Object.entries(categories).forEach(([category, courses]) => {
-    overview += `${category} 📚\n`;
+    overview += `**${category}** 📚\n`;
     
     courses.forEach((course) => {
       const price = includePrices ? coursePriceMap[course.id] : null;
@@ -345,7 +400,7 @@ function buildCoursesOverview(includePrices = true) {
     overview += '\n';
   });
   
-  overview += "\nTotal: 11 courses across 7 categories\n";
+  overview += `\n**Total:** ${coursesData.length} courses across ${Object.keys(categories).length} categories\n`;
   overview += "\nYou can click each course card on the Courses page to see full details, curriculum, and enrollment options.";
   
   return overview;
@@ -358,17 +413,17 @@ function getCourseDetails(courseId) {
   
   const price = coursePriceMap[courseId];
   
-  let details = `${course.name}\n`;
-  details += `📋 Category: ${course.category}\n`;
-  details += `⏱️ Duration: ${course.duration}\n`;
-  details += `🕐 Schedule: ${course.days}, ${course.time}\n`;
+  let details = `**${course.name}**\n`;
+  details += `📋 **Category:** ${course.category}\n`;
+  details += `⏱️ **Duration:** ${course.duration}\n`;
+  details += `🕐 **Schedule:** ${course.days}, ${course.time}\n`;
   
   if (price) {
-    details += `💰 Tuition: ${price}\n`;
+    details += `💰 **Tuition:** ${price}\n`;
   }
   
   details += `\n${course.description}\n\n`;
-  details += `What You'll Learn:\n`;
+  details += `**What You'll Learn:**\n`;
   
   if (course.stages && course.stages.length > 0) {
     course.stages.forEach((stage, index) => {
@@ -376,22 +431,22 @@ function getCourseDetails(courseId) {
     });
   }
   
-  details += `\nTeaching Approach: ${course.teachingApproach || 'Hands-on, project-based learning'}\n`;
-  details += `Benefits: ${course.benefits || 'Job-ready skills for immediate employment'}\n`;
+  details += `\n**Teaching Approach:** ${course.teachingApproach || 'Hands-on, project-based learning'}\n`;
+  details += `**Benefits:** ${course.benefits || 'Job-ready skills for immediate employment'}\n`;
   
   if (course.variants && course.variants.length > 0) {
-    details += `\nAvailable Options:\n`;
+    details += `\n**Available Options:**\n`;
     course.variants.forEach(variant => {
       details += `• ${variant.duration}: ${variant.cost} (${variant.days}, ${variant.time})\n`;
     });
   }
   
-  details += `\n💡 Advice: ${course.advice || 'Perfect for beginners. Daily practice is key to mastery.'}`;
+  details += `\n💡 **Advice:** ${course.advice || 'Perfect for beginners. Daily practice is key to mastery.'}`;
   
   return details;
 }
 
-// ---------- MAIN FUNCTION ----------
+// ---------- Enhanced MAIN FUNCTION ----------
 export function getFakeAssistantResponse(userInput) {
   const input = userInput || '';
   const lower = input.toLowerCase().trim();
@@ -405,28 +460,52 @@ export function getFakeAssistantResponse(userInput) {
   if (currentState?.active && isTutorNavigationCommand(input)) {
     if (/^(next|continue|keep going|more|show me more)/.test(lower)) {
       return handleTutorCommand('next');
+    } else if (/^(previous|back|go back)/.test(lower)) {
+      return handleTutorCommand('previous');
     }
   }
   
-  // 0) Greetings 👋
+  // 0) Enhanced Greetings with tutor status
   if (/^(hi|hello|hey|yo)\b/.test(lower) || /(good (morning|afternoon|evening))/.test(lower)) {
+    const state = loadTutorState();
+    let tutorStatus = '';
+    
+    if (state) {
+      if (state.active) {
+        tutorStatus = `\n📚 **Tutor Active:** You're on page ${state.currentPage + 1} of ${tutorPages.length}. Say "next" to continue or "stop" to pause.`;
+      } else if (state.currentPage > 0) {
+        tutorStatus = `\n📚 **Tutor Paused:** You've completed ${state.currentPage} of ${tutorPages.length} pages. Say "continue tutor" to resume.`;
+      }
+    }
+    
     return {
       text:
         "Hey there! 👋 I'm ACEDU's friendly AI guide.\n\n" +
         "I can help you with:\n" +
-        "• Explore our 11 courses across 7 categories 🎯\n" +
+        `• Explore our ${coursesData.length} courses across ${getCourseCategories().length} categories 🎯\n` +
         "• Understand pricing & schedules 💰⏱️\n" +
         "• See real student projects with live demos 🚀\n" +
         "• Learn about our D.I.G.I.T.A.L core values 💎\n" +
         "• Check upcoming bootcamps including FREE cybersecurity training 🔐\n" +
-        "• Get enrollment guidance for hostel accommodation 🏠\n\n" +
-        "💡 Try our guided tour! Say 'SHOW ME AROUND' or 'TELL ME ABOUT ACEDU' for a step-by-step website tour.\n\n" +
+        "• Explore our Products & Services 🛒\n" +
+        "• Get information about Hostel accommodation 🏠\n" +
+        "• Enrollment guidance and career advice 📝\n\n" +
+        tutorStatus +
+        "\n💡 **Try our guided tour!** Say 'SHOW ME AROUND' or 'TELL ME ABOUT ACEDU' for a step-by-step website tour.\n\n" +
         "What would you like to know first?",
     };
   }
 
   // 0b) Appreciation / thank you 🙏
   if (/(thank you|thanks|appreciate|you helped|you\'re the best)/.test(lower)) {
+    const state = loadTutorState();
+    let tutorSuggestion = '';
+    
+    if (state && state.currentPage > 0 && state.currentPage < tutorPages.length) {
+      const nextPage = tutorPages[state.currentPage];
+      tutorSuggestion = `\n\nYou can also continue your tour by saying "continue tutor" to explore the ${nextPage} page.`;
+    }
+    
     return {
       text:
         "You're very welcome! 🙏😊\n\n" +
@@ -434,67 +513,138 @@ export function getFakeAssistantResponse(userInput) {
         "• Suggest a course based on your background\n" +
         "• Show you our upcoming bootcamps including the free cybersecurity training\n" +
         "• Explain our D.I.G.I.T.A.L core values\n" +
-        "• Guide you to registration with hostel accommodation options\n\n" +
-        "You can also say 'show me around' for a quick tour of ACEDU.",
+        "• Guide you to our Products page for business solutions\n" +
+        "• Show you our Hostel facilities with interactive tour\n" +
+        "• Help with registration and hostel accommodation options" +
+        tutorSuggestion,
     };
   }
 
-  if (/(bye|later|ok)/.test(lower)) {
+  // Goodbye message
+  if (/(bye|goodbye|see you|later|farewell)/.test(lower)) {
     return {
       text:
         "Always here for you 😊\n\n" +
-        "Alright 😊\n"
+        "Remember, you can always come back and:\n" +
+        "• Say 'show me around' for a website tour\n" +
+        "• Ask about courses, pricing, or hostel\n" +
+        "• Get enrollment assistance\n" +
+        "• Learn about our products and services\n\n" +
+        "Have a great day! 👋"
     };
   }
 
-  // 0c) Distress / confusion 🧠❤️
-  if (
-    /(confused|lost|stuck|overwhelmed|frustrated|hard|difficult|don\'t understand|dont understand|help me|scared|anxious)/.test(
-      lower
-    )
-  ) {
+  // 1) Products / Services inquiries
+  if (/(products?|services?|solutions?|software development|website development|clever school|school portal|school management)/.test(lower)) {
+    let productText = "**ACEDU Products & Services** 🛒\n\n";
+    
+    productsData.forEach((product, index) => {
+      productText += `${index + 1}. **${product.name}**\n`;
+      productText += `   ${product.description}\n`;
+      
+      if (product.benefits && product.benefits.length > 0) {
+        productText += `   Key Benefits: ${product.benefits.slice(0, 3).join(', ')}\n`;
+      }
+      
+      productText += '\n';
+    });
+    
+    // Special mention for Clever School Portal
+    const cleverPortal = productsData.find(p => p.name === "Clever School Portal");
+    if (cleverPortal) {
+      productText += `\n**${cleverPortal.name} Special Features:**\n`;
+      productText += `• Managing ${cleverPortal.successMetrics?.schoolsManaged || '15+'} schools\n`;
+      productText += `• Serving ${cleverPortal.successMetrics?.studentsServed?.toLocaleString() || '25,000+'} students\n`;
+      productText += `• ${cleverPortal.successMetrics?.successRate || '95'}% success rate\n`;
+    }
+    
+    productText += "\nI've opened the Products page for you to explore all our solutions in detail.";
+    
+    return {
+      text: productText,
+      navigateTo: '/products',
+    };
+  }
+
+  // 2) Hostel / Accommodation detailed inquiries
+  if (/(hostel|accommodation|stay|residence|dorm|housing|room|living|accomodation)/.test(lower)) {
+    let hostelText = "**ACEDU Student Hostel** 🏠\n\n";
+    hostelText += `${hostelData.overview.description}\n\n`;
+    
+    hostelText += "**Key Sections:**\n";
+    hostelData.sections.forEach((section, index) => {
+      hostelText += `${index + 1}. ${section.title}\n`;
+    });
+    
+    hostelText += `\n**Pricing Options:**\n`;
+    hostelText += `• Shared Room: ${hostelData.pricing.sharedRoom}\n`;
+    hostelText += `• Private Room: ${hostelData.pricing.privateRoom}\n\n`;
+    
+    hostelText += "**All Plans Include:**\n";
+    hostelText += hostelData.pricing.includes.map(item => `• ${item}`).join('\n');
+    
+    hostelText += "\n**Special Feature:** Interactive audio tour with female voice narration!\n";
+    hostelText += "You can take a guided tour that reads out each section and auto-scrolls through the page.";
+    
+    hostelText += "\n\nI've opened the Hostel page where you can explore all facilities and start the interactive tour.";
+    
+    return {
+      text: hostelText,
+      navigateTo: '/hostel',
+    };
+  }
+
+  // 3) Interactive Tour feature for hostel
+  if (/(tour|audio tour|voice tour|guided tour|interactive tour)/.test(lower) && lower.includes('hostel')) {
     return {
       text:
-        "It's okay to feel that way — learning tech can be overwhelming at first ❤️\n\n" +
-        "You're not alone. Many of our students started exactly where you are and are now working in great jobs.\n\n" +
-        "Start small:\n" +
-        "• If you're a complete beginner, begin with Frontend Developer course (4-6 weeks) 🧱\n" +
-        "• Or try Computer Applications to master Microsoft Office 📊\n" +
-        "• Then progress to JavaScript, React, or Cybersecurity based on your interest 🚀\n\n" +
-        "We offer flexible schedules (Mon-Fri or thrice weekly) and hostel accommodation for full-time students.\n\n" +
-        "If you'd like to talk to a human advisor, call us at (+234) 7048606767 or visit our location at 77 Yaya Abatan Road, Ogba Lagos.",
-      navigateTo: '/',
-      scrollToSectionId: 'footer-section',
+        "**Hostel Interactive Audio Tour** 🎧\n\n" +
+        "Our hostel page features an interactive audio tour with:\n" +
+        "• Female voice narration 👩\n" +
+        "• Auto-scrolling through each section 🔄\n" +
+        "• Progress saving to localStorage 💾\n" +
+        "• Visual highlighting of current section ✨\n" +
+        "• Pause/Resume functionality ⏯️\n\n" +
+        "**How it works:**\n" +
+        "1. Click the round black play button on the left\n" +
+        "2. The tour starts from your current position\n" +
+        "3. Voice reads each section description\n" +
+        "4. Page auto-scrolls to highlight each section\n" +
+        "5. Progress is saved automatically\n\n" +
+        "I've opened the Hostel page where you can experience this interactive tour!",
+      navigateTo: '/hostel',
     };
   }
 
-  // 1) Registration / Enrollment 📝
+  // 4) Registration / Enrollment 📝
   if (/(register|enrol|enroll|apply|sign ?up|join)/.test(lower)) {
     return {
       text:
         "Great choice! 🎉 You can register directly online.\n\n" +
-        "We offer 11 different courses across 7 categories with flexible options:\n" +
+        `We offer ${coursesData.length} different courses across ${getCourseCategories().length} categories with flexible options:\n` +
         "• 4-week or 6-week durations for some courses\n" +
         "• Monday-Friday or thrice weekly schedules\n" +
         "• Hostel accommodation available for full-time students\n" +
-        "• Payment plans available\n\n" +
+        "• Payment plans available\n" +
+        "• Products & Services for businesses and schools\n\n" +
         "If you're not sure which course to pick, tell me your background (e.g. *absolute beginner*, *some HTML*, *some Python*) and your goal (e.g. *frontend*, *data*, *cybersecurity*, *design*).\n\n" +
         "I've opened the registration page for you.",
       navigateTo: '/register',
     };
   }
 
-  // 2) Student projects / portfolio 🚀
+  // 5) Student projects / portfolio 🚀
   if (/(project|portfolio|showcase|demo|capstone|student work)/.test(lower)) {
     const sampleProjects = projectsData.slice(0, 3);
     let projectText = "Our students build real-world applications like:\n\n";
     
     sampleProjects.forEach(project => {
-      projectText += `${project.projectName} by ${project.ownerName}\n`;
+      projectText += `**${project.projectName}** by ${project.ownerName}\n`;
       projectText += `• ${project.reason}\n`;
       projectText += `• Tech: ${project.techStack.join(', ')}\n\n`;
     });
     
+    projectText += `**Total Projects:** ${projectsData.length}+ student projects\n`;
     projectText += "I've opened the Projects page so you can explore more of what our students have built, including live demos and code repositories.";
     
     return {
@@ -503,47 +653,47 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 3) CEO / Founder specifically
+  // 6) CEO / Founder specifically
   if (/(ceo|founder|owner|leadership|who started|who created|dr\.|doctor|michael|rodriguez)/.test(lower)) {
     return {
       text:
-        `Our founder and CEO, ${ceoDatas.name}, ${ceoDatas.bio}\n\n` +
+        `Our founder and CEO, **${ceoDatas.name}**, ${ceoDatas.bio}\n\n` +
         `"${ceoDatas.quote}"\n\n` +
-        `Achievements: ${ceoDatas.achievements.join(', ')}\n` +
-        `Experience: ${ceoDatas.stats.find(s => s.label === 'Years Experience')?.value}\n` +
-        `Students Mentored: ${ceoDatas.stats.find(s => s.label === 'Students Mentored')?.value}\n\n` +
+        `**Achievements:** ${ceoDatas.achievements.join(', ')}\n` +
+        `**Experience:** ${ceoDatas.stats?.find(s => s.label === 'Years Experience')?.value || '15+'}\n` +
+        `**Students Mentored:** ${ceoDatas.stats?.find(s => s.label === 'Students Mentored')?.value || '5000+'}\n\n` +
         "Connect with our CEO on LinkedIn to learn more about our vision and leadership.",
       navigateTo: '/',
       scrollToSectionId: 'about-ceo-section',
     };
   }
 
-  // 4) About ACEDU / Bootcamp / Program
+  // 7) About ACEDU / Bootcamp / Program
   if (
     /(about acedu|about the program|about the bootcamp|about this program|about this bootcamp|what is acedu|who are you|tell me about acedu|about your company)/.test(lower) ||
     (/^about$/.test(lower) && !/(ceo|founder|owner)/.test(lower))
   ) {
     // Extract about content dynamically
-    let aboutText = "About ACEDU Coding Bootcamp\n\n";
+    let aboutText = "**About ACEDU Coding Bootcamp**\n\n";
     
     aboutContentData.forEach((section) => {
       if (section.type === 'intro' && section.paragraphs) {
         aboutText += section.paragraphs.join('\n\n') + '\n\n';
       }
       if (section.type === 'whyBootcamp') {
-        aboutText += `${section.title}\n${section.text}\n\n`;
+        aboutText += `**${section.title}**\n${section.text}\n\n`;
       }
       if (section.type === 'coreValues') {
-        aboutText += `Our D.I.G.I.T.A.L Core Values:\n`;
+        aboutText += `**Our D.I.G.I.T.A.L Core Values:**\n`;
         section.values?.forEach(value => {
-          aboutText += `• ${value.letter} - ${value.title}: ${value.text.split('.')[0]}.\n`;
+          aboutText += `• **${value.letter} - ${value.title}:** ${value.text.split('.')[0]}.\n`;
         });
         aboutText += '\n';
       }
     });
     
-    aboutText += "Our Vision: To help at least 5,000 individuals yearly to become IT Experts.\n\n";
-    aboutText += "Our Mission: To produce IT Experts locally that will compete well anywhere in the world.\n\n";
+    aboutText += "**Our Vision:** To help at least 5,000 individuals yearly to become IT Experts.\n\n";
+    aboutText += "**Our Mission:** To produce IT Experts locally that will compete well anywhere in the world.\n\n";
     aboutText += "I've navigated you to our About page where you can learn more about our story, mission, and values.";
     
     return {
@@ -552,22 +702,22 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 5) Values / Vision / Mission
+  // 8) Values / Vision / Mission
   if (/(values|vision|mission|core values|principles|digital|d\.i\.g\.i\.t\.a\.l)/.test(lower) && !/(ceo|founder)/.test(lower)) {
     const coreValues = aboutContentData.find(section => section.type === 'coreValues');
-    let valuesText = "Our D.I.G.I.T.A.L Core Values:\n\n";
+    let valuesText = "**Our D.I.G.I.T.A.L Core Values:**\n\n";
     
     if (coreValues?.values) {
       coreValues.values.forEach(value => {
-        valuesText += `${value.letter} - ${value.title}\n`;
+        valuesText += `**${value.letter} - ${value.title}**\n`;
         valuesText += `${value.text}\n`;
         if (value.author) valuesText += `- ${value.author}\n`;
         valuesText += '\n';
       });
     }
     
-    valuesText += "Our Vision: To help at least 5,000 individuals yearly to become IT Experts.\n\n";
-    valuesText += "Our Mission: To produce IT Experts locally that will compete well anywhere in the world.\n\n";
+    valuesText += "**Our Vision:** To help at least 5,000 individuals yearly to become IT Experts.\n\n";
+    valuesText += "**Our Mission:** To produce IT Experts locally that will compete well anywhere in the world.\n\n";
     valuesText += "These values guide everything we do at ACEDU Coding Bootcamp.";
     
     return {
@@ -576,34 +726,16 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 6) Bootcamp model / methodology
-  if (/(bootcamp model|methodology|approach|how we teach|teaching method|apprenticeship)/.test(lower)) {
-    const whyBootcamp = aboutContentData.find(section => section.type === 'whyBootcamp');
-    return {
-      text:
-        "Our bootcamp model focuses on hands-on, project-based learning that gets you job-ready fast! 💻\n\n" +
-        `${whyBootcamp?.text || "We bridge the gap between traditional education and industry needs."}\n\n` +
-        "Key Features:\n" +
-        "• Apprenticeship-style learning from industry experts\n" +
-        "• Real-world projects from day one\n" +
-        "• Flexible schedules (Mon-Fri or thrice weekly)\n" +
-        "• Hostel accommodation for full-time students\n" +
-        "• Career support and job placement assistance\n\n" +
-        "I'll navigate you to our About page where you can see our full methodology and approach.",
-      navigateTo: '/about',
-    };
-  }
-
-  // 7) Upcoming bootcamps / next batch / schedule 📅
+  // 9) Upcoming bootcamps / next batch / schedule 📅
   if (
     /(upcoming|next batch|start date|when does.*bootcamp|bootcamp date|schedule|cybersecurity|free|splunk)/.test(
       lower
     )
   ) {
-    let bootcampText = "Upcoming Bootcamps at ACEDU:\n\n";
+    let bootcampText = "**Upcoming Bootcamps at ACEDU:**\n\n";
     
     upcomingBootcampsData.forEach((bootcamp, index) => {
-      bootcampText += `${index + 1}. ${bootcamp.name}\n`;
+      bootcampText += `${index + 1}. **${bootcamp.name}**\n`;
       bootcampText += `   📍 ${bootcamp.place}\n`;
       bootcampText += `   📅 ${bootcamp.date}\n`;
       bootcampText += `   🕐 ${bootcamp.time}\n`;
@@ -611,7 +743,7 @@ export function getFakeAssistantResponse(userInput) {
       bootcampText += `   ${bootcamp.benefit}\n\n`;
     });
     
-    bootcampText += "Special Offer: We have a FREE Cybersecurity Bootcamp focusing on Splunk Fundamentals and SIEM!\n";
+    bootcampText += "**Special Offer:** We have a **FREE Cybersecurity Bootcamp** focusing on Splunk Fundamentals and SIEM!\n";
     bootcampText += "Dates and times will be communicated via WhatsApp. Click the link in our bio to secure your spot!";
     
     return {
@@ -621,19 +753,19 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 8) Alumni / jobs / success stories 💼
+  // 10) Alumni / jobs / success stories 💼
   if (/(alumni|graduate|graduates|success story|got job|hired|placement)/.test(lower)) {
     const sampleAlumni = alumniDatas.slice(0, 4);
     let alumniText = "Our alumni have gone on to work at top companies around the world 🌍:\n\n";
     
     sampleAlumni.forEach((alumni) => {
-      alumniText += `${alumni.name}\n`;
+      alumniText += `**${alumni.name}**\n`;
       alumniText += `• ${alumni.skill} at ${alumni.company}\n`;
       alumniText += `• ${alumni.location}\n`;
       alumniText += `• "${alumni.quote}"\n\n`;
     });
     
-    alumniText += "Total Alumni: 5000+ students mentored globally\n";
+    alumniText += "**Total Alumni:** 5000+ students mentored globally\n";
     alumniText += "You'll build real projects, get interview prep, and ongoing career support so you can follow a similar path.";
     
     return {
@@ -643,58 +775,66 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 9) Contact / email / phone 📞
+  // 11) Contact / email / phone 📞
   if (/(contact|phone|email|reach|call|whats?app|support)/.test(lower)) {
     return {
       text:
-        "You can reach us anytime 📞📧\n\n" +
-        "Contact Information:\n" +
-        "• Phone: (+234) 7048606767\n" +
-        "• Email: Info@acedu.camp\n" +
-        "• Location: 77 Yaya Abatan Road, Maternity Bus-Stop, Ogba, Lagos State (101232)\n" +
-        "• Hostel Accommodation: Available for full-time students\n\n" +
-        "Follow us on social media:\n" +
+        "**Contact Information** 📞📧\n\n" +
+        "You can reach us anytime:\n" +
+        "• **Phone:** (+234) 7048606767\n" +
+        "• **Email:** Info@acedu.camp\n" +
+        "• **Location:** 77 Yaya Abatan Road, Maternity Bus-Stop, Ogba, Lagos State (101232)\n" +
+        "• **Hostel Accommodation:** Available for full-time students\n" +
+        "• **WhatsApp:** Available for quick queries\n\n" +
+        "**Social Media:**\n" +
         "• LinkedIn, Twitter, TikTok, Instagram, YouTube\n\n" +
+        "**Business Hours:**\n" +
+        "• Monday - Friday: 8:00 AM - 6:00 PM\n" +
+        "• Saturday: 9:00 AM - 4:00 PM\n\n" +
         "I've scrolled you down so you can see all the contact options clearly.",
       navigateTo: '/',
       scrollToSectionId: 'footer',
     };
   }
 
-  // 10) Location / address / map 🗺️
+  // 12) Location / address / map 🗺️
   if (/(location|acedu location|where is acedu|how to locate acedu|map|address|ogba|lagos)/.test(lower)) {
     return {
       text:
-        "ACEDU Coding Bootcamp Location 🗺️\n\n" +
-        "📍 Address: 77 Yaya Abatan Road, Maternity Bus-Stop, Ogba, Lagos State (101232)\n\n" +
-        "Features:\n" +
+        "**ACEDU Coding Bootcamp Location** 🗺️\n\n" +
+        "📍 **Address:** 77 Yaya Abatan Road, Maternity Bus-Stop, Ogba, Lagos State (101232)\n\n" +
+        "**Features:**\n" +
         "• Easy access from major bus stops\n" +
         "• Conducive learning environment\n" +
         "• Hostel accommodation available for full-time students\n" +
         "• State-of-the-art computer labs\n" +
-        "• Free Wi-Fi and power backup\n\n" +
-        "Transportation:\n" +
+        "• Free Wi-Fi and power backup\n" +
+        "• Security and 24/7 surveillance\n\n" +
+        "**Transportation:**\n" +
         "• Accessible by public transport (buses, taxis)\n" +
         "• Safe and secure neighborhood\n" +
-        "• Ample parking space available\n\n" +
+        "• Ample parking space available\n" +
+        "• Close to markets and restaurants\n\n" +
         "I've scrolled to our location section where you can see the map and get directions.",
       navigateTo: '/',
       scrollToSectionId: 'footer',
     };
   }
 
-  // 11) "Why this course" / who is it for ❓
+  // 13) "Why this course" / who is it for ❓
   if (/(why this course|who is this for|is this path right for me|why acedu|which course)/.test(lower)) {
     return {
       text:
         "Great question! 🎯 Our bootcamp is perfect for:\n\n" +
-        "• Beginners who want a structured path into tech 👶💻\n" +
-        "• Career changers moving from non-tech fields 🔁\n" +
-        "• Freelancers who want to offer dev services worldwide 🌍\n" +
-        "• Founders & entrepreneurs building their own products 🚀\n" +
-        "• Students looking for after-school programs or summer coding 🎓\n" +
-        "• Professionals wanting to upskill in specific areas 📈\n\n" +
-        "We offer 11 courses across 7 categories:\n" +
+        "• **Beginners** who want a structured path into tech 👶💻\n" +
+        "• **Career changers** moving from non-tech fields 🔁\n" +
+        "• **Freelancers** who want to offer dev services worldwide 🌍\n" +
+        "• **Founders & entrepreneurs** building their own products 🚀\n" +
+        "• **Students** looking for after-school programs or summer coding 🎓\n" +
+        "• **Professionals** wanting to upskill in specific areas 📈\n" +
+        "• **Business owners** needing tech solutions 🏢\n" +
+        "• **Schools** needing management systems 🏫\n\n" +
+        `We offer ${coursesData.length} courses across ${getCourseCategories().length} categories:\n` +
         "1. Frontend Development (HTML, CSS, JS, React)\n" +
         "2. Backend Development (C# .NET)\n" +
         "3. Data Analytics (Excel, Power BI, SQL)\n" +
@@ -708,7 +848,7 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 12) Courses - general inquiry
+  // 14) Courses - general inquiry
   const mentionsCourseWord = lower.includes('course') || lower.includes('courses') || lower.includes('program') || lower.includes('class');
   const matchedCourseId = findCourseMatch(lower);
 
@@ -727,29 +867,29 @@ export function getFakeAssistantResponse(userInput) {
   if (mentionsCourseWord) {
     const overview = buildCoursesOverview(true);
     return {
-      text: "ACEDU Coding Bootcamp Courses\n\n" + overview,
+      text: `**ACEDU Coding Bootcamp Courses**\n\n${overview}`,
       navigateTo: '/',
       scrollToSectionId: 'courses-section',
     };
   }
 
-  // 13) Tech domains / categories
+  // 15) Tech domains / categories
   if (/(frontend|front end|html|css|javascript|js|react)/.test(lower) && !/(native)/.test(lower)) {
     const frontendCourses = getCoursesByCategory('Frontend Development');
-    let frontendText = "Frontend Development Courses 🎨\n\n";
+    let frontendText = "**Frontend Development Courses** 🎨\n\n";
     
     frontendCourses.forEach(course => {
-      frontendText += `${course.name}\n`;
+      frontendText += `**${course.name}**\n`;
       frontendText += `• Duration: ${course.duration}\n`;
       frontendText += `• Schedule: ${course.days}, ${course.time}\n`;
       frontendText += `• Tuition: ${course.cost}\n`;
       frontendText += `• ${course.description}\n\n`;
     });
     
-    frontendText += "Recommended Path:\n";
-    frontendText += "1. Start with Frontend Developer (HTML, CSS, JS)\n";
-    frontendText += "2. Progress to Intermediate JavaScript\n";
-    frontendText += "3. Master React Development\n\n";
+    frontendText += "**Recommended Path:**\n";
+    frontendText += "1. Start with **Frontend Developer** (HTML, CSS, JS)\n";
+    frontendText += "2. Progress to **Intermediate JavaScript**\n";
+    frontendText += "3. Master **React Development**\n\n";
     frontendText += "This path prepares you for frontend roles at companies worldwide.";
     
     return {
@@ -760,7 +900,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   if (/(data|data analysis|analytics|analyst|excel|power bi|sql)/.test(lower)) {
-    const dataCourse = coursesData.find(c => c.id === 5); // Data Analytics course
+    const dataCourse = coursesData.find(c => c.id === 5);
     if (dataCourse) {
       return {
         text: getCourseDetails(5),
@@ -772,17 +912,17 @@ export function getFakeAssistantResponse(userInput) {
 
   if (/(cyber|security|hacking|splunk|siem)/.test(lower)) {
     const cyberCourses = getCoursesByCategory('Cybersecurity');
-    let cyberText = "Cybersecurity Courses 🔐\n\n";
+    let cyberText = "**Cybersecurity Courses** 🔐\n\n";
     
     cyberCourses.forEach(course => {
-      cyberText += `${course.name}\n`;
+      cyberText += `**${course.name}**\n`;
       cyberText += `• Duration: ${course.duration}\n`;
       cyberText += `• Schedule: ${course.days}, ${course.time}\n`;
       cyberText += `• Tuition: ${course.cost}\n`;
       cyberText += `• ${course.description}\n\n`;
     });
     
-    cyberText += "Bonus: We also offer a FREE Cybersecurity Bootcamp focusing on Splunk!\n";
+    cyberText += "**Bonus:** We also offer a **FREE Cybersecurity Bootcamp** focusing on Splunk!\n";
     cyberText += "Dates and times will be communicated via WhatsApp. Perfect foundation for security careers.";
     
     return {
@@ -794,17 +934,17 @@ export function getFakeAssistantResponse(userInput) {
 
   if (/(design|ui|ux|product design|figma|prototype)/.test(lower)) {
     const designCourses = getCoursesByCategory('Design');
-    let designText = "Product Design (UI/UX) Courses 🎨\n\n";
+    let designText = "**Product Design (UI/UX) Courses** 🎨\n\n";
     
     designCourses.forEach(course => {
-      designText += `${course.name}\n`;
+      designText += `**${course.name}**\n`;
       designText += `• Duration: ${course.duration}\n`;
       designText += `• Schedule: ${course.days}, ${course.time}\n`;
       designText += `• Tuition: ${course.cost}\n`;
       designText += `• ${course.description}\n\n`;
     });
     
-    designText += "Career Path:\n";
+    designText += "**Career Path:**\n";
     designText += "• UI/UX Designer\n• Product Designer\n• Interaction Designer\n• Design Lead\n\n";
     designText += "High demand in tech companies, startups, and agencies.";
     
@@ -816,7 +956,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   if (/(backend|c#|c sharp|dotnet|\.net|server)/.test(lower)) {
-    const backendCourse = coursesData.find(c => c.id === 4); // C# .NET course
+    const backendCourse = coursesData.find(c => c.id === 4);
     if (backendCourse) {
       return {
         text: getCourseDetails(4),
@@ -827,7 +967,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   if (/(office|microsoft|word|excel|powerpoint|computer applications)/.test(lower)) {
-    const officeCourse = coursesData.find(c => c.id === 10); // Microsoft Office course
+    const officeCourse = coursesData.find(c => c.id === 10);
     if (officeCourse) {
       return {
         text: getCourseDetails(10),
@@ -838,7 +978,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   if (/(mobile|app|react native|android|ios)/.test(lower)) {
-    const mobileCourse = coursesData.find(c => c.id === 11); // React Native course
+    const mobileCourse = coursesData.find(c => c.id === 11);
     if (mobileCourse) {
       return {
         text: getCourseDetails(11),
@@ -848,64 +988,42 @@ export function getFakeAssistantResponse(userInput) {
     }
   }
 
-  // 14) Hostel / accommodation 🏠
-  if (/(hostel|accommodation|stay|residence|dorm|housing)/.test(lower)) {
-    return {
-      text:
-        "Hostel Accommodation Available! 🏠\n\n" +
-        "We offer comfortable hostel accommodation for full-time students at ACEDU Coding Bootcamp.\n\n" +
-        "Features:\n" +
-        "• Safe and secure environment\n" +
-        "• High-speed internet access\n" +
-        "• 24/7 power supply\n" +
-        "• Study areas and common rooms\n" +
-        "• Close proximity to classrooms\n" +
-        "• Affordable rates\n\n" +
-        "Perfect for:\n" +
-        "• Students from outside Lagos\n" +
-        "• Those wanting immersive learning\n" +
-        "• Anyone needing focused study environment\n\n" +
-        "Contact us at (+234) 7048606767 for hostel availability and pricing details.",
-      navigateTo: '/',
-      scrollToSectionId: 'footer',
-    };
-  }
-
-  // 15) Pricing / cost / fees 💰
+  // 16) Pricing / cost / fees 💰
   if (/(price|pricing|cost|fee|fees|how much|tuition|payment)/.test(lower)) {
     const overview = buildCoursesOverview(true);
     return {
-      text: "Course Pricing at ACEDU 💰\n\n" + overview + "\n\nNote: Some courses offer multiple duration options (4-week or 6-week). Contact us for payment plan options.",
+      text: `**Course Pricing at ACEDU** 💰\n\n${overview}\n\n**Note:** Some courses offer multiple duration options (4-week or 6-week). Contact us for payment plan options.\n\n**Hostel Pricing:**\n• Shared Room: ${hostelData.pricing.sharedRoom}\n• Private Room: ${hostelData.pricing.privateRoom}`,
       navigateTo: '/',
       scrollToSectionId: 'courses-section',
     };
   }
 
-  // 16) Schedule / timing ⏰
+  // 17) Schedule / timing ⏰
   if (/(schedule|timing|time|days|when|hours)/.test(lower) && !/(bootcamp|upcoming)/.test(lower)) {
-    let scheduleText = "Course Schedules at ACEDU ⏰\n\n";
+    let scheduleText = "**Course Schedules at ACEDU** ⏰\n\n";
     
     // Group by schedule type
     const dailyCourses = coursesData.filter(c => c.days === 'Monday - Friday');
     const weeklyCourses = coursesData.filter(c => c.days === 'Thrice a week');
     
-    scheduleText += "Monday - Friday (Full-time Intensive):\n";
+    scheduleText += "**Monday - Friday (Full-time Intensive):**\n";
     dailyCourses.forEach(course => {
       scheduleText += `• ${course.name}: ${course.time}\n`;
     });
     
-    scheduleText += "\nThrice a Week (Part-time Flexible):\n";
+    scheduleText += "\n**Thrice a Week (Part-time Flexible):**\n";
     weeklyCourses.forEach(course => {
       scheduleText += `• ${course.name}: ${course.time}\n`;
     });
     
-    scheduleText += "\nAfter-School Program:\n";
+    scheduleText += "\n**After-School Program:**\n";
     scheduleText += "• Mon-Thu: 3:30PM – 5:00PM\n";
     scheduleText += "• Fri: 3:00PM – 5:00PM\n\n";
     
-    scheduleText += "Summer Coding Program (June-August):\n";
+    scheduleText += "**Summer Coding Program (June-August):**\n";
     scheduleText += "• Mon-Fri: 9:00AM – 3:00PM\n\n";
     
+    scheduleText += "**Hostel Tour:** Available anytime (self-paced audio tour)\n\n";
     scheduleText += "Choose the schedule that fits your availability!";
     
     return {
@@ -915,27 +1033,84 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
-  // 17) Very general fallback with comprehensive options
+  // 18) Help / what can you do
+  if (/(help|what can you do|how can you help|capabilities)/.test(lower)) {
+    const state = loadTutorState();
+    let tutorInfo = '';
+    
+    if (state) {
+      tutorInfo = `\n\n**Tutor Status:** ${state.active ? 'Active' : 'Inactive'} - ${state.currentPage}/${tutorPages.length} pages completed`;
+    }
+    
+    return {
+      text:
+        "**How I Can Help You** 🤝\n\n" +
+        "**Navigation & Tour:**\n" +
+        "• 'Show me around' - Full website tour\n" +
+        "• 'Go to [page]' - Jump to specific page\n" +
+        "• 'Next/Previous' - Navigate tour pages\n" +
+        "• 'Stop tour' - Pause the tour\n\n" +
+        "**Course Information:**\n" +
+        `• All ${coursesData.length} courses with pricing\n` +
+        "• Course recommendations\n" +
+        "• Schedule and duration details\n" +
+        "• Career paths and benefits\n\n" +
+        "**Products & Services:**\n" +
+        "• Clever School Portal information\n" +
+        "• Software development services\n" +
+        "• Website development & management\n" +
+        "• Tech education solutions\n\n" +
+        "**Hostel & Accommodation:**\n" +
+        "• Hostel facilities and pricing\n" +
+        "• Interactive audio tour details\n" +
+        "• Accommodation features\n\n" +
+        "**General Information:**\n" +
+        "• Contact details and location\n" +
+        "• Upcoming bootcamps\n" +
+        "• Student projects and alumni\n" +
+        "• Enrollment process\n" +
+        "• D.I.G.I.T.A.L core values\n" +
+        tutorInfo +
+        "\n\n**Just ask me anything!** I'm here to help you explore everything ACEDU has to offer.",
+      navigateTo: undefined,
+    };
+  }
+
+  // 19) Very general fallback with comprehensive options
+  const state = loadTutorState();
+  let tutorPrompt = '';
+  
+  if (state && state.currentPage > 0) {
+    const currentPage = tutorPages[state.currentPage];
+    tutorPrompt = `\n\n💡 **Continue your tour!** You were exploring the ${currentPage} page. Say "continue tutor" to resume.`;
+  } else {
+    tutorPrompt = "\n\n💡 **Try our guided tour!** Say 'SHOW ME AROUND' or 'TELL ME ABOUT ACEDU' for a step-by-step website tour.";
+  }
+  
   return {
     text:
       "I'm ACEDU's smart guide 🤝\n\n" +
-      "I can help you with:\n" +
-      "• All 11 courses across 7 categories 📚\n" +
+      "**I can help you with:**\n" +
+      `• All ${coursesData.length} courses across ${getCourseCategories().length} categories 📚\n` +
       "• Course recommendations based on your background 🎯\n" +
       "• Pricing & schedules with flexible options 💰⏱️\n" +
       "• Free Cybersecurity Bootcamp with Splunk training 🔐\n" +
-      "• Hostel accommodation for full-time students 🏠\n" +
+      "• Hostel accommodation with interactive audio tour 🏠\n" +
       "• Student projects with live demos 🚀\n" +
+      "• Products & Services for businesses 🛒\n" +
+      "• Clever School Portal for institutions 🏫\n" +
       "• Our D.I.G.I.T.A.L core values 💎\n" +
-      "• Enrollment process and payment plans 📝\n\n" +
-      "💡 Try our guided tour! Say 'SHOW ME AROUND' or 'TELL ME ABOUT ACEDU' for a step-by-step website tour.\n\n" +
-      "Ask me anything like:\n" +
+      "• Enrollment process and payment plans 📝\n" +
+      tutorPrompt +
+      "\n\n**Ask me anything like:**\n" +
       "• 'Which course is best for absolute beginners?'\n" +
       "• 'Tell me about the free cybersecurity training'\n" +
       "• 'What are your D.I.G.I.T.A.L values?'\n" +
-      "• 'Do you have hostel accommodation?'\n" +
-      "• 'Show me student projects'\n" +
-      "• 'How do I enroll in React course?'",
+      "• 'Show me the hostel interactive tour'\n" +
+      "• 'Tell me about Clever School Portal'\n" +
+      "• 'How do I enroll in React course?'\n" +
+      "• 'What products do you offer?'\n" +
+      "• 'Show me student projects'",
     navigateTo: undefined,
   };
 }
@@ -951,4 +1126,27 @@ export function updateTutorScrollProgress(progress) {
     state.scrollProgress = progress;
     saveTutorState(state);
   }
+}
+
+export function completeTutorPage(pageName) {
+  const state = loadTutorState();
+  if (state && !state.completedPages) state.completedPages = [];
+  if (state && !state.completedPages.includes(pageName)) {
+    state.completedPages.push(pageName);
+    saveTutorState(state);
+  }
+}
+
+export function getTutorProgress() {
+  const state = loadTutorState();
+  if (!state) return { current: 0, total: tutorPages.length, percentage: 0 };
+  
+  const percentage = Math.round((state.currentPage / tutorPages.length) * 100);
+  return {
+    current: state.currentPage + 1,
+    total: tutorPages.length,
+    percentage: percentage,
+    active: state.active,
+    currentPageName: tutorPages[state.currentPage]
+  };
 }

@@ -47,11 +47,10 @@ const Homepage = () => {
             {/* Left content */}
             <div className="w-full md:w-2/3 h-auto md:h-full mb-4 md:mb-0 md:mr-6 rounded-lg p-6 md:p-8 flex flex-col justify-center">
               <h1 className="f1 font-extrabold text-red-600 mb-4 text-3xl sm:text-4xl md:text-5xl">
-                Welcome to ACEDU Coding BootCamp
+               ACEDU Coding BootCamp
               </h1>
               <p className="text-white mt-2 text-base sm:text-lg md:text-xl mb-4 md:mb-6">
-                Transforming tech education with hands-on learning experiences.
-                Learn from industry experts and build real-world projects.
+                Growing Local Talent For The Global Digital Economy
               </p>
             </div>
 

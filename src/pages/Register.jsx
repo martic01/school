@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useAlert } from '../components/AlertContext';
 import { Dot } from 'lucide-react';
 import { contactInfoData } from '../data/Data';
+import bgImg from "../assets/images/registerimg.jpg";
 
 
   
@@ -64,10 +65,9 @@ const RegisterPage = () => {
     { id: 'react', name: 'React', price: '300,000' },
     { id: 'csharp', name: 'C# .Net', price: '688,500' },
     { id: 'cybersecurity', name: 'Cyber Security', price: '150,000 - 200,000' },
-    { id: 'data-analysis', name: 'Data Analysis', price: '370,000' },
+    { id: 'data-analysis', name: 'Data Analysis', price: '150,000' },
     // Additional key courses from document
     { id: 'intermediate-js', name: 'Intermediate JavaScript', price: '170,000' },
-    { id: 'data-analytics', name: 'Data Analytics (Excel/Power BI)', price: '150,000' },
     { id: 'uiux-design', name: 'UI/UX Product Design', price: '150,000 - ₦200,000' },
     { id: 'react-native', name: 'React Native Mobile Dev', price: '350,000' },
     { id: 'microsoft-office', name: 'Microsoft Office', price: '150,000' }
@@ -567,7 +567,7 @@ const RegisterPage = () => {
                   <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{
-                      backgroundImage: 'url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")',
+                      backgroundImage: `url(${bgImg})`,
                     }}
                   >
                     {/* Gradient overlay */}
@@ -583,7 +583,7 @@ const RegisterPage = () => {
                         Start Your Tech Journey
                       </h3>
                       <p className="text-sm sm:text-base md:text-lg opacity-90">
-                        Join Moat Academy and transform your career
+                        Join  ACEDU Coding BootCamp and transform your career
                       </p>
                     </div>
                   </div>

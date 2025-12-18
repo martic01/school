@@ -5,6 +5,7 @@ import {
   FaClock,
   FaCalendarAlt,
   FaArrowRight,
+  FaCheckCircle,
 } from "react-icons/fa";
 import { upcomingBootcampsData } from "../data/Data";
 // Easily edit / add / remove upcoming bootcamps here
@@ -24,7 +25,7 @@ const UpcomingBootcamps = () => {
             OUR PLUS PROGRAMS
           </h2>
           <p className="text-sm md:text-base text-red-100/80 max-w-2xl mx-auto">
-          You can apply and register for any of these programmes—or enroll your ward today. They’re special opportunities to learn, build, and grow beyond the core curriculum.
+            You can apply and register for any of these programmes—or enroll your ward today. They’re special opportunities to learn, build, and grow beyond the core curriculum.
           </p>
         </div>
 
@@ -49,7 +50,7 @@ const UpcomingBootcamps = () => {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-2 left-3 text-[11px] uppercase tracking-[0.2em] text-red-200">
-                   ACEDU Coding BootCamp
+                  ACEDU Coding BootCamp
                 </div>
               </div>
 
@@ -84,9 +85,12 @@ const UpcomingBootcamps = () => {
                 </div>
 
                 {/* Benefit */}
-                <p className="text-xs sm:text-sm text-gray-800 leading-relaxed mt-2 flex-1">
-                  {bootcamp.benefit}
-                </p>
+                <div className="text-xs sm:text-sm text-gray-800 leading-relaxed mt-2 flex-1">
+                  {typeof (bootcamp.benefit) === "object" ? bootcamp.benefit.map((b, i) => (
+                    i === 0 ? <p key={i}>{b}</p> : <p key={i}><FaCheckCircle className="inline w-3 h-3 text-black mr-1" />{b}</p>
+                  )) : (<p>{bootcamp.benefit}</p>
+                  )}
+                </div>
 
                 {/* Call to action text (purely visual) */}
                 <div className="mt-3 pt-2 border-t border-red-100 flex items-center justify-between text-xs sm:text-sm">

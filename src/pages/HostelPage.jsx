@@ -772,3 +772,4 @@ const HostelPage = () => {
 };
 
 export default HostelPage;
+

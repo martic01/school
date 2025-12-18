@@ -265,7 +265,7 @@ const Footer = ({ show = true }) => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             {/* Social Media Icons */}
             <div className="flex items-center gap-3">
-              <span className="text-gray-600 font-medium mr-2">Follow About ACEDU Coding:</span>
+              <span className="text-gray-600 font-medium mr-2">Connect with us:</span>
               <div className="flex items-center gap-2">
                 {socialLinks.map((social, index) => (
                   <motion.a
