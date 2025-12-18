@@ -2,6 +2,7 @@ import { ins } from "framer-motion/client";
 import pro1 from "../assets/images/code.jpg"
 import pro2 from "../assets/images/websimg.png"
 import pro3 from "../assets/images/summerimg.jpg"
+import clever from "../assets/images/cleverimg.jpg"
 // src/data/Data.js (or wherever your coursesData is located)
 export const coursesData = [
   // ========== FRONTEND DEVELOPER CATEGORY ==========
@@ -639,17 +640,19 @@ export const cleverSchoolData = {
     borderColor: "border-purple-200",
     bgColor: "from-blue-600 to-purple-600",
     portalLink: "http://www.cleverschools.net",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80",
-    heroImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=2000&auto=format&fit=crop&q=80"
+    image: clever,
+    heroImage: clever,
   },
   company: {
     name: "Adroitsoft Nigeria Limited",
     rc: "452565",
     address: "No 77, Yaya Abatan Road, Ogba, Lagos."
+
   },
   contact: {
     phone: "07048606767",
-    email: "info@adroitsoft.ng"
+    email: "info@adroitsoft.ng",
+    link: "https://wa.me/+2347048606767",
   },
   websites: {
     main: "www.adroitsoft.ng",

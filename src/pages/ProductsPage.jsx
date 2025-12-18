@@ -19,7 +19,8 @@ import {
   Building,
   Phone,
   Mail,
-  ExternalLink
+  ExternalLink,
+  MessageCircleCode
 } from 'lucide-react';
 import Button from '../components/AppButton';
 import { productsData,cleverSchoolData } from '../data/Data';
@@ -60,17 +61,18 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-gray-800 to-white">
       {/* Hero Section - Clever School Focus */}
       <section 
-        className="relative min-h-[90vh] flex items-center justify-center py-20"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${cleverSchoolData.product.heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      >
+  className="relative min-h-[90vh] flex items-center justify-center py-44"
+  style={{
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('${cleverSchoolData.product.heroImage}')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed',
+    backgroundRepeat: 'no-repeat'
+  }}
+>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -91,7 +93,7 @@ const ProductsPage = () => {
             </motion.div>
 
             {/* Main Product Name */}
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {cleverSchoolData.product.name}
             </h1>
             
@@ -105,7 +107,7 @@ const ProductsPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="inline-block bg-gradient-to-r from-blue-600/80 to-purple-600/80 backdrop-blur-sm px-8 py-3 rounded-full mb-12 border border-white/20"
+              className="inline-block bg-linear-to-r from-blue-600/80 to-purple-600/80 backdrop-blur-sm px-8 py-3 rounded-full mb-12 border border-white/20"
             >
               <h2 className="text-xl md:text-2xl font-bold">
                 {cleverSchoolData.product.question}
@@ -136,22 +138,24 @@ const ProductsPage = () => {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-3 shadow-2xl shadow-blue-600/30"
+                className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-3 shadow-2xl shadow-blue-600/30"
               >
-                <School className="w-6 h-6" />
+               <p className="cent flex items-center gap-2">
+                 <School className="w-6 h-6" />
                 View Live Portal
                 <ExternalLink className="w-5 h-5" />
+               </p>
               </motion.a>
               
-              <motion.button
-                onClick={handleGetInTouch}
+              <motion.a
+                href={cleverSchoolData.contact.link}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-3 border-2 border-white/30"
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-10 py-4 rounded-full font-bold text-lg cent flex items-center gap-3 border-2 border-white/30"
               >
-                <Phone className="w-5 h-5" />
-                Request Demo
-              </motion.button>
+                <MessageCircleCode className="w-5 h-5" />
+                Enquire Now
+              </motion.a>
             </div>
 
             {/* Success Stats */}
@@ -193,7 +197,7 @@ const ProductsPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full mb-6">
+              <div className="inline-flex items-center gap-2 bg-linear-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full mb-6">
                 <School className="w-5 h-5 text-purple-600" />
                 <span className="text-sm font-bold text-purple-700">MAIN PRODUCT</span>
               </div>
@@ -213,7 +217,7 @@ const ProductsPage = () => {
                   {cleverSchoolData.targetUsers.map((user, index) => (
                     <span
                       key={index}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 rounded-full font-medium border border-blue-100"
+                      className="px-4 py-2 bg-linear-to-r from-blue-50 to-purple-50 text-blue-700 rounded-full font-medium border border-blue-100"
                     >
                       {user}
                     </span>
@@ -240,7 +244,7 @@ const ProductsPage = () => {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 shadow-xl"
+              className="bg-linear-to-br from-blue-50 to-purple-50 rounded-3xl p-8 shadow-xl"
             >
               <div className="flex items-center gap-3 mb-8">
                 <Settings className="w-8 h-8 text-purple-600" />
@@ -254,7 +258,7 @@ const ProductsPage = () => {
                     className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg">
+                      <div className="p-2 bg-linear-to-br from-blue-100 to-purple-100 rounded-lg">
                         {getModuleIcon(module)}
                       </div>
                       <span className="text-sm font-medium text-gray-800">{module}</span>
@@ -274,14 +278,14 @@ const ProductsPage = () => {
       </section>
 
       {/* Managed Schools Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-blue-50">
+      <section className="py-20 bg-linear-to-b from-white to-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
           >
-            <div className="inline-block px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full text-sm font-bold mb-4">
+            <div className="inline-block px-6 py-2 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-full text-sm font-bold mb-4">
               TRUSTED PARTNERS
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -309,7 +313,7 @@ const ProductsPage = () => {
                     alt={school.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-6 right-6">
                     <div className="flex justify-between items-end">
                       <div>
@@ -346,7 +350,7 @@ const ProductsPage = () => {
                       {school.improvements.map((improvement, i) => (
                         <span
                           key={i}
-                          className="px-3 py-1.5 bg-gradient-to-r from-green-50 to-blue-50 text-green-700 rounded-full text-sm font-medium border border-green-100"
+                          className="px-3 py-1.5 bg-linear-to-r from-green-50 to-blue-50 text-green-700 rounded-full text-sm font-medium border border-green-100"
                         >
                           {improvement}
                         </span>
@@ -370,7 +374,7 @@ const ProductsPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center text-white shadow-2xl"
+            className="bg-linear-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center text-white shadow-2xl"
           >
             <h3 className="text-3xl font-bold mb-2">Transforming Education Together</h3>
             <p className="text-blue-200 mb-8 max-w-2xl mx-auto">
@@ -419,7 +423,7 @@ const ProductsPage = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
           >
-            <div className="inline-block px-6 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white rounded-full text-sm font-bold mb-4">
+            <div className="inline-block px-6 py-2 bg-linear-to-r from-gray-600 to-gray-800 text-white rounded-full text-sm font-bold mb-4">
               OTHER SERVICES
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -471,7 +475,7 @@ const ProductsPage = () => {
                   {/* CTA Button */}
                   <Button
                     onClick={handleGetInTouch}
-                    className={`w-full bg-gradient-to-r ${product.bgColor} hover:opacity-90 text-white border-0`}
+                    className={`w-full bg-linear-to-r ${product.bgColor} hover:opacity-90 text-white border-0`}
                   >
                     {product.ctaText}
                   </Button>
@@ -484,7 +488,7 @@ const ProductsPage = () => {
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                 </div>
               </motion.div>
             ))}
@@ -493,7 +497,7 @@ const ProductsPage = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 to-black">
+      <section className="py-20 bg-linear-to-br from-gray-900 to-black">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -512,7 +516,7 @@ const ProductsPage = () => {
                 href={cleverSchoolData.product.portalLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-2xl"
+                className="inline-flex items-center gap-2 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-2xl"
               >
                 <School className="w-6 h-6" />
                 Visit Portal
