@@ -250,8 +250,6 @@ const Footer = ({ show = true }) => {
               rel="noopener noreferrer"
             >
               <Button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 className="mt-4 w-full inline-flex items-center justify-center gap-2 font-bold py-3 px-4  transition-colors shadow-md hover:shadow-lg">
                 <FaMapMarkerAlt className="w-4 h-4" />
                 Get Directions

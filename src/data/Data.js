@@ -1,4 +1,3 @@
-import { ins } from "framer-motion/client";
 import pro1 from "../assets/images/code.jpg"
 import pro2 from "../assets/images/websimg.png"
 import pro3 from "../assets/images/summerimg.jpg"
@@ -338,17 +337,19 @@ export const projectsData = [
 // src/data/Data.js
 
 export const ceoDatas = {
-  name: "Dr. Michael Rodriguez",
+  name: "Mr. Bola Saheed ",
   title: "Founder & CEO",
   image:
     "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&h=600&fit=crop&crop=face",
-  bio: "A visionary leader with over 15 years of experience in technology education and innovation. Dr. Rodriguez founded our bootcamp with a single mission: to bridge the gap between traditional education and real-world tech skills.",
+  bio: "Mr. Bola Saheed is a seasoned technology leader and educator, serving as the Chief Executive Officer of Adroitsoft Nigeria Limited and the Founder & CEO of ACEDU Coding Bootcamp. With over 25 years of experience in enterprise application development, software engineering, and technology education, he has built a reputation for bridging the gap between traditional learning and real‑world digital skills.",
   quote:
-    "Technology should be accessible to everyone. Our bootcamp isn't just about coding—it's about empowering people to build their future.",
+    "Technology should be practical, inclusive, and transformative. At ACEDU, we don’t just teach — we build creators.” — Bola Saheed.",
   achievements: [
-    "Tech Innovator Award 2022",
-    "Forbes 30 Under 30",
-    "Google Developer Expert",
+    "Microsoft Certified Professional Developer (MCPD) – Enterprise Application Developer",
+    "Microsoft Technology Specialist (MCTS) – Web, Windows, and Distributed Applications",
+    "Expertise in C#, Java, ASP.NET, HTML, CSS, JavaScript, SQL Server, Oracle",
+    "Specialist in Relational Database Design (Oracle & MS-SQL Server)",
+    "Enterprise-grade Web, Client/Server, and SMS Applications Development",
   ],
   social: {
     linkedin: "https://www.linkedin.com/in/bolasaheed?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
@@ -480,7 +481,7 @@ export const aboutContentData = [
     type: "hero",
     titleMain: "About",
     titleHighlight: "ACEDU Coding Bootcamp",
-    subtitle: "Shaping the Future of Software Development Education",
+    subtitle: "Hands-On Learning for the Tech Careers of Tomorrow",
     backgroundImage:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
   },
@@ -490,10 +491,10 @@ export const aboutContentData = [
     title: "Who We Are",
     highlight: "Are",
     paragraphs: [
-      "We are a software developer hotbed: we have created an environment that fosters rapid growth and high performance...",
-      "Gone are the days where people thought; to be a software developer is a rocket science or you must be a geek or mathematician...",
-      "We are an intermediate in bridging the gap between our higher institutions and the industry...",
-      "Our approach is more of an apprenticeship where you learn software developments from experts in the field...",
+      "We are a practical technology learning hub, intentionally built to support focused growth, skill development, and high performance.",
+      "Learning technology and digital skills is no longer limited to a select background — with the right guidance and environment, it is accessible and learnable.",
+      "ACEDU serves as a bridge between academic learning and real industry practice, helping learners translate knowledge into applied skills.",
+      "Our approach is apprenticeship-driven, enabling students to learn directly from experienced professionals through hands-on, real-world projects.",
     ],
   },
   {
@@ -502,25 +503,25 @@ export const aboutContentData = [
     title: "Why Bootcamp?",
     question: "Why choose our bootcamp over traditional education?",
     text:
-      "The bootcamp is to make you job-ready. You learn so much in the 13-weeks in software development than you have in your entire 4-year stay...",
+      "A boot camp prioritizes applied learning and real-world projects over extended theoretical concepts. It enables learners to develop relevant, industry-ready skills within a more focused timeframe.",
   },
   {
     id: "goals",
     type: "goals",
     introText:
-      "It is in our plan to raise top-notch software developers that can ply the trade with excellence anywhere in the world...",
+      "At ACEDU, our focus is on developing well-rounded tech professionals who can apply their skills with confidence, adaptability, and excellence — anywhere in the world.",
     cards: [
       {
-        title: "Increase Your Employability",
-        text: "We prepare you to stand out in the competitive job market with industry-relevant skills that employers are actively seeking.",
+        title: "Strengthen Your Employability",
+        text: "We equip you with in-demand technical skills, real project experience, and professional workflows that help you stand out and compete effectively in today’s job market.",
       },
       {
-        title: "Enable Freelance Opportunities",
-        text: "Gain the skills and confidence to take on freelance projects, building your portfolio and earning while you learn.",
+        title: "Create Real Earning Opportunities",
+        text: "Our hands-on training prepares you to work on real projects, build a credible portfolio, and gain practical experience that opens doors to multiple income and career pathways.",
       },
       {
-        title: "Make You a Successful Entrepreneur",
-        text: "Equip you with the mindset and technical skills to launch your own tech startup or digital product business.",
+        title: "Prepare You for Tech Entrepreneurship",
+        text: "We help you develop the technical foundation, problem-solving mindset, and product thinking required to build and scale digital products or tech-enabled businesses.",
       },
     ],
   },
@@ -530,58 +531,43 @@ export const aboutContentData = [
     header: {
       title: "Our Core Values",
       highlight: "Values",
-      acronym: "D I G I T A L",
+      acronym: "A C E D U",
     },
     values: [
+      {
+        letter: "A",
+        title: "Accountability",
+        text:
+          "We take responsibility for outcomes, growth, and conduct. At ACEDU, students and instructors alike are accountable for showing up, doing the work, and continuously improving.",
+        author: "Qoute",
+      },
+      {
+        letter: "C",
+        title: "Competence",
+        text:
+          "We prioritize mastery over shortcuts.Our programs are designed to build strong technical foundations, practical skills, and professional confidence through real- world application.",
+        author: "Qoute",
+      },
+      {
+        letter: "E",
+        title: "Excellence",
+        text:
+          "We hold ourselves to high standards in teaching, learning, and delivery. From curriculum design to student support, excellence guides every decision we make.",
+        author: "Qoute",
+      },
       {
         letter: "D",
         title: "Discipline",
         text:
-          "We don't only see discipline as a principle of business but as principle of greatness...",
-        author: "Julius Williams",
+          "Consistency and focus are essential to success in technology. We instill discipline in learning habits, problem-solving, and professional behavior — skills that extend far beyond the classroom.",
+        author: "Qoute",
       },
       {
-        letter: "I",
-        title: "Integrity",
+        letter: "U",
+        title: "Unity",
         text:
-          "Our Word is our Bond. You build trust with others each time you choose integrity over image...",
-        author: "John Maxwell",
-      },
-      {
-        letter: "G",
-        title: "Grit",
-        text:
-          "The power of sustained passion and perseverance. Without effort, your talent is nothing more than unmet potential...",
-        author: "Angela Duckworth",
-      },
-      {
-        letter: "I",
-        title: "Innovativeness",
-        text:
-          "We value innovation to create new demand and change enough to render competition irrelevant...",
-        author: "Angela Duckworth",
-      },
-      {
-        letter: "T",
-        title: "Tech-Savvy",
-        text:
-          "We are well informed about the modern technology, and also use our skills in order to take advantage of the current technology...",
-        author: "Sean Gerety",
-      },
-      {
-        letter: "A",
-        title: "Affordability",
-        text:
-          "We have always strived to provide global standard (highest quality) Software Development Education at affordable prices...",
-        author: "Regina Hall",
-      },
-      {
-        letter: "L",
-        title: "Leadership",
-        text:
-          "We lead by example, lead with character, motivate people to achieve a unique vision and teach people how to lead with integrity...",
-        author: "John Quincy Adams",
-        fullWidth: true,
+          "We believe learning thrives in a supportive community.ACEDU fosters collaboration, mentorship, and respect, creating an environment where students grow together and succeed together.",
+        author: "Qoute",
       },
     ],
   },

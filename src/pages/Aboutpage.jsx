@@ -134,8 +134,9 @@ const AboutPage = () => {
                 viewport={{ once: true }}
                 className="text-3xl font-bold text-black mb-4"
               >
-                What We Want to{" "}
-                <span className="text-red-600">Achieve</span> With You
+                What We {" "}
+                <span className="text-red-600">Aim</span> to Build With You
+
               </motion.h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 {goalsSection.introText}

@@ -5,7 +5,7 @@ import { projectsData } from "../data/Data";
 import Button from "./AppButton";
 
 const FeaturedProjectsPreview = () => {
-  const previewProjects = projectsData.slice(0, 4);
+  const previewProjects = projectsData.slice(0, 2);
 
   return (
     <section className="bg-white py-16 md:py-10">
@@ -25,7 +25,7 @@ const FeaturedProjectsPreview = () => {
         </div>
 
         {/* Grid of project cards */}
-        <div className="grid gap-6 md:gap-8 md:grid-cols-4 auto-rows-[minmax(260px,auto)]">
+        <div className="flex gap-3">
           {previewProjects.map((project, index) => (
             <article
               key={project.id}
@@ -33,7 +33,7 @@ const FeaturedProjectsPreview = () => {
                 flex flex-col bg-white border border-gray-200 shadow-[0_10px_25px_rgba(0,0,0,0.08)]
                 text-black overflow-hidden
                 ${index === 0 ? "md:col-span-2 md:row-span-2" : ""}
-                ${index === 3 ? "md:col-span-2" : ""}
+                ${index === 2 ? "md:col-span-2" : ""}
               `}
             >
               {/* Image area with cracked glass overlay */}

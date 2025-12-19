@@ -19,7 +19,7 @@ function AppLayout() {
   const location = useLocation();
 
   // List of routes where you DON'T want the footer
-  const hideFooterOn = ['/ai-chat', '/register'];
+  const hideFooterOn = ['/ai-chat', '/register','/products'];
   const hideHostelOn = '/hostel'
   const showHostelon = !hideHostelOn.includes(location.pathname);
   const showFooter = !hideFooterOn.includes(location.pathname);
