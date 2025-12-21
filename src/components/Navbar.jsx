@@ -28,7 +28,7 @@ const link = [
   { name: 'Contact us', link: '/', icon: Phone, color: 'hover:text-red-700', action: 'scrollToFooter' },
 ];
 
-const Navbar = ({showHostel = true}) => {
+const Navbar = ({ showHostel = true }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -40,26 +40,27 @@ const Navbar = ({showHostel = true}) => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const mediaLink = contactInfoData;
   const contact = contactInfoData;
+
   // Track scroll position for navbar background
   const socialIcons = [
-    { icon: FaYoutube, link:mediaLink.youtube, name: "YouTube", bgColor: "hover:bg-red-600" },
-    { icon: FaFacebookF, link:mediaLink.facebook, name: "Facebook", bgColor: "hover:bg-blue-600" },
-    { icon: FaLinkedinIn, link:mediaLink.linkedin, name: "LinkedIn", bgColor: "hover:bg-blue-700" },
-    { icon: FaTwitter, link:mediaLink.twitter, name: "Twitter", bgColor: "hover:bg-sky-500" },
-    { icon: FaWhatsapp, link:mediaLink.whatsapp, name: "WhatsApp", bgColor: "hover:bg-green-500" },
+    { icon: FaYoutube, link: mediaLink.youtube, name: "YouTube", bgColor: "hover:bg-red-600" },
+    { icon: FaFacebookF, link: mediaLink.facebook, name: "Facebook", bgColor: "hover:bg-blue-600" },
+    { icon: FaLinkedinIn, link: mediaLink.linkedin, name: "LinkedIn", bgColor: "hover:bg-blue-700" },
+    { icon: FaTwitter, link: mediaLink.twitter, name: "Twitter", bgColor: "hover:bg-sky-500" },
+    { icon: FaWhatsapp, link: mediaLink.whatsapp, name: "WhatsApp", bgColor: "hover:bg-green-500" },
   ];
 
   const contactInfo = [
-    { icon: FaPhone, text:contact.phone },
-    { icon: FaEnvelope, text:contact.email },
-    { icon: FaMapMarkerAlt, text:contact.country},
+    { icon: FaPhone, text: contact.phone },
+    { icon: FaEnvelope, text: contact.email },
+    { icon: FaMapMarkerAlt, text: contact.country },
   ];
 
   useEffect(() => {
@@ -93,6 +94,20 @@ const Navbar = ({showHostel = true}) => {
       }
       setIsMenuOpen(false);
     }
+  };
+
+  // Check if a link is active
+  const isActive = (item) => {
+    if (item.name === 'Home') {
+      return location.pathname === '/';
+    }
+    if (item.name === 'Contact us') {
+      return location.hash === '#footer' || location.pathname === '/contact';
+    }
+    if (item.name === 'Courses') {
+      return location.pathname.startsWith('/course');
+    }
+    return location.pathname === item.link;
   };
 
   const overlayVariants = {
@@ -131,6 +146,12 @@ const Navbar = ({showHostel = true}) => {
     return 'text-base space-x-6'; // Large screens (1100px+)
   };
 
+  // Different animation delays for blinking effect
+  const getBlinkDelay = (index) => {
+    const delays = [0, 0.5, 1, 1.5, 2, 2.5]; // Different delays for each link
+    return delays[index % delays.length];
+  };
+
   return (
     <>
       <div className="max-[400px]:hidden flex justify-between items-center w-full h-10 bg-linear-to-r from-gray-200 to-transparent px-4 md:px-8">
@@ -163,7 +184,7 @@ const Navbar = ({showHostel = true}) => {
           ))}
         </div>
       </div>
-      
+
       <motion.nav
         className="flex w-full h-17 sticky top-0 z-50 md:h-20 justify-between items-center border-b border-red-200 px-4 md:px-8"
         initial="top"
@@ -177,44 +198,68 @@ const Navbar = ({showHostel = true}) => {
             className='text-2xl md:text-3xl font-bold text-red-600 cursor-pointer'
             onClick={() => handleNavClick({ action: 'home' })}
           >
-            <img 
-            src={logo} 
-            alt="  ACEDU Coding BootCamp Logo" 
-            className='w-32 md:w-40 object-contain cursor-pointer' 
+            <img
+              src={logo}
+              alt="ACEDU Coding BootCamp Logo"
+              className='w-32 md:w-40 object-contain cursor-pointer'
             />
           </div>
         </div>
 
         {/* Desktop Navigation - Responsive with shrinking text */}
         <div className={`hidden md:flex items-center ${getNavStyle()}`}>
-          {link.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => handleNavClick(item)}
-              className={`flex items-center gap-1 font-medium transition-all duration-300 hover:text-red-600 relative group ${item.color} whitespace-nowrap`}
-            >
-              {item.name === 'AI Assistant' ? (
-                <div className="relative">
-                  <FaRobot className="w-3.5 h-3.5" />
-                  <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                </div>
-              ) : item.name === 'Products' ? (
-                <Building className="w-3.5 h-3.5" />
-              ) : (
-                <item.icon className="w-3.5 h-3.5" />
-              )}
-              <span className={item.color}>
-                {item.name} 
-              </span>
-              
-              {/* Underline effect */}
-              <span className={`absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300 ${
-                item.name === 'AI Assistant' ? 'bg-blue-600' : 
-                item.name === 'Products' ? 'bg-green-600' :
-                item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
-              }`}></span>
-            </button>
-          ))}
+          {link.map((item, index) => {
+            const active = isActive(item);
+            return (
+              <button
+                key={index}
+                onClick={() => handleNavClick(item)}
+                className={`flex items-center gap-1 font-medium transition-all duration-300 relative group ${item.color} whitespace-nowrap ${active ? getActiveColor(item) : 'text-gray-700'
+                  }`}
+              >
+                {item.name === 'AI Assistant' ? (
+                  <div className="relative">
+                    <FaRobot className={`w-3.5 h-3.5 ${active ? 'text-blue-600' : ''}`} />
+                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  </div>
+                ) : item.name === 'Products' ? (
+                  <Building className={`w-3.5 h-3.5 ${active ? 'text-green-600' : ''}`} />
+                ) : (
+                  <item.icon className={`w-3.5 h-3.5 ${active ? getIconActiveColor(item) : ''}`} />
+                )}
+                <span className={active ? getActiveColor(item) : ''}>
+                  {item.name}
+                </span>
+
+                {/* Active indicator - blinking animation with different delays */}
+                {active && (
+                  <motion.span
+                    className={`absolute -top-1.5 -right-1.5 w-2.5 h-2.5 rounded-full ${item.name === 'AI Assistant' ? 'bg-blue-600' :
+                        item.name === 'Products' ? 'bg-green-600' :
+                          item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
+                      }`}
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.8, 1, 0.8]
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      delay: getBlinkDelay(index),
+                      ease: "easeInOut"
+                    }}
+                    style={{ animationDelay: `${getBlinkDelay(index)}s` }}
+                  />
+                )}
+
+                {/* Underline effect */}
+                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300 ${item.name === 'AI Assistant' ? 'bg-blue-600' :
+                    item.name === 'Products' ? 'bg-green-600' :
+                      item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
+                  } ${active ? 'w-full' : ''}`}></span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Mobile Menu Button */}
@@ -227,10 +272,9 @@ const Navbar = ({showHostel = true}) => {
 
         {/* Desktop CTA Button - Responsive */}
         <div className="hidden md:flex items-center space-x-3">
-          <Button 
-            className={`gap-2 font-medium ${
-              windowWidth < 900 ? 'py-5 px-4 text-sm' : 'py-6 px-6'
-            }`} 
+          <Button
+            className={`gap-2 font-medium ${windowWidth < 900 ? 'py-5 px-4 text-sm' : 'py-6 px-6'
+              }`}
             onClick={() => navigate('/register')}
             icon="edit"
           >
@@ -238,7 +282,7 @@ const Navbar = ({showHostel = true}) => {
           </Button>
         </div>
       </motion.nav>
-      
+
       {/* Floating Hostel Button - Bottom Right */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -255,7 +299,7 @@ const Navbar = ({showHostel = true}) => {
           View Our Hostel
         </Button>
       </motion.div>
-      
+
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -279,7 +323,11 @@ const Navbar = ({showHostel = true}) => {
             >
               {/* Menu Header */}
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-red-600">  ACEDU Coding BootCamp</h2>
+                <img
+                  src={logo}
+                  alt="ACEDU Coding BootCamp Logo"
+                  className='w-32 md:w-40 object-contain cursor-pointer'
+                />
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -290,49 +338,69 @@ const Navbar = ({showHostel = true}) => {
 
               {/* Menu Items */}
               <div className="p-4 space-y-1 grow">
-                {link.map((item, index) => (
-                  <motion.button
-                    key={index}
-                    variants={linkVariants}
-                    initial="closed"
-                    animate="open"
-                    transition={{ delay: index * 0.1 }}
-                    className={`flex items-center justify-between w-full p-4 rounded-lg hover:bg-red-50 transition-all duration-300 ${item.color} ${
-                      item.name === 'AI Assistant' ? 'hover:bg-blue-50' :
-                      item.name === 'Products' ? 'hover:bg-green-50' : ''
-                    }`}
-                    onClick={() => handleNavClick(item)}
-                  >
-                    <div className="flex items-center space-x-3">
-                      {item.name === 'AI Assistant' ? (
-                        <div className="relative">
-                          <FaRobot className="w-5 h-5 text-blue-600" />
-                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        </div>
-                      ) : item.name === 'Products' ? (
-                        <Building className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <item.icon className="w-5 h-5" />
-                      )}
-                      <span className={`font-medium ${
-                        item.name === 'AI Assistant' ? 'text-blue-600' :
-                        item.name === 'Products' ? 'text-green-600' : ''
-                      }`}>
-                        {item.name}
-                        {item.name === 'AI Assistant' && (
-                          <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                            NEW
-                          </span>
+                {link.map((item, index) => {
+                  const active = isActive(item);
+                  return (
+                    <motion.button
+                      key={index}
+                      variants={linkVariants}
+                      initial="closed"
+                      animate="open"
+                      transition={{ delay: index * 0.1 }}
+                      className={`flex items-center justify-between w-full p-4 rounded-lg transition-all duration-300 relative ${active ? getMobileActiveBg(item) : 'hover:bg-gray-50'
+                        } ${item.color}`}
+                      onClick={() => handleNavClick(item)}
+                    >
+                      <div className="flex items-center space-x-3">
+                        {item.name === 'AI Assistant' ? (
+                          <div className="relative">
+                            <FaRobot className={`w-5 h-5 ${active ? 'text-blue-600' : ''}`} />
+                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          </div>
+                        ) : item.name === 'Products' ? (
+                          <Building className={`w-5 h-5 ${active ? 'text-green-600' : ''}`} />
+                        ) : (
+                          <item.icon className={`w-5 h-5 ${active ? getIconActiveColor(item) : ''}`} />
                         )}
-                      </span>
-                    </div>
-                    {item.action === 'scrollToFooter' ? (
-                      <ChevronDown className="w-4 h-4" />
-                    ) : item.name === 'AI Assistant' ? (
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    ) : null}
-                  </motion.button>
-                ))}
+                        <span className={`font-medium ${active ? getActiveColor(item) : ''
+                          }`}>
+                          {item.name}
+                          {item.name === 'AI Assistant' && (
+                            <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                              NEW
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
+                      {/* Active indicator for mobile */}
+                      {active && (
+                        <motion.div
+                          className={`w-2 h-2 rounded-full ${item.name === 'AI Assistant' ? 'bg-blue-600' :
+                              item.name === 'Products' ? 'bg-green-600' :
+                                item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
+                            }`}
+                          animate={{
+                            scale: [1, 1.3, 1],
+                            opacity: [0.7, 1, 0.7]
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            delay: getBlinkDelay(index),
+                            ease: "easeInOut"
+                          }}
+                        />
+                      )}
+
+                      {item.action === 'scrollToFooter' && !active ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : item.name === 'AI Assistant' && !active ? (
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      ) : null}
+                    </motion.button>
+                  );
+                })}
               </div>
 
               {/* Menu Footer CTA */}
@@ -361,6 +429,34 @@ const Navbar = ({showHostel = true}) => {
       </AnimatePresence>
     </>
   );
+};
+
+// Helper functions for active states
+const getActiveColor = (item) => {
+  switch (item.name) {
+    case 'AI Assistant': return 'text-blue-600';
+    case 'Products': return 'text-green-600';
+    case 'Courses': return 'text-yellow-600';
+    default: return 'text-red-600';
+  }
+};
+
+const getIconActiveColor = (item) => {
+  switch (item.name) {
+    case 'AI Assistant': return 'text-blue-600';
+    case 'Products': return 'text-green-600';
+    case 'Courses': return 'text-yellow-600';
+    default: return 'text-red-600';
+  }
+};
+
+const getMobileActiveBg = (item) => {
+  switch (item.name) {
+    case 'AI Assistant': return 'bg-blue-50';
+    case 'Products': return 'bg-green-50';
+    case 'Courses': return 'bg-yellow-50';
+    default: return 'bg-red-50';
+  }
 };
 
 export default Navbar;
