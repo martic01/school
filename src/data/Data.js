@@ -595,7 +595,9 @@ export const contactInfoData = {
   instagram: "https://www.instagram.com/acedu_bootcamp?igsh=MTB2NHk1cWF6cTFiZg%3D%3D&utm_source=qr",
   tiktok: "https://www.tiktok.com/@acedu_bootcamp?_r=1&_t=ZS-92F2ZyjTcLw",
   youtube: "https://www.youtube.com/@acedu_coding_bootcamp",
+  whatsapp:"https://wa.me/+2347048606767",
 
+  
   ceoPhone: "+234 704 860 6767",
   ceoEmail: "ceo@acedu.camp",
   ceoLinkdin: "https://www.linkedin.com/in/bolasaheed?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
