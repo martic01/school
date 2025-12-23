@@ -13,6 +13,7 @@ import AIAssistant from "./components/AIAssistant";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import { AlertProvider } from "./components/AlertContext";
+import NewMaker from "./components/NewMaker";
 
 
 function AppLayout() {
@@ -28,6 +29,7 @@ function AppLayout() {
     < AlertProvider>
      
       <Navbar showHostel={location.pathname === '/hostel'}  />
+      <NewMaker/>
       <ScrollToTop />
 
       <Routes>
