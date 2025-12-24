@@ -72,7 +72,20 @@ const NewMaker = () => {
     headerStyle: 'gradient',
     fontFamily: 'font-sans',
     fontWeight: 'font-normal',
-    textSize: 'base'
+    textSize: 'base',
+    // New: Text color options
+    headerTextColor: '#FFFFFF',
+    headerTextColorType: 'solid',
+    bodyTextColor: '#FFFFFF',
+    bodyTextColorType: 'solid',
+    // New: Header background
+    headerBackground: 'none',
+    headerBackgroundType: 'none',
+    headerBgBlur: 0,
+    // New: Image border radius
+    imageBorderRadius: '0px',
+    imageBorderRadiusMode: 'preset',
+    customImageBorderRadius: '0px'
   });
 
   const tapCount = useRef(0);
@@ -264,6 +277,139 @@ const NewMaker = () => {
     { name: 'Red', value: '#FF0000', textColor: '#FFFFFF' },
     { name: 'Black', value: '#000000', textColor: '#FFFFFF' },
     { name: 'Blue', value: '#2563EB', textColor: '#FFFFFF' }
+  ];
+
+  // Text color options for header and body
+  const textColorOptions = [
+    { 
+      name: 'Default (White)', 
+      value: '#FFFFFF', 
+      bgColor: '#000000',
+      type: 'solid'
+    },
+    { 
+      name: 'Red', 
+      value: '#FF0000', 
+      bgColor: '#000000',
+      type: 'solid'
+    },
+    { 
+      name: 'Black', 
+      value: '#000000', 
+      bgColor: '#FFFFFF',
+      type: 'solid'
+    },
+    { 
+      name: 'Blue', 
+      value: '#2563EB', 
+      bgColor: '#000000',
+      type: 'solid'
+    },
+    { 
+      name: 'Red-White Gradient', 
+      value: 'linear-gradient(45deg, #FF0000, #FFFFFF)', 
+      bgColor: '#000000',
+      type: 'gradient'
+    },
+    { 
+      name: 'White-Gold Gradient', 
+      value: 'linear-gradient(45deg, #FFFFFF, #FFD700)', 
+      bgColor: '#000000',
+      type: 'gradient'
+    },
+    { 
+      name: 'Glass Light', 
+      value: 'rgba(255, 255, 255, 0.9)', 
+      bgColor: '#000000',
+      type: 'glass',
+      blur: 5
+    },
+    { 
+      name: 'Glass Dark', 
+      value: 'rgba(0, 0, 0, 0.9)', 
+      bgColor: '#FFFFFF',
+      type: 'glass',
+      blur: 5
+    }
+  ];
+
+  // Header background/effect options
+  const headerBgOptions = [
+    {
+      name: 'Default',
+      value: 'none',
+      bgColor: 'transparent',
+      borderStyle: 'gradient',
+      description: 'No background'
+    },
+    {
+      name: 'Red Solid',
+      value: '#8B0000',
+      bgColor: '#8B0000',
+      borderStyle: 'solid',
+      textColor: '#FFFFFF',
+      description: 'Solid dark red'
+    },
+    {
+      name: 'Black Solid',
+      value: '#000000',
+      bgColor: '#000000',
+      borderStyle: 'solid',
+      textColor: '#FFFFFF',
+      description: 'Solid black'
+    },
+    {
+      name: 'White Solid',
+      value: '#FFFFFF',
+      bgColor: '#FFFFFF',
+      borderStyle: 'solid',
+      textColor: '#000000',
+      description: 'Solid white'
+    },
+    {
+      name: 'Red Gradient',
+      value: 'linear-gradient(90deg, #FF0000, #8B0000)',
+      bgColor: 'linear-gradient',
+      borderStyle: 'gradient',
+      textColor: '#FFFFFF',
+      description: 'Red gradient'
+    },
+    {
+      name: 'Black-Red Gradient',
+      value: 'linear-gradient(90deg, #000000, #8B0000)',
+      bgColor: 'linear-gradient',
+      borderStyle: 'gradient',
+      textColor: '#FFFFFF',
+      description: 'Black to red'
+    },
+    {
+      name: 'Glass Light',
+      value: 'rgba(255, 255, 255, 0.15)',
+      bgColor: 'rgba(255, 255, 255, 0.15)',
+      borderStyle: 'glass',
+      textColor: '#FFFFFF',
+      blur: 10,
+      description: 'Light glass effect'
+    },
+    {
+      name: 'Glass Dark',
+      value: 'rgba(0, 0, 0, 0.3)',
+      bgColor: 'rgba(0, 0, 0, 0.3)',
+      borderStyle: 'glass',
+      textColor: '#FFFFFF',
+      blur: 10,
+      description: 'Dark glass effect'
+    }
+  ];
+
+  // Image border radius options
+  const imageBorderRadiusOptions = [
+    { name: 'None', value: '0px', icon: <Square className="w-4 h-4" /> },
+    { name: 'Small', value: '8px', icon: <div className="w-4 h-4 border border-current rounded-sm" /> },
+    { name: 'Medium', value: '12px', icon: <div className="w-4 h-4 border border-current rounded-md" /> },
+    { name: 'Large', value: '16px', icon: <div className="w-4 h-4 border border-current rounded-lg" /> },
+    { name: 'Full', value: '50%', icon: <div className="w-4 h-4 border border-current rounded-full" /> },
+    { name: 'Custom', value: 'custom', icon: <Settings className="w-4 h-4" /> }
   ];
 
   // Position options (avoiding navbar area)
@@ -668,7 +814,17 @@ const NewMaker = () => {
       headerStyle: 'gradient',
       fontFamily: 'font-sans',
       fontWeight: 'font-normal',
-      textSize: 'base'
+      textSize: 'base',
+      headerTextColor: '#FFFFFF',
+      headerTextColorType: 'solid',
+      bodyTextColor: '#FFFFFF',
+      bodyTextColorType: 'solid',
+      headerBackground: 'none',
+      headerBackgroundType: 'none',
+      headerBgBlur: 0,
+      imageBorderRadius: '0px',
+      imageBorderRadiusMode: 'preset',
+      customImageBorderRadius: '0px'
     });
   };
 
@@ -1380,11 +1536,124 @@ const NewMaker = () => {
                               placeholder="Days"
                             />
                             <span className="self-center text-red-300">days</span>
-                          </div>
+                            </div>
                         )}
                       </div>
                     </div>
                   </div>
+
+          {/* Live Preview */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium mb-2 text-red-300">Live Preview</h4>
+                      <div
+                        className="border border-red-800 overflow-hidden preview-container"
+                        style={{
+                          width: `${Math.min(currentBox.width, 400)}px`,
+                          height: `${Math.min(currentBox.height, 400)}px`,
+                          maxWidth: '100%',
+                          maxHeight: '400px',
+                          margin: '0 auto',
+                          background: currentBox.bgType === 'gradient'
+                            ? `linear-gradient(135deg, ${currentBox.bgGradient[0]}, ${currentBox.bgGradient[1]})`
+                            : currentBox.bgColor,
+                          backdropFilter: currentBox.blur > 0 ? `blur(${currentBox.blur}px)` : 'none',
+                          color: currentBox.textColor,
+                          boxShadow: currentBox.boxShadow === 'lg'
+                            ? '0 10px 15px -3px rgba(139, 0, 0, 0.1)'
+                            : '0 4px 6px -1px rgba(139, 0, 0, 0.1)',
+                          borderRadius: getBorderRadius(currentBox)
+                        }}
+                      >
+                        {currentBox.imagePreview && !currentBox.body.trim() && !currentBox.title.trim() ? (
+                          <div className="w-full h-full">
+                            <img
+                              src={currentBox.imagePreview}
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                              style={{
+                                borderRadius: currentBox.imageBorderRadius
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className={`flex h-full ${currentBox.imagePosition === 'left' ? 'flex-row' :
+                              currentBox.imagePosition === 'right' ? 'flex-row-reverse' :
+                                currentBox.imagePosition === 'top' ? 'flex-col' :
+                                  'flex-col-reverse'
+                            }`}>
+                            {currentBox.imagePreview && (
+                              <div className={`${currentBox.imagePosition === 'left' || currentBox.imagePosition === 'right'
+                                  ? 'w-1/3 shrink-0'
+                                  : 'h-1/3 shrink-0'
+                                }`}>
+                                <img
+                                  src={currentBox.imagePreview}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                  style={{
+                                    borderRadius: currentBox.imageBorderRadius
+                                  }}
+                                />
+                              </div>
+                            )}
+                            <div className="flex-1 overflow-auto p-4 relative">
+                              <div
+                                className="absolute inset-0"
+                                style={{
+                                  background: `rgba(255, 255, 255, ${currentBox.textBgOpacity || 0.3})`,
+                                  backdropFilter: `blur(${currentBox.textBlur || 5}px)`,
+                                  zIndex: 0
+                                }}
+                              ></div>
+                              <div className={`relative z-10 ${currentBox.fontFamily} ${currentBox.fontWeight}`}>
+                                {currentBox.title && (
+                                  <div className={`mb-4 pb-3 ${getHeaderStyle(currentBox)} relative overflow-hidden rounded-t-lg`}
+                                    style={{
+                                      background: currentBox.headerBackground !== 'none' ? currentBox.headerBackground : 'transparent',
+                                      backdropFilter: currentBox.headerBgBlur > 0 ? `blur(${currentBox.headerBgBlur}px)` : 'none',
+                                      margin: '-1rem -1rem 1rem -1rem',
+                                      padding: '1rem'
+                                    }}
+                                  >
+                                    <h4 
+                                      className={`font-bold ${currentBox.textSize === 'sm' ? 'text-lg' :
+                                          currentBox.textSize === 'base' ? 'text-xl' :
+                                          currentBox.textSize === 'lg' ? 'text-2xl' :
+                                          'text-3xl'
+                                        } text-left`}
+                                      style={{
+                                        background: currentBox.headerTextColorType === 'gradient' ? currentBox.headerTextColor : undefined,
+                                        color: currentBox.headerTextColorType === 'gradient' ? 'transparent' : currentBox.headerTextColor,
+                                        WebkitBackgroundClip: currentBox.headerTextColorType === 'gradient' ? 'text' : undefined,
+                                        backgroundClip: currentBox.headerTextColorType === 'gradient' ? 'text' : undefined,
+                                        textShadow: currentBox.headerTextColorType === 'glass' ? '0 0 10px rgba(255,255,255,0.5)' : 'none'
+                                      }}
+                                    >
+                                      {currentBox.title}
+                                    </h4>
+                                  </div>
+                                )}
+                                {currentBox.body && (
+                                  <div className={`${currentBox.textSize} text-left leading-relaxed`}
+                                    dangerouslySetInnerHTML={{
+                                      __html: formatText(currentBox.body, currentBox.highlightColor)
+                                    }}
+                                    style={{
+                                      background: currentBox.bodyTextColorType === 'gradient' ? currentBox.bodyTextColor : undefined,
+                                      color: currentBox.bodyTextColorType === 'gradient' ? 'transparent' : currentBox.bodyTextColor,
+                                      WebkitBackgroundClip: currentBox.bodyTextColorType === 'gradient' ? 'text' : undefined,
+                                      backgroundClip: currentBox.bodyTextColorType === 'gradient' ? 'text' : undefined,
+                                      textShadow: currentBox.bodyTextColorType === 'glass' ? '0 0 5px rgba(255,255,255,0.3)' : 'none'
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                 </div>
 
                 {/* Right Column - Content & Preview */}
@@ -1567,6 +1836,169 @@ const NewMaker = () => {
                       </div>
                     </div>
 
+                    {/* Text Color Options */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-2 text-red-300">Text Colors</label>
+                      <div className="space-y-3">
+                        {/* Header Text Color */}
+                        <div>
+                          <label className="block text-xs mb-1 text-red-300">Header Text Color</label>
+                          <div className="grid grid-cols-4 gap-2">
+                            {textColorOptions.slice(0, 4).map((color) => (
+                              <button
+                                key={color.name}
+                                onClick={() => setCurrentBox({
+                                  ...currentBox,
+                                  headerTextColor: color.value,
+                                  headerTextColorType: color.type
+                                })}
+                                className={`p-2 border rounded transition-all duration-300 ${currentBox.headerTextColor === color.value
+                                    ? 'border-red-600 ring-2 ring-red-500'
+                                    : 'border-red-800 hover:border-red-700'
+                                  }`}
+                                style={{
+                                  backgroundColor: color.bgColor,
+                                  color: color.value,
+                                  background: color.type === 'gradient' ? color.value : undefined
+                                }}
+                              >
+                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
+                              </button>
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-4 gap-2 mt-2">
+                            {textColorOptions.slice(4).map((color) => (
+                              <button
+                                key={color.name}
+                                onClick={() => setCurrentBox({
+                                  ...currentBox,
+                                  headerTextColor: color.value,
+                                  headerTextColorType: color.type
+                                })}
+                                className={`p-2 border rounded transition-all duration-300 ${currentBox.headerTextColor === color.value
+                                    ? 'border-red-600 ring-2 ring-red-500'
+                                    : 'border-red-800 hover:border-red-700'
+                                  }`}
+                                style={{
+                                  backgroundColor: color.bgColor,
+                                  color: color.type === 'gradient' ? 'white' : color.value,
+                                  background: color.type === 'gradient' ? color.value : undefined
+                                }}
+                              >
+                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Body Text Color */}
+                        <div>
+                          <label className="block text-xs mb-1 text-red-300">Body Text Color</label>
+                          <div className="grid grid-cols-4 gap-2">
+                            {textColorOptions.slice(0, 4).map((color) => (
+                              <button
+                                key={color.name}
+                                onClick={() => setCurrentBox({
+                                  ...currentBox,
+                                  bodyTextColor: color.value,
+                                  bodyTextColorType: color.type
+                                })}
+                                className={`p-2 border rounded transition-all duration-300 ${currentBox.bodyTextColor === color.value
+                                    ? 'border-red-600 ring-2 ring-red-500'
+                                    : 'border-red-800 hover:border-red-700'
+                                  }`}
+                                style={{
+                                  backgroundColor: color.bgColor,
+                                  color: color.value,
+                                  background: color.type === 'gradient' ? color.value : undefined
+                                }}
+                              >
+                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
+                              </button>
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-4 gap-2 mt-2">
+                            {textColorOptions.slice(4).map((color) => (
+                              <button
+                                key={color.name}
+                                onClick={() => setCurrentBox({
+                                  ...currentBox,
+                                  bodyTextColor: color.value,
+                                  bodyTextColorType: color.type
+                                })}
+                                className={`p-2 border rounded transition-all duration-300 ${currentBox.bodyTextColor === color.value
+                                    ? 'border-red-600 ring-2 ring-red-500'
+                                    : 'border-red-800 hover:border-red-700'
+                                  }`}
+                                style={{
+                                  backgroundColor: color.bgColor,
+                                  color: color.type === 'gradient' ? 'white' : color.value,
+                                  background: color.type === 'gradient' ? color.value : undefined
+                                }}
+                              >
+                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Header Background Options */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-2 text-red-300">Header Background/Effect</label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {headerBgOptions.slice(0, 4).map((option) => (
+                          <button
+                            key={option.name}
+                            onClick={() => setCurrentBox({
+                              ...currentBox,
+                              headerBackground: option.value,
+                              headerBackgroundType: option.borderStyle,
+                              headerBgBlur: option.blur || 0
+                            })}
+                            className={`p-2 border rounded transition-all duration-300 flex flex-col items-center justify-center h-20 ${currentBox.headerBackground === option.value
+                                ? 'border-red-600 ring-2 ring-red-500'
+                                : 'border-red-800 hover:border-red-700'
+                              }`}
+                            style={{
+                              background: option.value === 'none' ? 'transparent' : option.value,
+                              color: option.textColor || '#FFFFFF',
+                              backdropFilter: option.blur ? `blur(${option.blur}px)` : 'none'
+                            }}
+                          >
+                            <div className="text-xs font-medium mb-1">{option.name}</div>
+                            <div className="text-[10px] opacity-75 text-center">{option.description}</div>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-4 gap-2 mt-2">
+                        {headerBgOptions.slice(4).map((option) => (
+                          <button
+                            key={option.name}
+                            onClick={() => setCurrentBox({
+                              ...currentBox,
+                              headerBackground: option.value,
+                              headerBackgroundType: option.borderStyle,
+                              headerBgBlur: option.blur || 0
+                            })}
+                            className={`p-2 border rounded transition-all duration-300 flex flex-col items-center justify-center h-20 ${currentBox.headerBackground === option.value
+                                ? 'border-red-600 ring-2 ring-red-500'
+                                : 'border-red-800 hover:border-red-700'
+                              }`}
+                            style={{
+                              background: option.value,
+                              color: option.textColor || '#FFFFFF',
+                              backdropFilter: option.blur ? `blur(${option.blur}px)` : 'none'
+                            }}
+                          >
+                            <div className="text-xs font-medium mb-1">{option.name}</div>
+                            <div className="text-[10px] opacity-75 text-center">{option.description}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Image Upload */}
                     <div className="mb-4">
                       <label className="block text-sm font-medium mb-1 text-red-300">Image Upload</label>
@@ -1577,6 +2009,9 @@ const NewMaker = () => {
                               src={currentBox.imagePreview}
                               alt="Preview"
                               className="mx-auto max-h-32 object-contain rounded"
+                              style={{
+                                borderRadius: currentBox.imageBorderRadius
+                              }}
                             />
                             <button
                               onClick={() => setCurrentBox({ ...currentBox, image: null, imagePreview: '' })}
@@ -1604,91 +2039,64 @@ const NewMaker = () => {
                       </div>
                     </div>
 
-                    {/* Live Preview */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium mb-2 text-red-300">Live Preview</h4>
-                      <div
-                        className="border border-red-800 overflow-hidden preview-container"
-                        style={{
-                          width: `${Math.min(currentBox.width, 400)}px`,
-                          height: `${Math.min(currentBox.height, 400)}px`,
-                          maxWidth: '100%',
-                          maxHeight: '400px',
-                          margin: '0 auto',
-                          background: currentBox.bgType === 'gradient'
-                            ? `linear-gradient(135deg, ${currentBox.bgGradient[0]}, ${currentBox.bgGradient[1]})`
-                            : currentBox.bgColor,
-                          backdropFilter: currentBox.blur > 0 ? `blur(${currentBox.blur}px)` : 'none',
-                          color: currentBox.textColor,
-                          boxShadow: currentBox.boxShadow === 'lg'
-                            ? '0 10px 15px -3px rgba(139, 0, 0, 0.1)'
-                            : '0 4px 6px -1px rgba(139, 0, 0, 0.1)',
-                          borderRadius: getBorderRadius(currentBox)
-                        }}
-                      >
-                        {currentBox.imagePreview && !currentBox.body.trim() && !currentBox.title.trim() ? (
-                          <div className="w-full h-full">
-                            <img
-                              src={currentBox.imagePreview}
-                              alt="Preview"
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className={`flex h-full ${currentBox.imagePosition === 'left' ? 'flex-row' :
-                              currentBox.imagePosition === 'right' ? 'flex-row-reverse' :
-                                currentBox.imagePosition === 'top' ? 'flex-col' :
-                                  'flex-col-reverse'
-                            }`}>
-                            {currentBox.imagePreview && (
-                              <div className={`${currentBox.imagePosition === 'left' || currentBox.imagePosition === 'right'
-                                  ? 'w-1/3 shrink-0'
-                                  : 'h-1/3 shrink-0'
-                                }`}>
-                                <img
-                                  src={currentBox.imagePreview}
-                                  alt="Preview"
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            )}
-                            <div className="flex-1 overflow-auto p-4 relative">
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  background: `rgba(255, 255, 255, ${currentBox.textBgOpacity || 0.3})`,
-                                  backdropFilter: `blur(${currentBox.textBlur || 5}px)`,
-                                  zIndex: 0
+                    {/* Image Border Radius */}
+                    {currentBox.imagePreview && (
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium mb-2 text-red-300">Image Border Radius</label>
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-3 gap-2">
+                            {imageBorderRadiusOptions.map((option) => (
+                              <button
+                                key={option.name}
+                                onClick={() => {
+                                  if (option.value === 'custom') {
+                                    setCurrentBox({
+                                      ...currentBox,
+                                      imageBorderRadiusMode: 'custom',
+                                      imageBorderRadius: currentBox.customImageBorderRadius
+                                    });
+                                  } else {
+                                    setCurrentBox({
+                                      ...currentBox,
+                                      imageBorderRadiusMode: 'preset',
+                                      imageBorderRadius: option.value
+                                    });
+                                  }
                                 }}
-                              ></div>
-                              <div className={`relative z-10 ${currentBox.fontFamily} ${currentBox.fontWeight}`}>
-                                {currentBox.title && (
-                                  <div className={`mb-4 pb-3 ${getHeaderStyle(currentBox)}`}>
-                                    <h4 className={`font-bold ${currentBox.textSize === 'sm' ? 'text-lg' :
-                                        currentBox.textSize === 'base' ? 'text-xl' :
-                                          currentBox.textSize === 'lg' ? 'text-2xl' :
-                                            'text-3xl'
-                                      } text-left ${currentBox.bgColor === '#FFFFFF' ? 'text-gray-900' : 'text-white'}`}>
-                                      {currentBox.title}
-                                    </h4>
-                                  </div>
-                                )}
-                                {currentBox.body && (
-                                  <div className={`${currentBox.textSize} text-left leading-relaxed`}
-                                    dangerouslySetInnerHTML={{
-                                      __html: formatText(currentBox.body, currentBox.highlightColor)
-                                    }}
-                                    style={{
-                                      color: currentBox.bgColor === '#FFFFFF' ? '#000000' : '#ffffff'
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            </div>
+                                className={`p-2 border rounded text-center transition-all duration-300 flex flex-col items-center ${currentBox.imageBorderRadius === option.value ||
+                                    (option.value === 'custom' && currentBox.imageBorderRadiusMode === 'custom')
+                                    ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
+                                    : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
+                                  }`}
+                              >
+                                <div className="mb-1 text-red-400">{option.icon}</div>
+                                <div className="text-xs">{option.name}</div>
+                              </button>
+                            ))}
                           </div>
-                        )}
+                          
+                          {currentBox.imageBorderRadiusMode === 'custom' && (
+                            <div className="mt-2">
+                              <label className="block text-xs mb-1 text-red-300">Custom Radius: {currentBox.customImageBorderRadius}</label>
+                              <input
+                                type="range"
+                                min="0"
+                                max="50"
+                                value={parseInt(currentBox.customImageBorderRadius) || 0}
+                                onChange={(e) => setCurrentBox({
+                                  ...currentBox,
+                                  customImageBorderRadius: `${e.target.value}px`,
+                                  imageBorderRadius: `${e.target.value}px`
+                                })}
+                                className="w-full accent-red-600"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+          
                   </div>
                 </div>
               </div>
@@ -1856,6 +2264,9 @@ const NewMaker = () => {
                       src={box.imagePreview}
                       alt="Content"
                       className="w-full h-full object-cover"
+                      style={{
+                        borderRadius: box.imageBorderRadius
+                      }}
                     />
                   </div>
                 ) : (
@@ -1873,6 +2284,9 @@ const NewMaker = () => {
                           src={box.imagePreview}
                           alt="Content"
                           className="w-full h-full object-cover"
+                          style={{
+                            borderRadius: box.imageBorderRadius
+                          }}
                         />
                       </div>
                     )}
@@ -1891,12 +2305,28 @@ const NewMaker = () => {
                       <div className="relative z-10 h-full overflow-y-auto custom-scrollbar">
                         <div className={`p-4 ${box.fontFamily} ${box.fontWeight}`}>
                           {box.title && (
-                            <div className={`mb-4 pb-3 ${getHeaderStyle(box)}`}>
-                              <h3 className={`font-bold ${box.textSize === 'sm' ? 'text-lg' :
-                                  box.textSize === 'base' ? 'text-xl' :
+                            <div className={`mb-4 pb-3 ${getHeaderStyle(box)} relative overflow-hidden rounded-t-lg`}
+                              style={{
+                                background: box.headerBackground !== 'none' ? box.headerBackground : 'transparent',
+                                backdropFilter: box.headerBgBlur > 0 ? `blur(${box.headerBgBlur}px)` : 'none',
+                                margin: '-1rem -1rem 1rem -1rem',
+                                padding: '1rem'
+                              }}
+                            >
+                              <h3 
+                                className={`font-bold ${box.textSize === 'sm' ? 'text-lg' :
+                                    box.textSize === 'base' ? 'text-xl' :
                                     box.textSize === 'lg' ? 'text-2xl' :
-                                      'text-3xl'
-                                } text-left ${box.bgColor === '#FFFFFF' ? 'text-gray-900' : 'text-white'}`}>
+                                    'text-3xl'
+                                  } text-left`}
+                                style={{
+                                  background: box.headerTextColorType === 'gradient' ? box.headerTextColor : undefined,
+                                  color: box.headerTextColorType === 'gradient' ? 'transparent' : box.headerTextColor,
+                                  WebkitBackgroundClip: box.headerTextColorType === 'gradient' ? 'text' : undefined,
+                                  backgroundClip: box.headerTextColorType === 'gradient' ? 'text' : undefined,
+                                  textShadow: box.headerTextColorType === 'glass' ? '0 0 10px rgba(255,255,255,0.5)' : 'none'
+                                }}
+                              >
                                 {box.title}
                               </h3>
                             </div>
@@ -1907,7 +2337,11 @@ const NewMaker = () => {
                                 __html: formatText(box.body, box.highlightColor)
                               }}
                               style={{
-                                color: box.bgColor === '#FFFFFF' ? '#000000' : '#ffffff'
+                                background: box.bodyTextColorType === 'gradient' ? box.bodyTextColor : undefined,
+                                color: box.bodyTextColorType === 'gradient' ? 'transparent' : box.bodyTextColor,
+                                WebkitBackgroundClip: box.bodyTextColorType === 'gradient' ? 'text' : undefined,
+                                backgroundClip: box.bodyTextColorType === 'gradient' ? 'text' : undefined,
+                                textShadow: box.bodyTextColorType === 'glass' ? '0 0 5px rgba(255,255,255,0.3)' : 'none'
                               }}
                             />
                           )}

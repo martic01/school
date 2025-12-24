@@ -7,6 +7,7 @@ import {
   FaGraduationCap,
   FaRocket,
   FaHandshake,
+  FaShieldAlt,
 } from "react-icons/fa";
 import Button from "../components/AppButton";
 import { aboutContentData } from "../data/Data";
@@ -87,8 +88,73 @@ const AboutPage = () => {
                   </p>
                 ))}
               </div>
+
+                 {/* What We Stand For Section - Now col-span-2 */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.6 }}
+                      className="lg:col-span-2"
+                    >
+                      <div className="flex items-start gap-4 mt-7 mb-6">
+                        <div>
+                          <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-2">
+                            <span className="text-red-600">What We</span> Stand For
+                          </h3>
+                          <div className="w-16 h-1 bg-black mb-4"></div>
+                        </div>
+                      </div>
+          
+                      <div className="bg-linear-to-r p-6 rounded-xl relative overflow-hidden ">
+                        {/* Decorative Corner */}
+                        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-black"></div>
+                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600"></div>
+          
+                        {/* Vision Section */}
+                        <div className="flex items-start gap-4 mb-6 p-4 bg-white/80">
+                          <div className="relative">
+                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0 vision-icon-glow">
+                              <FaGraduationCap className="w-5 h-5 text-black" />
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-bold text-red-700 mb-2">VISION</h4>
+                            <p className="text-gray-700 leading-relaxed">
+                              To help at least 5,000 individuals yearly to become IT Experts.
+                            </p>
+                          </div>
+                        </div>
+          
+                        {/* Mission Section */}
+                        <div className="flex items-start gap-4 p-4 bg-white/80">
+                          <div className="relative">
+                            <div className="mission-icon-glow w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0 ">
+                              <FaShieldAlt className="w-5 h-5 text-black" />
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-bold text-red-700 mb-2">MISSION</h4>
+                            <p className="text-gray-700 leading-relaxed">
+                              To produce IT Experts locally that will compete well anywhere in the world.
+                            </p>
+                          </div>
+                        </div>
+          
+                        {/* ACEDU Description */}
+                        <div className="mt-6 pt-4 border-t border-red-100">
+                          <p className="text-gray-700 leading-relaxed text-center italic">
+                            At <span className="font-bold text-red-600"> About ACEDU Coding</span>,
+                            we build the foundation for global IT excellence, one expert at a time.
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
             </div>
+
+            
           </div>
+        
+          
         </section>
 
         {/* Why Bootcamp Section */}

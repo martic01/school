@@ -79,7 +79,7 @@ const Footer = ({ show = true }) => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-2"
+            className="lg:col-span-2 hidden md:block"
           >
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 bg-linear-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shrink-0">

@@ -4,9 +4,44 @@ import { ArrowRight, School, Code, Globe, ExternalLink } from 'lucide-react';
 import Button from './AppButton';
 import { cleverSchoolData, productsData } from '../data/Data';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const ProductsShowcase = () => {
     const navigate = useNavigate();
+
+    // Function to handle smooth scroll to element
+    const scrollToElement = (elementId) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    };
+
+    // Function to handle learn more click for specific products
+    const handleLearnMoreClick = (productName) => {
+        // Navigate to products page first
+        navigate('/products');
+        
+        // Then scroll to specific section after a short delay to allow page load
+        setTimeout(() => {
+            scrollToElement('other-services');
+            
+            // If it's a specific product, you could add highlighting or other effects
+            if (productName === 'Custom Software Development' || productName === 'Website Development & Management') {
+                // Optional: Add a highlight effect to the specific product
+                const productElement = document.querySelector(`[data-product="${productName}"]`);
+                if (productElement) {
+                    productElement.classList.add('highlight-product');
+                    setTimeout(() => {
+                        productElement.classList.remove('highlight-product');
+                    }, 2000);
+                }
+            }
+        }, 1000);
+    };
 
     // Show Clever School as featured and other products
     const featuredProducts = [
@@ -27,6 +62,30 @@ const ProductsShowcase = () => {
         },
         ...productsData.slice(0, 2) // Show only 2 other products
     ];
+
+    // Add scroll functionality to the featured products
+    useEffect(() => {
+        // Check if we're on the products page with hash
+        const handleHashChange = () => {
+            if (window.location.pathname === '/products' && window.location.hash === '#other-services') {
+                scrollToElement('other-services');
+            }
+        };
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', handleHashChange);
+        
+        // Check on initial load
+        if (window.location.pathname === '/products' && window.location.hash === '#other-services') {
+            setTimeout(() => {
+                scrollToElement('other-services');
+            }, 100);
+        }
+
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
+    }, []);
 
     const getIcon = (iconName) => {
         switch (iconName) {
@@ -67,7 +126,7 @@ const ProductsShowcase = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
-                        className="md:col-span-2 flex flex-col justify-around  bg-gradient-to-br from-blue-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200 hover:shadow-lg transition-all duration-300"
+                        className="md:col-span-2 flex flex-col justify-around bg-gradient-to-br from-blue-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200 hover:shadow-lg transition-all duration-300"
                     >
                         <div className="flex items-start gap-4 mb-4">
                             <div className="p-3 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg text-white shrink-0">
@@ -77,7 +136,7 @@ const ProductsShowcase = () => {
                                 <h3 className="md:text-4xl text-xl font-bold text-gray-900">
                                     {featuredProducts[0].fullName}
                                 </h3>
-                                <p className="text-purple-600 text-sm md:text-md  font-medium mt-1">{featuredProducts[0].tagline}</p>
+                                <p className="text-purple-600 text-sm md:text-md font-medium mt-1">{featuredProducts[0].tagline}</p>
                             </div>
                         </div>
 
@@ -87,13 +146,13 @@ const ProductsShowcase = () => {
 
                         {/* Quick Stats */}
                         <div className="grid grid-cols-2 gap-3 mb-4">
-                            <div className="bg-white px-3  py-9 rounded-lg text-center border border-purple-100">
+                            <div className="bg-white px-3 py-9 rounded-lg text-center border border-purple-100">
                                 <div className="text-2xl font-bold text-purple-600">
                                     {featuredProducts[0].stats.schools}+
                                 </div>
                                 <div className="text-xs text-gray-600">Schools</div>
                             </div>
-                            <div className="bg-white px-3  py-9 rounded-lg text-center border border-purple-100">
+                            <div className="bg-white px-3 py-9 rounded-lg text-center border border-purple-100">
                                 <div className="text-2xl font-bold text-purple-600">
                                     {featuredProducts[0].stats.students}+
                                 </div>
@@ -102,18 +161,17 @@ const ProductsShowcase = () => {
                         </div>
 
                         <div className="flex items-center gap-3">
-                          
                             <button
                                 onClick={() => navigate('/products')}
                                 className="text-sm flex-1 border border-purple-200 text-purple-600 hover:text-purple-700 font-medium px-3 py-2 hover:bg-purple-50 rounded-lg transition-colors"
                             >
                                 Learn more →
                             </button>
-                              <a
+                            <a
                                 href={cleverSchoolData.product.portalLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all  justify-center"
+                                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all justify-center"
                             >
                                 <ExternalLink className="w-3 h-3" />
                                 View Portal
@@ -131,6 +189,7 @@ const ProductsShowcase = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: (index + 1) * 0.1 }}
                                 className={`${product.color} rounded-xl p-5 border ${product.borderColor} hover:shadow-lg transition-all duration-300`}
+                                data-product={product.name}
                             >
                                 <div className="flex items-center gap-3 mb-3">
                                     <div className={`p-2 rounded-lg ${product.textColor} bg-white shadow-sm`}>
@@ -153,7 +212,7 @@ const ProductsShowcase = () => {
                                 </div>
 
                                 <button
-                                    onClick={() => navigate('/products')}
+                                    onClick={() => handleLearnMoreClick(product.name)}
                                     className="text-sm text-blue-600 hover:text-blue-700 font-medium w-full text-center py-2 hover:bg-blue-50 rounded-lg transition-colors"
                                 >
                                     Learn more →
@@ -183,6 +242,20 @@ const ProductsShowcase = () => {
                     </p>
                 </motion.div>
             </div>
+
+            <style jsx>{`
+                @keyframes highlight {
+                    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+                    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+                }
+                
+                .highlight-product {
+                    animation: highlight 2s ease;
+                    position: relative;
+                    z-index: 10;
+                }
+            `}</style>
         </section>
     );
 };

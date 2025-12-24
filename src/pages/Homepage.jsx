@@ -119,27 +119,33 @@ const Homepage = () => {
         </div>
       </div>
 
+
+
       <div className="w-full h-fit" id="product-section">
         <ProductsShowcase />
-      </div>
-      <div className="w-full h-fit" id="alumni-section">
-        <AlumniCarousel />
-      </div>
-
-      {/* Featured Projects */}
-      <div className="w-full h-fit" id="projects-section">
-        <FeaturedProjects />
-      </div>
-
-      {/* About CEO / About section */}
-      <div className="w-full h-fit" id="about-ceo-section">
-        <AboutCEO />
       </div>
 
       {/* Courses modules */}
       <div className="w-full h-fit" id="courses-section">
         <CourseModulesHome />
       </div>
+
+ {/* Featured Projects */}
+      <div className="w-full h-fit" id="projects-section">
+        <FeaturedProjects />
+      </div>
+
+
+      <div className="w-full h-fit" id="alumni-section">
+        <AlumniCarousel />
+      </div>
+
+     
+      {/* About CEO / About section */}
+      <div className="w-full h-fit" id="about-ceo-section">
+        <AboutCEO />
+      </div>
+
 
       {/* Upcoming Bootcamps */}
       <div className="w-full h-fit" id="bootcamps-section">
