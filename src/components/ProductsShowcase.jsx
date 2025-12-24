@@ -52,7 +52,7 @@ const ProductsShowcase = () => {
             tagline: cleverSchoolData.product.tagline,
             description: "All-in-one school management platform with 21+ modules",
             icon: 'school',
-            color: 'bg-gradient-to-br from-blue-50 to-purple-50',
+            color: 'bg-linear-to-br from-blue-50 to-purple-50',
             textColor: 'text-purple-600',
             borderColor: 'border-purple-200',
             stats: {
@@ -97,7 +97,7 @@ const ProductsShowcase = () => {
     };
 
     return (
-        <section className="py-12 bg-gradient-to-b from-white to-blue-50">
+        <section className="py-12 bg-linear-to-b from-white to-blue-50">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -106,7 +106,7 @@ const ProductsShowcase = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-10"
                 >
-                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1.5 rounded-full text-xs font-bold mb-3">
+                    <div className="inline-flex items-center gap-2 bg-linear-to-r from-blue-600 to-purple-600 text-white px-3 py-1.5 rounded-full text-xs font-bold mb-3">
                         <School className="w-3 h-3" />
                         Our Solutions
                     </div>
@@ -126,10 +126,10 @@ const ProductsShowcase = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
-                        className="md:col-span-2 flex flex-col justify-around bg-gradient-to-br from-blue-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200 hover:shadow-lg transition-all duration-300"
+                        className="md:col-span-2 flex flex-col justify-around bg-linear-to-br from-blue-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200 hover:shadow-lg transition-all duration-300"
                     >
                         <div className="flex items-start gap-4 mb-4">
-                            <div className="p-3 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg text-white shrink-0">
+                            <div className="p-3 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg text-white shrink-0">
                                 <School className="w-6 h-6 md:w-8 md:h-8" />
                             </div>
                             <div>
@@ -171,7 +171,7 @@ const ProductsShowcase = () => {
                                 href={cleverSchoolData.product.portalLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all justify-center"
+                                className="inline-flex items-center gap-2 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all justify-center"
                             >
                                 <ExternalLink className="w-3 h-3" />
                                 View Portal
@@ -205,7 +205,7 @@ const ProductsShowcase = () => {
                                 <div className="space-y-1.5 mb-4">
                                     {product.benefits?.slice(0, 2).map((benefit, i) => (
                                         <div key={i} className="flex items-start gap-2">
-                                            <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-1.5 flex-shrink-0" />
+                                            <div className="w-1.5 h-1.5 bg-linear-to-r from-blue-500 to-purple-500 rounded-full mt-1.5 flex-shrink-0" />
                                             <span className="text-xs text-gray-700 line-clamp-1">{benefit}</span>
                                         </div>
                                     ))}
@@ -231,7 +231,7 @@ const ProductsShowcase = () => {
                     className="text-center"
                 >
                     <Button
-                        className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm md:text-base"
+                        className="px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm md:text-base"
                         onClick={() => navigate('/products')}
                     >
                         <span>View All Products & Services</span>
@@ -242,20 +242,6 @@ const ProductsShowcase = () => {
                     </p>
                 </motion.div>
             </div>
-
-            <style jsx>{`
-                @keyframes highlight {
-                    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
-                    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-                }
-                
-                .highlight-product {
-                    animation: highlight 2s ease;
-                    position: relative;
-                    z-index: 10;
-                }
-            `}</style>
         </section>
     );
 };
