@@ -24,11 +24,11 @@ const ContactSection = () => {
     // Simple check for email client support
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const isDesktop = !isMobile;
-    
+
     // Most desktops have email clients, mobile devices usually have mail apps
     // This is a basic heuristic - you could make it more sophisticated
     setHasEmailClient(true); // Assume true by default
-    
+
     // Alternative: check if mailto protocol is supported
     try {
       const link = document.createElement('a');
@@ -61,9 +61,9 @@ const ContactSection = () => {
       "This message was sent from the Acedu BootCamp contact form.",
     ];
     const body = bodyLines.join("\n");
-    
+
     const fullMessage = `Subject: ${subject}\n\n${body}`;
-    
+
     navigator.clipboard.writeText(fullMessage)
       .then(() => {
         setCopied(true);
@@ -99,32 +99,32 @@ const ContactSection = () => {
     const body = bodyLines.join("\n");
 
     const mailtoLink = `mailto:Info@acedu.camp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
     // Create a hidden link to avoid navigation
     const link = document.createElement('a');
     link.href = mailtoLink;
     link.style.display = 'none';
-    
+
     // Set target to _blank and add noopener for security
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    
+
     // Add to body, click it, then remove it
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     // Check if we should show fallback options
     // We'll assume mailto worked and show success
     // If not, user can use the fallback options
     setIsSubmitted(true);
     setForm({ name: "", email: "", telephone: "", message: "" });
-    
+
     // After a delay, show copy option as alternative
     setTimeout(() => {
       setShowCopyOption(true);
     }, 2000);
-    
+
     setTimeout(() => {
       setIsSubmitted(false);
       setShowGoogleFormOption(false);
@@ -151,11 +151,11 @@ const ContactSection = () => {
   const openGoogleForm = () => {
     // Add form data to Google Form URL if you set up pre-filled fields
     const googleFormUrl = `${GOOGLE_FORM_URL}?usp=pp_url&entry.YOUR_NAME_FIELD=${encodeURIComponent(form.name)}&entry.YOUR_EMAIL_FIELD=${encodeURIComponent(form.email)}&entry.YOUR_PHONE_FIELD=${encodeURIComponent(form.telephone)}&entry.YOUR_MESSAGE_FIELD=${encodeURIComponent(form.message)}`;
-    
+
     window.open(googleFormUrl, '_blank', 'noopener,noreferrer');
     setIsSubmitted(true);
     setForm({ name: "", email: "", telephone: "", message: "" });
-    
+
     setTimeout(() => {
       setIsSubmitted(false);
       setShowGoogleFormOption(false);
@@ -183,8 +183,9 @@ const ContactSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-sm md:text-base text-gray-600 max-w-xl mx-auto"
           >
-            Have a question about our bootcamps, curriculum, or enrollment? Drop
-            a message and our team will respond as soon as possible.
+            <p> Have a question about our bootcamp, courses or enrollment?</p>
+            <p> Need free consultation of our software services?</p>
+            <p> Drop a message and our team will respond as soon as possible.</p>
           </motion.p>
         </div>
 
@@ -200,7 +201,7 @@ const ContactSection = () => {
               <div>
                 <h4 className="font-semibold text-green-800">Message prepared!</h4>
                 <p className="text-sm text-green-700">
-                  Your email client should open with a pre-filled message. 
+                  Your email client should open with a pre-filled message.
                   {!hasEmailClient && " If it doesn't open, use one of the options below."}
                 </p>
               </div>
@@ -217,7 +218,7 @@ const ContactSection = () => {
           >
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <h4 className="font-semibold text-blue-800 mb-2">Alternative ways to send:</h4>
-              
+
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Copy to Clipboard Option */}
                 <Button
@@ -229,7 +230,7 @@ const ContactSection = () => {
                     {copied ? "Copied!" : "Copy Message to Clipboard"}
                   </div>
                 </Button>
-                
+
                 {/* Google Form Option */}
                 <Button
                   onClick={openGoogleForm}
@@ -241,7 +242,7 @@ const ContactSection = () => {
                   </div>
                 </Button>
               </div>
-              
+
               {copied && (
                 <p className="mt-2 text-xs text-blue-700">
                   Message copied! Now paste it into your email client and send to: Info@acedu.camp
@@ -343,7 +344,7 @@ const ContactSection = () => {
 
           {/* Button */}
           <div className="flex justify-end">
-            <Button 
+            <Button
               className="px-6 md:px-8 h-10 md:h-11 text-sm md:text-base gap-2"
               type="submit"
               disabled={isSubmitting}
@@ -376,7 +377,7 @@ const ContactSection = () => {
               <FaEnvelope className="w-5 h-5 text-red-600" />
               <div className="text-left">
                 <p className="text-sm font-medium text-gray-700">Email</p>
-                <a 
+                <a
                   href="mailto:Info@acedu.camp"
                   className="text-red-600 font-bold hover:text-red-700 transition-colors"
                   onClick={(e) => {
@@ -396,9 +397,9 @@ const ContactSection = () => {
                 </a>
               </div>
             </div>
-            
+
             <div className="h-8 w-px bg-gray-300 hidden md:block"></div>
-            
+
             <div className="text-center">
               <p className="text-sm font-medium text-gray-700 mb-1">Quick Contact</p>
               <p className="text-xs text-gray-600">

@@ -6,7 +6,7 @@ import { alumniDatas } from "../data/Data";
 
 const alumniData = [...alumniDatas]
 
-const AlumniCarousel = () => {
+const AlumniCarousel = ({render = true}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isHoveringArrow, setIsHoveringArrow] = useState(false);
@@ -104,7 +104,7 @@ const AlumniCarousel = () => {
   };
 
   return (
-    <section className="w-full py-8 md:py-12 bg-black overflow-x-hidden">
+    <section className={`${render ? "block" : "hidden"} w-full py-8 md:py-12 bg-black overflow-x-hidden`}>
       {/* Header with animation effects */}
       <div className="max-w-6xl mx-auto px-4 md:px-6 text-center mb-8 md:mb-12">
         <div className="inline-block mb-3">
@@ -231,7 +231,7 @@ const AlumniCarousel = () => {
                     {/* Passport-style Image Section */}
                     <div className="relative h-52 md:h-56 overflow-hidden bg-black">
                       <motion.img
-                        src={alumni.image}
+                        src={alumni.image || alumni.backimage}
                         alt={alumni.name}
                         className="w-full h-full object-cover object-top"
                         style={{ objectPosition: 'center 10%' }}

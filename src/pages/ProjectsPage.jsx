@@ -1,6 +1,6 @@
 // src/pages/ProjectsShowcasePage.jsx
 import { motion } from "framer-motion";
-import { FaYoutube, FaGlobe } from "react-icons/fa";
+import { FaGlobe } from "react-icons/fa";
 import { projectsData } from "../data/Data";
 
 const directions = ["left", "right", "up", "down"];
@@ -80,16 +80,6 @@ const ProjectsShowcasePage = () => {
                       className="w-full h-full object-cover opacity-80"
                     />
                     <div className="absolute inset-0 flex items-center justify-center gap-4">
-                      {project.videoUrl && (
-                        <a
-                          href={project.videoUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="w-11 h-11 flex items-center justify-center rounded-full bg-white/90 text-red-600 shadow-md hover:bg-red-600 hover:text-white transition-colors"
-                        >
-                          <FaYoutube className="w-5 h-5" />
-                        </a>
-                      )}
                       {project.siteUrl && (
                         <a
                           href={project.siteUrl}

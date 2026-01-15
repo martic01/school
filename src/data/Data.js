@@ -2,6 +2,18 @@ import pro1 from "../assets/images/code.jpg"
 import pro2 from "../assets/images/websimg.png"
 import pro3 from "../assets/images/summerimg.jpg"
 import clever from "../assets/images/cleverimg.jpg"
+
+import defaultuser1 from "../assets/images/defimg1.jpg"
+import defaultuser2 from "../assets/images/defimg2.jpg"
+import ceopic from "../assets/images/ceopic (2).jpg"
+
+import projectimg1 from "../assets/images/t-shop-port1-Deq0R8ZK.png"
+import projectimg2 from "../assets/images/convex-port-CJDSUGOk.png"
+import projectimg3 from "../assets/images/inventory-port-B7XKVIhZ.png"
+import projectimg4 from "../assets/images/mcommerce1.png"
+
+
+
 // src/data/Data.js (or wherever your coursesData is located)
 export const coursesData = [
   // ========== FRONTEND DEVELOPER CATEGORY ==========
@@ -10,7 +22,7 @@ export const coursesData = [
     name: "Frontend Developer (Full Stack- HTML, CSS, JS)",
     category: "Frontend Development",
     description: "Master the complete frontend stack including Git, HTML, CSS, Bootstrap, jQuery, and JavaScript for modern web development.",
-    duration: "4 Weeks - Monday-Friday", // 6 weeks option available
+    duration: "4 Weeks n- Monday-Friday", // 6 weeks option available
     time: "9AM - 2PM",
     stages: ["Git & Version Control", "HTML5 & CSS3", "Bootstrap Framework", "jQuery", "JavaScript Fundamentals", "Responsive Design"],
     longDescription: "This comprehensive frontend course covers everything from basic HTML/CSS to advanced JavaScript. You'll learn Git for version control, Bootstrap for rapid prototyping, jQuery for DOM manipulation, and modern JavaScript for interactive web applications. Perfect for beginners starting their web development journey.",
@@ -249,88 +261,73 @@ export const courseCategories = [
 export const projectsData = [
   {
     id: 1,
-    ownerName: "Adaeze Okafor",
-    projectName: "CampusConnect",
-    year: "2024",
-    reason: "Help students easily find clubs, events, and study groups on campus.",
+    ownerName: "Tega",
+    projectName: "T-Shop - E-Commerce Website",
+    year: "2020",
+    reason: "Gives users a seamless online shopping experience.",
     description:
-      "A social platform that connects students to campus events, study groups, and communities. " +
-      "Built with React and Firebase, it supports real-time announcements, RSVP tracking, and user profiles. " +
-      "The app focuses on accessibility, offline support, and fast navigation so students can quickly " +
-      "discover what's happening around them and never miss important opportunities.",
-    image:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=900&auto=format&fit=crop&q=80",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    siteUrl: "https://example.com/campusconnect",
-    techStack: ["React", "Firebase", "Tailwind CSS"],
+      "T-Shop is a full-stack e-commerce platform built with MongoDB, Redis, Stripe, JWT, and React, offering a secure and seamless shopping experience. It features user authentication with JWT (access and refresh tokens), email verification and “forgot password” flows via Nodemailer, product and category management, a shopping cart, and checkout with Stripe integration. State management is handled using Zustand for efficient global state, users can apply coupon codes, and admins can manage orders, track sales through an analytics dashboard, and oversee the platform. Redis caching enhances performance, and Tailwind CSS ensures a modern UI. With a focus on security, scalability, and full-stack deployment, T-Shop delivers a robust and efficient online shopping solution.",
+    image: projectimg1,
+    siteUrl: "https://t-shop-y62s.onrender.com/",
+    techStack: [
+      "React",
+      "Node.js",
+      "Express",
+      "Zustand",
+      "Tailwind CSS"
+    ],
   },
   {
     id: 2,
-    ownerName: "Ibrahim Musa",
-    projectName: "SafePay Wallet",
+    ownerName: "Tega",
+    projectName: "Metrack – Fullstack Real-Time Slack Clone",
     year: "2023",
-    reason: "Provide a secure, simple way for small businesses to accept digital payments.",
-    description:
-      "A digital wallet and payment dashboard for micro and small businesses. " +
-      "Merchants can generate QR codes, track daily sales, manage customers, and export simple reports. " +
-      "The interface is optimized for low-end Android devices and slow networks, " +
-      "making digital payments more inclusive for local businesses.",
-    image:
-      "https://images.unsplash.com/photo-1523287562758-66c7fc58967a?w=900&auto=format&fit=crop&q=80",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    siteUrl: "https://example.com/safepay",
-    techStack: ["Vue", "Node.js", "MongoDB"],
+    reason: "To facilitate real-time team communication and collaboration.",
+    description: "Metrack is a fullstack real- time messaging platform inspired by Slack.It supports workspaces, channels, 1: 1 conversations, threaded discussions, reactions, and role - based access control.Users can send messages, upload images, edit or delete messages, and manage user roles—all powered by Convex for real - time updates.",
+    image: projectimg2,
+    siteUrl: "https://metrack-git-main-sirtegs024s-projects.vercel.app/",
+    techStack: [
+      "Next.js",
+      "Convex",
+      "Typescript",
+      "Tailwind.css"
+    ],
   },
   {
     id: 3,
-    ownerName: "Tomiwa Adebayo",
-    projectName: "HealthTrackr",
-    year: "2024",
-    reason: "Help busy professionals track habits, workouts, and mood in one place.",
+    ownerName: "Tega",
+    projectName: "Tegstock - Full Stack Inventory Management Dashboard",
+    year: "2021",
+    reason: "To enable seamless inventory tracking in the cloud.",
     description:
-      "A personal wellness dashboard that combines daily habits, exercise logs, and mood tracking. " +
-      "Built as a responsive web app with charts, reminders, and streak tracking. " +
-      "The goal is to make self-care measurable so users can understand how small habits " +
-      "compound into meaningful health improvements over time.",
-    image:
-      "https://images.unsplash.com/photo-1550592704-6c76defa9982?w=900&auto=format&fit=crop&q=80",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    siteUrl: "https://example.com/healthtrackr",
-    techStack: ["React", "TypeScript", "Chart.js"],
+      "Tegstock is a full-stack inventory management dashboard designed for seamless inventory tracking, built with Next.js, Redux, Node.js, and AWS. The frontend features a responsive UI styled with Tailwind CSS, utilizing Material UI Data Grid for data handling, Redux Toolkit for state management, and Recharts for data visualization. The backend, powered by Node.js, Express, and Prisma, integrates PostgreSQL for structured data storage. Hosted on AWS, it leverages RDS for database management, EC2 for backend hosting, API Gateway for secure endpoints, Amplify for frontend deployment, and S3 for storage. Key features include real-time inventory tracking, advanced search and filtering, supplier management,and analytics, ensuring a scalable and efficient cloud-based solution.",
+    image: projectimg3,
+    siteUrl: "https://main.d1exwyzl9jqwbo.amplifyapp.com/",
+    techStack: [
+      "Next.js",
+      "Typescript",
+      "Node.js",
+      "Tailwind.css"
+    ],
   },
   {
     id: 4,
-    ownerName: "Grace Eze",
-    projectName: "FarmLink Marketplace",
-    year: "2023",
-    reason: "Connect local farmers directly to buyers to reduce waste and increase income.",
+    ownerName: "Matthew",
+    projectName: "weSHOP E-commerce with Voice assistant Web Application",
+    year: "2024",
+    reason: "For fast and easy shoping exprience.",
     description:
-      "A marketplace that links local farmers with restaurants and households. " +
-      "Farmers can list fresh produce, manage inventory, and receive orders. " +
-      "The platform focuses on transparency, prices in local currency, and clear delivery timelines, " +
-      "helping to reduce food waste and improve farmer margins.",
-    image:
-      "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=900&auto=format&fit=crop&q=80",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    siteUrl: "https://example.com/farmlink",
-    techStack: ["Next.js", "PostgreSQL"],
+      "This project is a modern, interactive e-commerce web application that integrates a voice assistant to create a seamless and user-friendly shopping experience. The application is designed to allow users to interact with the platform using voice commands, making it accessible and efficient. This unique functionality simplifies common actions like browsing products, searching for specific items by category or name, and managing a shopping cart, all without requiring manual input. The voice assistant leverages advanced speech recognition and text-to-speech technology to enhance usability. Users can speak commands to search for products, scroll through the page, or interact with the cart, and the application provides real-time audio feedback. This makes the shopping process not only more engaging but also accessible to users with physical disabilities or those who prefer hands-free interaction.",
+    image: projectimg4,
+    siteUrl: "https://github.com/martic01/weshop",
+    techStack: [
+      "CSS",
+      "HTML",
+      "JAVASCRIPT",
+      "JQUERY"
+    ],
   },
-  {
-    id: 5,
-    ownerName: "Kelvin Umeh",
-    projectName: "TaskFlow Pro",
-    year: "2022",
-    reason: "Make team task management simple and visual for small remote teams.",
-    description:
-      "A Kanban-style project management tool with drag-and-drop boards, " +
-      "due dates, and notifications. Built to help remote teams in small startups " +
-      "organize sprints and daily tasks without complex enterprise tools.",
-    image:
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=900&auto=format&fit=crop&q=80",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    siteUrl: "https://example.com/taskflow",
-    techStack: ["React", "Redux", "Node.js"],
-  },
+ 
   // add more as needed...
 ];
 
@@ -339,8 +336,7 @@ export const projectsData = [
 export const ceoDatas = {
   name: "Mr. Bola Saheed ",
   title: "Founder & CEO",
-  image:
-    "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&h=600&fit=crop&crop=face",
+  image: ceopic,
   bio: "Mr. Bola Saheed is a seasoned technology leader and educator, serving as the Chief Executive Officer of Adroitsoft Nigeria Limited and the Founder & CEO of ACEDU Coding Bootcamp. With over 25 years of experience in enterprise application development, software engineering, and technology education, he has built a reputation for bridging the gap between traditional learning and real‑world digital skills.",
   quote:
     "Technology should be practical, inclusive, and transformative. At ACEDU, we don’t just teach — we build creators.” — Bola Saheed.",
@@ -412,7 +408,8 @@ export const alumniDatas = [
     skill: "Frontend Developer",
     location: "San Francisco, USA",
     company: "Google",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=350&fit=crop&crop=face",
+    image: "",
+    backimage: defaultuser2,
     quote: "The bootcamp transformed my career from scratch to a full-time developer role.",
     graduationYear: "2022",
     rating: 5
@@ -423,7 +420,8 @@ export const alumniDatas = [
     skill: "Full Stack Engineer",
     location: "Toronto, Canada",
     company: "Shopify",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=350&fit=crop&crop=face",
+    image: "",
+    backimage: defaultuser1,
     quote: "Hands-on projects gave me the confidence to tackle real-world challenges.",
     graduationYear: "2021",
     rating: 5
@@ -434,7 +432,8 @@ export const alumniDatas = [
     skill: "React Specialist",
     location: "London, UK",
     company: "Facebook",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=350&fit=crop&crop=face",
+    image: "",
+    backimage: defaultuser2,
     quote: "The mentorship and community support were invaluable throughout my journey.",
     graduationYear: "2023",
     rating: 5
@@ -445,7 +444,8 @@ export const alumniDatas = [
     skill: "JavaScript Developer",
     location: "Bangalore, India",
     company: "Amazon",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=350&fit=crop&crop=face",
+    image: "",
+    backimage: defaultuser1,
     quote: "From zero coding experience to landing my dream job in 6 months!",
     graduationYear: "2022",
     rating: 5
@@ -456,7 +456,8 @@ export const alumniDatas = [
     skill: "UI/UX Engineer",
     location: "Seoul, South Korea",
     company: "Samsung",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=350&fit=crop&crop=face",
+    image: "",
+    backimage: defaultuser2,
     quote: "The curriculum perfectly balanced theory with practical application.",
     graduationYear: "2023",
     rating: 5
@@ -467,7 +468,8 @@ export const alumniDatas = [
     skill: "Mobile Developer",
     location: "Sydney, Australia",
     company: "Atlassian",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=350&fit=crop&crop=face",
+    image: "",
+    backimage: defaultuser1,
     quote: "The career guidance helped me negotiate a 40% higher starting salary.",
     graduationYear: "2021",
     rating: 5
@@ -595,9 +597,9 @@ export const contactInfoData = {
   instagram: "https://www.instagram.com/acedu_bootcamp?igsh=MTB2NHk1cWF6cTFiZg%3D%3D&utm_source=qr",
   tiktok: "https://www.tiktok.com/@acedu_bootcamp?_r=1&_t=ZS-92F2ZyjTcLw",
   youtube: "https://www.youtube.com/@acedu_coding_bootcamp",
-  whatsapp:"https://wa.me/+2347048606767",
+  whatsapp: "https://wa.me/+2347048606767",
 
-  
+
   ceoPhone: "+234 704 860 6767",
   ceoEmail: "ceo@acedu.camp",
   ceoLinkdin: "https://www.linkedin.com/in/bolasaheed?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
@@ -872,7 +874,7 @@ export const hostelData = {
       id: "security",
       title: "Safety & Security",
       description: "24/7 security personnel, CCTV surveillance, secure access systems, and emergency response protocols ensure your safety at all times.",
-      features: ["24/7 Security", "CCTV Surveillance", "Secure Access", "Emergency Response"],
+      features: ["24/7 Security", "Gaurd watch", "Secure Access", "Emergency Response"],
       image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&auto=format&fit=crop&q=80",
       audioText: "Your safety is our priority with 24/7 security, CCTV surveillance, and emergency response systems."
     },
@@ -888,7 +890,7 @@ export const hostelData = {
       id: "location",
       title: "Prime Location",
       description: "Located close to ACEDU campus, markets, restaurants, and transportation hubs. Easy access to all essential services.",
-      features: ["Near campus", "Transport access", "Markets nearby", "Restaurants close"],
+      features: ["GYM nearby", "Transport access", "Markets nearby", "Restaurants close"],
       image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&auto=format&fit=crop&q=80",
       audioText: "Our prime location offers easy access to campus, markets, and transportation hubs."
     }

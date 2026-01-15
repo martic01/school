@@ -34,7 +34,7 @@ body {
   font-family: var(--font3);
 }
 
-.cent {
+/* .cent {
   position: relative;
   overflow: hidden;
 }
@@ -47,7 +47,7 @@ body {
   transform: translateX(-200%);
   background: linear-gradient(90deg, transparent, #ffffff48, #ffffff34, #00000036, #0000004f, #00000073, #ffffff2c, #ffffff52, transparent);
   animation: 6s slide linear infinite;
-}
+} */
 
 @keyframes slide {
   to {

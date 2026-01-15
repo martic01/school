@@ -137,7 +137,7 @@ const Homepage = () => {
 
 
       <div className="w-full h-fit" id="alumni-section">
-        <AlumniCarousel />
+        <AlumniCarousel render={false} />
       </div>
 
      

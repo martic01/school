@@ -88,7 +88,7 @@ function getPageDescription(pageName) {
   const descriptions = {
     'home': `🏠 Home Page\n\nWelcome to ACEDU Coding Bootcamp! This is our main landing page where you can:\n• See our vision to train 5,000+ IT experts yearly\n• Explore all ${coursesData.length} available courses across ${getCourseCategories().length} categories\n• View real student projects with live demos\n• Check upcoming bootcamps including free cybersecurity training\n• Learn about our alumni success stories\n• Meet our founder and team\n• Find contact information and location`,
     
-    'about': `ℹ️ About Page\n\nLearn more about ACEDU Coding Bootcamp:\n• Our story and mission to produce globally competitive IT experts\n• Why we chose the bootcamp model over traditional education\n• Our D.I.G.I.T.A.L core values\n• Team and leadership\n• Student success stories\n• Our hands-on apprenticeship approach`,
+    'about': `ℹ️ About Page\n\nLearn more about ACEDU Coding Bootcamp:\n• Our story and mission to produce globally competitive IT experts\n• Why we chose the bootcamp model over traditional education\n• Our A.C.E.D.U core values\n• Team and leadership\n• Student success stories\n• Our hands-on apprenticeship approach`,
     
     'course': `📚 Courses Page\n\nExplore all our ${coursesData.length} courses across ${getCourseCategories().length} categories:\n• Frontend Development (HTML, CSS, JS, React)\n• Backend Development (C# .NET)\n• Data Analytics (Excel, Power BI, SQL)\n• Product Design (UI/UX)\n• Cybersecurity (Beginner to Advanced)\n• Computer Applications (Microsoft Office)\n• Mobile Development (React Native)\n• Detailed curriculum, duration, and pricing for each`,
     
@@ -98,7 +98,7 @@ function getPageDescription(pageName) {
     
     'hostel': `🏠 Hostel Page\n\nExplore our student accommodation facilities:\n• Comfortable hostel accommodation for full-time students\n• ${hostelData.sections.length} key sections including study areas, amenities, and security\n• Interactive audio tour with female voice narration\n• Affordable pricing options (${hostelData.pricing.sharedRoom} - ${hostelData.pricing.privateRoom})\n• All plans include: ${hostelData.pricing.includes.join(', ')}`,
     
-    'AIpage': `🤖 AI Chat Page\n\nChat with me (ACEDU AI) anytime:\n• Ask questions about all ${coursesData.length} courses\n• Get enrollment guidance and pricing\n• Technical assistance and career advice\n• Learn about our location and facilities\n• Information about our D.I.G.I.T.A.L values\n• Available 24/7 for support`,
+    'AIpage': `🤖 AI Chat Page\n\nChat with me (ACEDU AI) anytime:\n• Ask questions about all ${coursesData.length} courses\n• Get enrollment guidance and pricing\n• Technical assistance and career advice\n• Learn about our location and facilities\n• Information about our A.C.E.D.U values\n• Available 24/7 for support`,
     
     'Enroll': `📝 Enrollment Page\n\nReady to join ACEDU Coding Bootcamp?\n• Fill out enrollment form\n• Choose from ${coursesData.length} available courses\n• Select payment options (4-week or 6-week plans available)\n• Pick your schedule (Mon-Fri or thrice weekly)\n• Access hostel accommodation for full-time students\n• Start your IT journey from beginner to expert`
   };
@@ -222,7 +222,7 @@ function handleTutorCommand(input) {
         const completionTime = Math.round((Date.now() - currentState.startedAt) / 1000 / 60);
         resetTutorState();
         return {
-          text: `🎉 Tutor Complete! 🎉\n\nYou've successfully explored all of ACEDU Coding Bootcamp in ${completionTime} minutes!\n\nWhat you've seen:\n✅ Home Page - Our main landing with vision to train 5,000+ IT experts yearly\n✅ About Page - Our D.I.G.I.T.A.L values and mission\n✅ Courses Page - All ${coursesData.length} courses across ${getCourseCategories().length} categories\n✅ Projects Page - Real student portfolio with live demos\n✅ Products Page - Comprehensive tech solutions for businesses and schools\n✅ Hostel Page - Student accommodation with interactive audio tour\n✅ AI Chat Page - Interactive assistant (that's me!)\n✅ Enrollment Page - Join our bootcamp with flexible options\n\nNow you can:\n• Ask me specific questions about any course or product\n• Visit any page again for more details\n• Start the enrollment process\n• Explore hostel accommodation options\n• Schedule a campus tour\n\nThank you for taking the tour! 🙏`,
+          text: `🎉 Tutor Complete! 🎉\n\nYou've successfully explored all of ACEDU Coding Bootcamp in ${completionTime} minutes!\n\nWhat you've seen:\n✅ Home Page - Our main landing with vision to train 5,000+ IT experts yearly\n✅ About Page - Our A.C.E.D.U values and mission\n✅ Courses Page - All ${coursesData.length} courses across ${getCourseCategories().length} categories\n✅ Projects Page - Real student portfolio with live demos\n✅ Products Page - Comprehensive tech solutions for businesses and schools\n✅ Hostel Page - Student accommodation with interactive audio tour\n✅ AI Chat Page - Interactive assistant (that's me!)\n✅ Enrollment Page - Join our bootcamp with flexible options\n\nNow you can:\n• Ask me specific questions about any course or product\n• Visit any page again for more details\n• Start the enrollment process\n• Explore hostel accommodation options\n• Schedule a campus tour\n\nThank you for taking the tour! 🙏`,
           navigateTo: null,
           startTutor: false,
           continueTutor: false,
@@ -482,14 +482,14 @@ export function getFakeAssistantResponse(userInput) {
       text:
         "Hey there! 👋 I'm ACEDU's friendly AI guide.\n\n" +
         "I can help you with:\n" +
-        `• Explore our ${coursesData.length} courses across ${getCourseCategories().length} categories 🎯\n` +
-        "• Understand pricing & schedules 💰⏱️\n" +
-        "• See real student projects with live demos 🚀\n" +
-        "• Learn about our D.I.G.I.T.A.L core values 💎\n" +
-        "• Check upcoming bootcamps including FREE cybersecurity training 🔐\n" +
-        "• Explore our Products & Services 🛒\n" +
-        "• Get information about Hostel accommodation 🏠\n" +
-        "• Enrollment guidance and career advice 📝\n\n" +
+        `1• Explore our ${coursesData.length} courses across ${getCourseCategories().length} categories 🎯\n` +
+        "2• Understand pricing & schedules 💰⏱️\n" +
+        "3• See real student projects with live demos 🚀\n" +
+        "4• Learn about our A.C.E.D.U core values 💎\n" +
+        "5• Check upcoming bootcamps including FREE cybersecurity training 🔐\n" +
+        "6• Explore our Products & Services 🛒\n" +
+        "7• Get information about Hostel accommodation 🏠\n" +
+        "8• Enrollment guidance and career advice 📝\n\n" +
         tutorStatus +
         "\n💡 **Try our guided tour!** Say 'SHOW ME AROUND' or 'TELL ME ABOUT ACEDU' for a step-by-step website tour.\n\n" +
         "What would you like to know first?",
@@ -512,7 +512,7 @@ export function getFakeAssistantResponse(userInput) {
         "If you'd like, I can now:\n" +
         "• Suggest a course based on your background\n" +
         "• Show you our upcoming bootcamps including the free cybersecurity training\n" +
-        "• Explain our D.I.G.I.T.A.L core values\n" +
+        "• Explain our A.C.E.D.U core values\n" +
         "• Guide you to our Products page for business solutions\n" +
         "• Show you our Hostel facilities with interactive tour\n" +
         "• Help with registration and hostel accommodation options" +
@@ -535,7 +535,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   // 1) Products / Services inquiries
-  if (/(products?|services?|solutions?|software development|website development|clever school|school portal|school management)/.test(lower)) {
+  if (/(products?|services?|solutions?|software development|6|website development|clever school|school portal|school management)/.test(lower)) {
     let productText = "**ACEDU Products & Services** 🛒\n\n";
     
     productsData.forEach((product, index) => {
@@ -566,8 +566,9 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
+  
   // 2) Hostel / Accommodation detailed inquiries
-  if (/(hostel|accommodation|stay|residence|dorm|housing|room|living|accomodation)/.test(lower)) {
+  if (/(hostel|accommodation|stay|residence|7|dorm|housing|room|living|accomodation)/.test(lower)) {
     let hostelText = "**ACEDU Student Hostel** 🏠\n\n";
     hostelText += `${hostelData.overview.description}\n\n`;
     
@@ -617,7 +618,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   // 4) Registration / Enrollment 📝
-  if (/(register|enrol|enroll|apply|sign ?up|join)/.test(lower)) {
+  if (/(register|enrol|enroll|8|apply|sign ?up|join)/.test(lower)) {
     return {
       text:
         "Great choice! 🎉 You can register directly online.\n\n" +
@@ -633,8 +634,10 @@ export function getFakeAssistantResponse(userInput) {
     };
   }
 
+
+
   // 5) Student projects / portfolio 🚀
-  if (/(project|portfolio|showcase|demo|capstone|student work)/.test(lower)) {
+  if (/(project|portfolio|showcase|3|demo|capstone|student work)/.test(lower)) {
     const sampleProjects = projectsData.slice(0, 3);
     let projectText = "Our students build real-world applications like:\n\n";
     
@@ -670,7 +673,7 @@ export function getFakeAssistantResponse(userInput) {
 
   // 7) About ACEDU / Bootcamp / Program
   if (
-    /(about acedu|about the program|about the bootcamp|about this program|about this bootcamp|what is acedu|who are you|tell me about acedu|about your company)/.test(lower) ||
+    /(about acedu|about the program|about the bootcamp|4|about this program|about this bootcamp|what is acedu|who are you|tell me about acedu|about your company)/.test(lower) ||
     (/^about$/.test(lower) && !/(ceo|founder|owner)/.test(lower))
   ) {
     // Extract about content dynamically
@@ -684,7 +687,7 @@ export function getFakeAssistantResponse(userInput) {
         aboutText += `**${section.title}**\n${section.text}\n\n`;
       }
       if (section.type === 'coreValues') {
-        aboutText += `**Our D.I.G.I.T.A.L Core Values:**\n`;
+        aboutText += `**Our A.C.E.D.U Core Values:**\n`;
         section.values?.forEach(value => {
           aboutText += `• **${value.letter} - ${value.title}:** ${value.text.split('.')[0]}.\n`;
         });
@@ -703,9 +706,9 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   // 8) Values / Vision / Mission
-  if (/(values|vision|mission|core values|principles|digital|d\.i\.g\.i\.t\.a\.l)/.test(lower) && !/(ceo|founder)/.test(lower)) {
+  if (/(values|vision|mission|core values|principles|2|d\.i\.g\.i\.t\.a\.l)/.test(lower) && !/(ceo|founder)/.test(lower)) {
     const coreValues = aboutContentData.find(section => section.type === 'coreValues');
-    let valuesText = "**Our D.I.G.I.T.A.L Core Values:**\n\n";
+    let valuesText = "**Our A.C.E.D.U Core Values:**\n\n";
     
     if (coreValues?.values) {
       coreValues.values.forEach(value => {
@@ -849,7 +852,7 @@ export function getFakeAssistantResponse(userInput) {
   }
 
   // 14) Courses - general inquiry
-  const mentionsCourseWord = lower.includes('course') || lower.includes('courses') || lower.includes('program') || lower.includes('class');
+  const mentionsCourseWord = lower.includes('course')  || lower.includes('courses') || lower.includes('program') || lower.includes('class') || lower.includes('1');
   const matchedCourseId = findCourseMatch(lower);
 
   // Specific course (matched by keywords)
@@ -1069,7 +1072,7 @@ export function getFakeAssistantResponse(userInput) {
         "• Upcoming bootcamps\n" +
         "• Student projects and alumni\n" +
         "• Enrollment process\n" +
-        "• D.I.G.I.T.A.L core values\n" +
+        "• A.C.E.D.U core values\n" +
         tutorInfo +
         "\n\n**Just ask me anything!** I'm here to help you explore everything ACEDU has to offer.",
       navigateTo: undefined,
@@ -1099,13 +1102,13 @@ export function getFakeAssistantResponse(userInput) {
       "• Student projects with live demos 🚀\n" +
       "• Products & Services for businesses 🛒\n" +
       "• Clever School Portal for institutions 🏫\n" +
-      "• Our D.I.G.I.T.A.L core values 💎\n" +
+      "• Our A.C.E.D.U core values 💎\n" +
       "• Enrollment process and payment plans 📝\n" +
       tutorPrompt +
       "\n\n**Ask me anything like:**\n" +
       "• 'Which course is best for absolute beginners?'\n" +
       "• 'Tell me about the free cybersecurity training'\n" +
-      "• 'What are your D.I.G.I.T.A.L values?'\n" +
+      "• 'What are your A.C.E.D.U values?'\n" +
       "• 'Show me the hostel interactive tour'\n" +
       "• 'Tell me about Clever School Portal'\n" +
       "• 'How do I enroll in React course?'\n" +
