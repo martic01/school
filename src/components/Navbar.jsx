@@ -541,6 +541,7 @@ const Navbar = ({ showHostel = true }) => {
           className={`${showHostel ? "hidden" : "block"} bg-blue-900 hover:bg-blue-700 py-2 px-2 text-white shadow-lg shadow-blue-600/30`}
           onClick={() => navigate('/hostel')}
           icon="bed"
+          disabled={true}
         >
           <FaBed className="mr-2" />
           View Our Hostel
