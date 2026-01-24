@@ -327,7 +327,7 @@ export const projectsData = [
       "JQUERY"
     ],
   },
- 
+
   // add more as needed...
 ];
 
@@ -717,48 +717,71 @@ export const cleverSchoolData = {
   managedSchools: [
     {
       id: 1,
-      name: "Prestige High School",
-      type: "Secondary",
-      location: "Lagos",
-      rating: 4.8,
+      name: "Mercy Medical University",
+      type: "University",
+      location: "Iwara Iwo, Osun State",
+      rating: 1,
+      testimonial: "Our lectures love the easy grade input system. Parents appreciate the transparency.",
+      improvements: ["Paperless operations", "Instant notifications", "Secure data management"],
+      yearsActive: 1,
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      id: 2,
+      name: "Ikirun College Of Health Technology WMC6+296 Titilope Medica Center",
+      type: "College",
+      location: "Jolayemi Street, Along, Ikirun 231110",
+      rating:5,
+      testimonial: "Completely revolutionized how we manage our boarding school operations.",
+      improvements: ["Boarding management simplified", "Parent communication improved", "Academic performance tracking"],
+      yearsActive: 2,
+      image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80"
+
+    },
+     {
+      id: 3,
+      name: "Arit International School",
+      type: "College",
+      location: "Estate Bus-stop, Alagbole, Akule road,Lagos",
+      rating:5 ,
+      testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
+      improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
+      yearsActive: 10,
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      id: 4,
+      name: "Highland Group of Schools",
+      type: "College",
+      location: "Abuja",
+      rating:4.9,
+      testimonial: "The best decision we made. Managing 5,000+ students is now effortless.",
+      improvements: ["Automated result processing", "Online admission system", "Real-time attendance tracking"],
+      yearsActive: 5,
+      image: "https://images.unsplash.com/photo-1562774053-701939374585?w=800&auto=format&fit=crop&q=80"
+    },
+     {
+      id: 5,
+      name: "Peaklane College International",
+      type: "College",
+      location: "Oremeli close, Akule,Lagos",
+      rating:5,
       testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
       improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
       yearsActive: 3,
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
     },
-    {
-      id: 2,
-      name: "Global University",
-      type: "University",
-      location: "Abuja",
-      rating: 4.9,
-      testimonial: "The best decision we made. Managing 5,000+ students is now effortless.",
-      improvements: ["Automated result processing", "Online admission system", "Real-time attendance tracking"],
-      yearsActive: 4,
-      image: "https://images.unsplash.com/photo-1562774053-701939374585?w=800&auto=format&fit=crop&q=80"
-    },
-    {
-      id: 3,
-      name: "Excel College",
-      type: "Secondary",
-      location: "Port Harcourt",
-      rating: 4.7,
-      testimonial: "Our teachers love the easy grade input system. Parents appreciate the transparency.",
-      improvements: ["Paperless operations", "Instant notifications", "Secure data management"],
-      yearsActive: 2,
+   {
+      id: 6,
+      name: "Al-Fawzul Azim",
+      type: "College",
+      location: "29 College Road, opposite General Hoapital, ifako-Ijaye,Lagos",
+      rating:5,
+      testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
+      improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
+      yearsActive: 3,
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
     },
-    {
-      id: 4,
-      name: "Royal Academy",
-      type: "International",
-      location: "Ibadan",
-      rating: 4.9,
-      testimonial: "Completely revolutionized how we manage our boarding school operations.",
-      improvements: ["Boarding management simplified", "Parent communication improved", "Academic performance tracking"],
-      yearsActive: 3,
-      image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80"
-    }
   ],
   successMetrics: {
     schoolsManaged: 15,

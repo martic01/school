@@ -1,7 +1,7 @@
 // Updated Navbar.jsx with automatic festive greeting
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Home, Info, BookOpen, Phone, ChevronDown, Bot, Building, Users } from 'lucide-react';
+import { Menu, X, Home, Info, BookOpen, Phone, ChevronDown, Bot, Building} from 'lucide-react';
 import {
   FaFacebookF,
   FaYoutube,
@@ -541,7 +541,7 @@ const Navbar = ({ showHostel = true }) => {
           className={`${showHostel ? "hidden" : "block"} bg-blue-900 hover:bg-blue-700 py-2 px-2 text-white shadow-lg shadow-blue-600/30`}
           onClick={() => navigate('/hostel')}
           icon="bed"
-          disabled={true}
+           disabled={true} // set to false to enable or remove the prop
         >
           <FaBed className="mr-2" />
           View Our Hostel
