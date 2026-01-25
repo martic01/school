@@ -22,7 +22,7 @@ const NewMaker = () => {
   });
   const [currentBoxIndex, setCurrentBoxIndex] = useState(0);
   const [isListening, setIsListening] = useState(false);
-  const [password, setPassword] = useState('mycshe');
+  const [password, setPassword] = useState('sherifatmaker12');
   const [inputPassword, setInputPassword] = useState('');
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
@@ -1060,7 +1060,7 @@ const NewMaker = () => {
                   value={inputPassword}
                   onChange={(e) => setInputPassword(e.target.value)}
                   className="w-full px-4 py-3 bg-gray-900 border-2 border-red-700 rounded-lg text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-900 mb-4"
-                  placeholder="Enter password (default: mycshe)"
+                  placeholder="Enter password"
                   autoFocus
                 />
                 <div className="flex gap-3">
