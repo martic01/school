@@ -720,8 +720,8 @@ export const cleverSchoolData = {
       name: "Mercy Medical University",
       type: "University",
       location: "Iwara Iwo, Osun State",
-      rating: 1,
-      testimonial: "Our lectures love the easy grade input system. Parents appreciate the transparency.",
+      rating: 5,
+      testimonial: "Our lecturers love the easy grade input system. Parents appreciate the transparency.",
       improvements: ["Paperless operations", "Instant notifications", "Secure data management"],
       yearsActive: 1,
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
@@ -732,8 +732,8 @@ export const cleverSchoolData = {
       type: "College",
       location: "Jolayemi Street, Along, Ikirun 231110",
       rating:5,
-      testimonial: "Completely revolutionized how we manage our boarding school operations.",
-      improvements: ["Boarding management simplified", "Parent communication improved", "Academic performance tracking"],
+      testimonial: "Completely revolutionized how we manage our school operations.",
+      improvements: ["Student Information Management", "Parent communication improved", "Academic performance tracking"],
       yearsActive: 2,
       image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80"
 
@@ -745,7 +745,7 @@ export const cleverSchoolData = {
       location: "Estate Bus-stop, Alagbole, Akule road,Lagos",
       rating:5 ,
       testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
-      improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
+      improvements: ["Integrated Robust Technology Managment", "40% reduction in paperwork", "Parent satisfaction: 92%"],
       yearsActive: 10,
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
     },
@@ -766,8 +766,8 @@ export const cleverSchoolData = {
       type: "College",
       location: "Oremeli close, Akule,Lagos",
       rating:5,
-      testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
-      improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
+      testimonial: "Clever school changed and improved our administrative processes.",
+      improvements: ["Reduced administrative workload by 70%", "Improved parent-school communication"],
       yearsActive: 3,
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
     },
@@ -777,8 +777,8 @@ export const cleverSchoolData = {
       type: "College",
       location: "29 College Road, opposite General Hoapital, ifako-Ijaye,Lagos",
       rating:5,
-      testimonial: "Clever School Portal transformed our administrative processes. Fee collection is now seamless!",
-      improvements: ["95% fee collection rate", "40% reduction in paperwork", "Parent satisfaction: 92%"],
+      testimonial: "The result entry managment is seamless. Parents are very happy with the transparency.",
+      improvements: ["Reduced our staff work load by 80% ", "Restructured administrative processes"],
       yearsActive: 3,
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80"
     },
