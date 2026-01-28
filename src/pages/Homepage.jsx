@@ -9,7 +9,7 @@ import CourseModulesHome from '../components/CourseModules';
 import UpcomingBootcamps from '../components/UpcomingBootcamps';
 import ContactSection from '../components/ContactSection';
 import ProductsShowcase from '../components/ProductsShowcase';
-import bgImg from "../assets/images/check.jpg";
+import bgImg from "../assets/images/bg-vid.mp4";
 
 
 const Homepage = () => {
@@ -25,25 +25,34 @@ const Homepage = () => {
 
   return (
     <>
-      {/* HERO SECTION */}
+ {/* HERO SECTION WITH VIDEO BACKGROUND */}
       <div className="w-full bg-gray-50" id="hero-section">
-        <div
-          style={{
-            backgroundImage: `url(${bgImg})`,
-            backgroundSize: 'cover',
-            backgroundAttachment: 'fixed',
-          }}
-          className="w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-[70vh]"
-        >
-          <div
-            className="
-              w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-[70vh] bg-(--dim) cent
-              flex flex-col md:flex-row
-              md:justify-between  sm:justify-center items-center
-              md:p-4 py-6 px-3 md:px-6 mt-3
-              gap-5 md:gap-8
-            "
+        <div className="relative w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-[75vh] overflow-hidden">
+          {/* Video Background */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute top-0 left-0 w-full h-full object-cover object-[center_37%]"
           >
+            <source src={bgImg} type="video/mp4" />
+            {/* Add fallback for browsers that don't support video */}
+            <img src="/" alt="Background" />
+          </video>
+
+          {/* Dark overlay for better text visibility */}
+          <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+
+          {/* Content */}
+          <div className="
+            relative z-10
+            w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-[70vh]
+            flex flex-col md:flex-row
+            md:justify-between sm:justify-center items-center
+            md:p-4 py-6 px-3 md:px-6 mt-3
+            gap-5 md:gap-8
+          ">
             {/* Left content */}
             <div className="w-full md:w-2/3 h-auto md:h-full mb-4 md:mb-0 md:mr-6 rounded-lg p-6 md:p-8 flex flex-col justify-center">
               <h1 className="f1 font-extrabold text-red-600 mb-4 text-3xl sm:text-4xl md:text-5xl">
@@ -71,7 +80,6 @@ const Homepage = () => {
           </div>
         </div>
       </div>
-
       {/* WHY THIS COURSE SECTION */}
       <div
         id="why-course-section"

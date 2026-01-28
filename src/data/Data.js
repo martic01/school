@@ -261,7 +261,7 @@ export const courseCategories = [
 export const projectsData = [
   {
     id: 1,
-    ownerName: "Tega",
+    ownerName: "sir. Tegs",
     projectName: "T-Shop - E-Commerce Website",
     year: "2020",
     reason: "Gives users a seamless online shopping experience.",
@@ -280,7 +280,7 @@ export const projectsData = [
   {
     id: 2,
     ownerName: "Tega",
-    projectName: "Metrack – Fullstack Real-Time Slack Clone",
+    projectName: "Metrack coms",
     year: "2023",
     reason: "To facilitate real-time team communication and collaboration.",
     description: "Metrack is a fullstack real- time messaging platform inspired by Slack.It supports workspaces, channels, 1: 1 conversations, threaded discussions, reactions, and role - based access control.Users can send messages, upload images, edit or delete messages, and manage user roles—all powered by Convex for real - time updates.",

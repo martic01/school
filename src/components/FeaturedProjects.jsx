@@ -1,5 +1,5 @@
 // src/components/FeaturedProjectsPreview.jsx
-import {  FaGlobe } from "react-icons/fa";
+import { FaGlobe } from "react-icons/fa";
 import { Link } from "react-router-dom"; // if you are using react-router
 import { projectsData } from "../data/Data";
 import Button from "./AppButton";
@@ -25,7 +25,7 @@ const FeaturedProjectsPreview = () => {
         </div>
 
         {/* Grid of project cards */}
-        <div className="flex gap-3">
+        <div className="flex flex-col mid:flex-row gap-3">
           {previewProjects.map((project, index) => (
             <article
               key={project.id}
@@ -61,18 +61,26 @@ const FeaturedProjectsPreview = () => {
 
               {/* Text section */}
               <div className="flex flex-col flex-1 p-4 md:p-5 gap-3">
-                <div className="text-xs  font-semibold text-red-600 uppercase tracking-wide">
-                  {project.ownerName}
-                </div>
+
                 <h3 className="text-md md:text-lg font-bold text-black">
                   {project.projectName}
                 </h3>
+                <div className="text-xs  font-semibold text-red-600 uppercase tracking-wide">
+                  by  {project.ownerName}
+                </div>
                 <p className="text-xs text-gray-500 mb-1">
-                  {project.year} • {project.reason}
+                  {project.year} 
                 </p>
                 <p className="text-xs text-gray-700 leading-relaxed line-clamp-none">
-                  {project.description.slice(0,100) + '...'}
+                  {project.description.slice(0,90) + '...'}
                 </p>
+              </div>
+              <div className="w-full h-9">
+                {project.techStack && (
+                  <p className="text-xs md:text-sm text-black font-semibold p-2">
+                    {project.techStack.join(" • ")}
+                  </p>
+                )}
               </div>
             </article>
           ))}
