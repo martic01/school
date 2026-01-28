@@ -61,17 +61,17 @@ const FeaturedProjectsPreview = () => {
 
               {/* Text section */}
               <div className="flex flex-col flex-1 p-4 md:p-5 gap-3">
-                <div className="text-xs font-semibold text-red-600 uppercase tracking-wide">
+                <div className="text-xs  font-semibold text-red-600 uppercase tracking-wide">
                   {project.ownerName}
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-black">
+                <h3 className="text-md md:text-lg font-bold text-black">
                   {project.projectName}
                 </h3>
                 <p className="text-xs text-gray-500 mb-1">
                   {project.year} • {project.reason}
                 </p>
-                <p className="text-sm text-gray-700 leading-relaxed line-clamp-none">
-                  {project.description}
+                <p className="text-xs text-gray-700 leading-relaxed line-clamp-none">
+                  {project.description.slice(0,100) + '...'}
                 </p>
               </div>
             </article>

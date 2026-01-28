@@ -120,17 +120,17 @@ const Homepage = () => {
       </div>
 
 
-
-      <div className="w-full h-fit" id="product-section">
-        <ProductsShowcase />
-      </div>
-
       {/* Courses modules */}
       <div className="w-full h-fit" id="courses-section">
         <CourseModulesHome />
       </div>
 
- {/* Featured Projects */}
+
+      <div className="w-full h-fit" id="product-section">
+        <ProductsShowcase />
+      </div>
+
+      {/* Featured Projects */}
       <div className="w-full h-fit" id="projects-section">
         <FeaturedProjects />
       </div>
@@ -140,7 +140,7 @@ const Homepage = () => {
         <AlumniCarousel render={false} />
       </div>
 
-     
+
       {/* About CEO / About section */}
       <div className="w-full h-fit" id="about-ceo-section">
         <AboutCEO />
