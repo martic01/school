@@ -609,12 +609,12 @@ const RegisterPage = () => {
                         transition={{ delay: 0.5 + index * 0.1 }}
                         className="flex items-center justify-between p-2 sm:p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
                       >
-                        <span className="font-medium text-gray-900 text-sm sm:text-base">
+                        <span className="font-medium  text-gray-900 text-sm sm:text-base">
                           {course.name}
                         </span>
-                        <span className="font-bold text-red-600 text-sm sm:text-base">
-                          ₦{course.price}
-                        </span>
+                        {/* <span className="font-bold text-red-600 text-sm sm:text-base">
+                          Full Course
+                        </span> */}
                       </motion.div>
                     ))}
                   </div>

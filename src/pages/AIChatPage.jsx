@@ -13,13 +13,6 @@ import {
 } from 'react-icons/fa';
 import { getFakeAssistantResponse } from '../ai/fakeAssistant';
 import { contactInfoData } from '../data/Data';
-
-// Inline styles for custom chat scrollbar
-
-  
- 
-
-
 const AIChatPage = () => {
   const [messages, setMessages] = useState([
     {
