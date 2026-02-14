@@ -13,42 +13,31 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const [showGoogleFormOption, setShowGoogleFormOption] = useState(false);
   const [showCopyOption, setShowCopyOption] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  // Check if device likely has an email client
-  const [hasEmailClient, setHasEmailClient] = useState(false);
-
-  useEffect(() => {
-    // Simple check for email client support
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const isDesktop = !isMobile;
-
-    // Most desktops have email clients, mobile devices usually have mail apps
-    // This is a basic heuristic - you could make it more sophisticated
-    setHasEmailClient(true); // Assume true by default
-
-    // Alternative: check if mailto protocol is supported
-    try {
-      const link = document.createElement('a');
-      link.href = 'mailto:Info@acedu.camp';
-      setHasEmailClient(link.protocol === 'mailto:');
-    } catch (e) {
-      setHasEmailClient(false);
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const [emailSent, setEmailSent] = useState(false);
 
   // Google Form URL (you need to create one and update this URL)
   const GOOGLE_FORM_URL = "https://forms.gle/m3PDtKm2DPAphcvR8";
 
+  // EmailJS Configuration
+  // REPLACE THESE WITH YOUR ACTUAL EMAILJS CREDENTIALS
+  const EMAILJS_CONFIG = {
+    service_id: "service_mailEA", // Get from EmailJS Dashboard → Email Services
+    template_id: "template_acedumailg", // Get from EmailJS Dashboard → Email Templates
+    user_id: "vCsN7slbNpRz8Pxjl", // Get from EmailJS Dashboard → API Keys
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setError(""); // Clear error when user types
+  };
+
   const copyToClipboard = () => {
-    const subject = `New message from ${form.name || "Acedu BootCamp Website"}`;
+    const subject = `message from ${form.name || "Acedu BootCamp Website"}`;
     const bodyLines = [
       `Name: ${form.name}`,
       `Email: ${form.email}`,
@@ -83,69 +72,73 @@ const ContactSection = () => {
       });
   };
 
-  const handleEmailSubmit = () => {
-    const subject = `New message from ${form.name || "Acedu BootCamp Website"}`;
-    const bodyLines = [
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      `Telephone: ${form.telephone || "N/A"}`,
-      "",
-      "Message:",
-      form.message,
-      "",
-      "---",
-      "This message was sent from the Acedu BootCamp contact form.",
-    ];
-    const body = bodyLines.join("\n");
+  const handleEmailSubmit = async () => {
+    try {
+      // Prepare email data for EmailJS
+      const emailData = {
+        service_id: EMAILJS_CONFIG.service_id,
+        template_id: EMAILJS_CONFIG.template_id,
+        user_id: EMAILJS_CONFIG.user_id,
+        template_params: {
+          to_email: "Info@acedu.camp",
+          from_name: form.name,
+          from_email: form.email,
+          telephone: form.telephone || "Not provided",
+          message: form.message,
+          subject: `New Contact Form Message from ${form.name}`,
+          submitted_at: new Date().toLocaleString(),
+        }
+      };
 
-    const mailtoLink = `mailto:Info@acedu.camp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      console.log("Sending email with data:", emailData.template_params);
 
-    // Create a hidden link to avoid navigation
-    const link = document.createElement('a');
-    link.href = mailtoLink;
-    link.style.display = 'none';
+      // Send email using EmailJS API
+      const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      });
 
-    // Set target to _blank and add noopener for security
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-
-    // Add to body, click it, then remove it
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // Check if we should show fallback options
-    // We'll assume mailto worked and show success
-    // If not, user can use the fallback options
-    setIsSubmitted(true);
-    setForm({ name: "", email: "", telephone: "", message: "" });
-
-    // After a delay, show copy option as alternative
-    setTimeout(() => {
+      if (response.ok) {
+        console.log("Email sent successfully!");
+        setEmailSent(true);
+        setIsSubmitted(true);
+        setForm({ name: "", email: "", telephone: "", message: "" });
+        
+        // Show success message
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setEmailSent(false);
+        }, 5000);
+      } else {
+        const errorData = await response.text();
+        throw new Error(errorData || "Failed to send email");
+      }
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      setError("Email sending failed. Please try the alternative options below.");
       setShowCopyOption(true);
-    }, 2000);
-
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setShowGoogleFormOption(false);
-      setShowCopyOption(false);
-    }, 10000);
+      setShowGoogleFormOption(true);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Clear any previous states
-    setShowGoogleFormOption(false);
+    setError("");
     setShowCopyOption(false);
+    setShowGoogleFormOption(false);
     setCopied(false);
 
-    // Simulate processing
-    setTimeout(() => {
-      handleEmailSubmit();
+    try {
+      await handleEmailSubmit();
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
       setIsSubmitting(false);
-    }, 500);
+    }
   };
 
   const openGoogleForm = () => {
@@ -154,10 +147,12 @@ const ContactSection = () => {
 
     window.open(googleFormUrl, '_blank', 'noopener,noreferrer');
     setIsSubmitted(true);
+    setEmailSent(true);
     setForm({ name: "", email: "", telephone: "", message: "" });
 
     setTimeout(() => {
       setIsSubmitted(false);
+      setEmailSent(false);
       setShowGoogleFormOption(false);
     }, 5000);
   };
@@ -176,21 +171,21 @@ const ContactSection = () => {
           >
             Send us a <span className="text-red-600">Message</span>
           </motion.h2>
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-sm md:text-base text-gray-600 max-w-xl mx-auto"
+            className="text-sm md:text-base text-gray-600 max-w-xl mx-auto space-y-1"
           >
             <p> Have a question about our bootcamp, courses or enrollment?</p>
             <p> Need free consultation of our software services?</p>
             <p> Drop a message and our team will respond as soon as possible.</p>
-          </motion.p>
+          </motion.div>
         </div>
 
         {/* Success Message */}
-        {isSubmitted && !showGoogleFormOption && (
+        {isSubmitted && emailSent && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -199,18 +194,28 @@ const ContactSection = () => {
             <div className="flex items-center gap-3">
               <FaCheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
               <div>
-                <h4 className="font-semibold text-green-800">Message prepared!</h4>
+                <h4 className="font-semibold text-green-800">Message Sent Successfully!</h4>
                 <p className="text-sm text-green-700">
-                  Your email client should open with a pre-filled message.
-                  {!hasEmailClient && " If it doesn't open, use one of the options below."}
+                  Your message has been delivered directly to our team. We'll respond within 24 hours.
                 </p>
               </div>
             </div>
           </motion.div>
         )}
 
+        {/* Error Message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
+          >
+            <p className="text-sm text-red-700">{error}</p>
+          </motion.div>
+        )}
+
         {/* Alternative Options */}
-        {(showCopyOption || !hasEmailClient) && !isSubmitting && (
+        {(showCopyOption || showGoogleFormOption) && !isSubmitting && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -221,26 +226,30 @@ const ContactSection = () => {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Copy to Clipboard Option */}
-                <Button
-                  onClick={copyToClipboard}
-                  className="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 text-sm font-medium"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <FaCopy className="w-4 h-4" />
-                    {copied ? "Copied!" : "Copy Message to Clipboard"}
-                  </div>
-                </Button>
+                {showCopyOption && (
+                  <Button
+                    onClick={copyToClipboard}
+                    className="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 text-sm font-medium"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <FaCopy className="w-4 h-4" />
+                      {copied ? "Copied!" : "Copy Message to Clipboard"}
+                    </div>
+                  </Button>
+                )}
 
                 {/* Google Form Option */}
-                <Button
-                  onClick={openGoogleForm}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <FaGoogle className="w-4 h-4" />
-                    Use Google Form
-                  </div>
-                </Button>
+                {showGoogleFormOption && (
+                  <Button
+                    onClick={openGoogleForm}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <FaGoogle className="w-4 h-4" />
+                      Use Google Form
+                    </div>
+                  </Button>
+                )}
               </div>
 
               {copied && (
@@ -352,7 +361,7 @@ const ContactSection = () => {
               {isSubmitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Preparing Email...
+                  Sending...
                 </>
               ) : (
                 <>
@@ -380,18 +389,6 @@ const ContactSection = () => {
                 <a
                   href="mailto:Info@acedu.camp"
                   className="text-red-600 font-bold hover:text-red-700 transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Open mailto without navigation
-                    const link = document.createElement('a');
-                    link.href = 'mailto:Info@acedu.camp';
-                    link.style.display = 'none';
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}
                 >
                   Info@acedu.camp
                 </a>
@@ -403,7 +400,7 @@ const ContactSection = () => {
             <div className="text-center">
               <p className="text-sm font-medium text-gray-700 mb-1">Quick Contact</p>
               <p className="text-xs text-gray-600">
-                Use the form above or email us directly
+                Messages sent via EmailJS are delivered instantly
               </p>
             </div>
           </div>
@@ -426,14 +423,21 @@ const ContactSection = () => {
               <p><strong>Simple Process:</strong></p>
               <ol className="list-decimal pl-5 space-y-1">
                 <li>Fill out the form above</li>
-                <li>We'll open your email client with a pre-filled message</li>
-                <li>If your email doesn't open, use the "Copy Message" button</li>
-                <li>Paste into any email app and send to Info@acedu.camp</li>
+                <li>Click "Send Message" - EmailJS delivers directly to our inbox</li>
+                <li>You'll see a success confirmation</li>
+                <li>If email fails, use the alternative options that appear</li>
               </ol>
-              <p className="mt-2 text-red-600 font-medium">Your page will NOT navigate away!</p>
+              <p className="mt-2 text-green-600 font-medium">✓ EmailJS handles all the technical stuff!</p>
             </div>
           </details>
         </motion.div>
+
+        {/* EmailJS Setup Note - Remove after configuring */}
+        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-xs text-yellow-800">
+            <strong>EmailJS Setup Required:</strong> Replace the placeholder credentials in the EMAILJS_CONFIG object with your actual EmailJS service ID, template ID, and public key.
+          </p>
+        </div>
       </div>
     </section>
   );
