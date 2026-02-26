@@ -10,36 +10,50 @@ import UpcomingBootcamps from '../components/UpcomingBootcamps';
 import ContactSection from '../components/ContactSection';
 import ProductsShowcase from '../components/ProductsShowcase';
 import bgImg from "../assets/images/bg-vid.mp4";
-
+import bgImg2 from "../assets/images/bg-vid5.mp4";
 
 const Homepage = () => {
-
-
   const whyCourse = [
     { text: 'Beginners starting their tech journey.' },
     { text: 'Students building future-proof digital skills' },
     { text: 'Career changers transitioning into tech' },
     { text: 'Entrepreneurs building tech-enabled products' },
-    { text: ' Tech professionals looking to upskill or specialize' },
+    { text: ' Tech professionals looking to upskill or specialize' },
   ];
 
   return (
     <>
- {/* HERO SECTION WITH VIDEO BACKGROUND */}
+      {/* HERO SECTION WITH TWO VIDEOS SIDE BY SIDE */}
       <div className="w-full bg-gray-50" id="hero-section">
         <div className="relative w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-[75vh] overflow-hidden">
-          {/* Video Background */}
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute top-0 left-0 w-full h-full object-cover object-[center_37%]"
-          >
-            <source src={bgImg} type="video/mp4" />
-            {/* Add fallback for browsers that don't support video */}
-            <img src="/" alt="Background" />
-          </video>
+          {/* Two Videos Container */}
+          <div className="absolute inset-0 flex flex-col md:flex-row">
+            {/* Left Video */}
+            <div className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute top-0 left-0 w-full h-full object-cover object-[center_37%]"
+              >
+                <source src={bgImg2} type="video/mp4" />
+              </video>
+            </div>
+            
+            {/* Right Video */}
+            <div className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute top-0 left-0 w-full h-full object-cover object-[center_37%]"
+              >
+                <source src={bgImg} type="video/mp4" />
+              </video>
+            </div>
+          </div>
 
           {/* Dark overlay for better text visibility */}
           <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
@@ -80,6 +94,7 @@ const Homepage = () => {
           </div>
         </div>
       </div>
+
       {/* WHY THIS COURSE SECTION */}
       <div
         id="why-course-section"
