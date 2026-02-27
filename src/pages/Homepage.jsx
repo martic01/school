@@ -9,8 +9,8 @@ import CourseModulesHome from '../components/CourseModules';
 import UpcomingBootcamps from '../components/UpcomingBootcamps';
 import ContactSection from '../components/ContactSection';
 import ProductsShowcase from '../components/ProductsShowcase';
-import bgImg from "../assets/images/bg-vid.mp4";
-import bgImg2 from "../assets/images/bg-vid5.mp4";
+import bgImg from "../assets/images/bg-vid1.mp4";
+import bgImg2 from "../assets/images/bg-vid2.mp4";
 
 const Homepage = () => {
   const whyCourse = [
