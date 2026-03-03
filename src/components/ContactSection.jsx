@@ -1,5 +1,5 @@
 // src/components/ContactSection.jsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaPaperPlane, FaCheckCircle, FaGoogle, FaCopy } from "react-icons/fa";
 import Button from "../components/AppButton";
@@ -22,12 +22,11 @@ const ContactSection = () => {
   // Google Form URL (you need to create one and update this URL)
   const GOOGLE_FORM_URL = "https://forms.gle/m3PDtKm2DPAphcvR8";
 
-  // EmailJS Configuration
-  // REPLACE THESE WITH YOUR ACTUAL EMAILJS CREDENTIALS
+  // EmailJS Configuration - UPDATED WITH YOUR ACTUAL CREDENTIALS
   const EMAILJS_CONFIG = {
-    service_id: "service_mailEA", // Get from EmailJS Dashboard → Email Services
-    template_id: "template_acedumailg", // Get from EmailJS Dashboard → Email Templates
-    user_id: "vCsN7slbNpRz8Pxjl", // Get from EmailJS Dashboard → API Keys
+    service_id: "service_uqy365m", // From your comment
+    template_id: "template_acedumail", // From your comment
+    user_id: "oS4yoNmkXVRiOvbZB", // Your Public Key
   };
 
   const handleChange = (e) => {
@@ -80,7 +79,7 @@ const ContactSection = () => {
         template_id: EMAILJS_CONFIG.template_id,
         user_id: EMAILJS_CONFIG.user_id,
         template_params: {
-          to_email: "Info@acedu.camp",
+          to_email: "acedubootcamp@gmail.com",
           from_name: form.name,
           from_email: form.email,
           telephone: form.telephone || "Not provided",
@@ -231,10 +230,10 @@ const ContactSection = () => {
                     onClick={copyToClipboard}
                     className="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 text-sm font-medium"
                   >
-                    <div className="flex items-center justify-center gap-2">
+                    <span className="flex items-center justify-center gap-2">
                       <FaCopy className="w-4 h-4" />
                       {copied ? "Copied!" : "Copy Message to Clipboard"}
-                    </div>
+                    </span>
                   </Button>
                 )}
 
@@ -244,10 +243,10 @@ const ContactSection = () => {
                     onClick={openGoogleForm}
                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
                   >
-                    <div className="flex items-center justify-center gap-2">
+                    <span className="flex items-center justify-center gap-2">
                       <FaGoogle className="w-4 h-4" />
                       Use Google Form
-                    </div>
+                    </span>
                   </Button>
                 )}
               </div>
@@ -351,23 +350,23 @@ const ContactSection = () => {
             />
           </div>
 
-          {/* Button */}
+          {/* Button - FIXED HYDRATION ERROR */}
           <div className="flex justify-end">
             <Button
-              className="px-6 md:px-8 h-10 md:h-11 text-sm md:text-base gap-2"
+              className="px-6 md:px-8 h-10 md:h-11 text-sm md:text-base"
               type="submit"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block"></span>
                   Sending...
-                </>
+                </span>
               ) : (
-                <>
+                <span className="flex items-center justify-center gap-2">
                   Send Message
                   <FaPaperPlane className="w-4 h-4" />
-                </>
+                </span>
               )}
             </Button>
           </div>
@@ -431,13 +430,6 @@ const ContactSection = () => {
             </div>
           </details>
         </motion.div>
-
-        {/* EmailJS Setup Note - Remove after configuring */}
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-xs text-yellow-800">
-            <strong>EmailJS Setup Required:</strong> Replace the placeholder credentials in the EMAILJS_CONFIG object with your actual EmailJS service ID, template ID, and public key.
-          </p>
-        </div>
       </div>
     </section>
   );
