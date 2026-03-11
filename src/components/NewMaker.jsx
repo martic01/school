@@ -1,2411 +1,1301 @@
-// components/NewMaker.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  X, Upload, Type, Palette, Clock,
-  Image as ImageIcon, Layout, Zap,
-  Save, Trash2, ChevronLeft, ChevronRight,
-  Eye, EyeOff, Lock, Settings, Maximize2,
-  Minus, Plus, Move, Sun, Moon, Droplets,
-  CornerUpLeft, CornerUpRight, CornerDownLeft, CornerDownRight,
-  Square, AlertCircle, Bold, Italic, Type as TypeIcon,
-  AlignLeft, Hash
-} from 'lucide-react';
+// // components/NewMaker.jsx
+// import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import {
+//   X, Upload, Palette, Clock,
+//   Image as ImageIcon, Layout, Zap,
+//   Save, Trash2, ChevronLeft, ChevronRight,
+//   Lock, Settings, Square, AlertCircle,
+//   CornerUpLeft, CornerUpRight, CornerDownLeft, CornerDownRight,
+//   Cloud, Loader, AlertTriangle, CheckCircle, RefreshCw
+// } from 'lucide-react';
+// import axios from 'axios';
 
-const NewMaker = () => {
-  // State for the editor
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [boxes, setBoxes] = useState(() => {
-    const savedBoxes = localStorage.getItem('newMakerBoxes');
-    return savedBoxes ? JSON.parse(savedBoxes) : [];
-  });
-  const [currentBoxIndex, setCurrentBoxIndex] = useState(0);
-  const [isListening, setIsListening] = useState(false);
-  const [password, setPassword] = useState('sherifatmaker12');
-  const [inputPassword, setInputPassword] = useState('');
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
-  const [autoRotate, setAutoRotate] = useState(true);
-  const [editorMode, setEditorMode] = useState('create');
-  const [boxDuration, setBoxDuration] = useState(5);
-  const [storageError, setStorageError] = useState('');
+// const NewMaker = () => {
+//   const API_URL = 'http://localhost:3001/api';
 
-  // Current box being edited
-  const [currentBox, setCurrentBox] = useState({
-    id: Date.now(),
-    title: '',
-    body: '',
-    image: null,
-    imagePreview: '',
-    width: 350,
-    height: 300,
-    position: 'bottom-left',
-    imagePosition: 'top',
-    animation: 'fade',
-    bgColor: '#000000',
-    bgGradient: ['#000000', '#1a1a1a'],
-    textColor: '#ffffff',
-    showTime: 'always',
-    startTime: '',
-    endTime: '',
-    startDate: '',
-    endDate: '',
-    boxShadow: '2xl',
-    opacity: 1,
-    blur: 0,
-    order: 0,
-    borderRadius: {
-      topLeft: '0px',
-      topRight: '0px',
-      bottomLeft: '0px',
-      bottomRight: '0px',
-      all: '0px'
-    },
-    borderRadiusMode: 'all',
-    bgType: 'solid',
-    borderSide: 'right',
-    createdDate: new Date().toISOString().split('T')[0],
-    textBgOpacity: 0.3,
-    textBlur: 5,
-    // New properties
-    highlightColor: '#FF0000', // Red default
-    headerStyle: 'gradient',
-    fontFamily: 'font-sans',
-    fontWeight: 'font-normal',
-    textSize: 'base',
-    // New: Text color options
-    headerTextColor: '#FFFFFF',
-    headerTextColorType: 'solid',
-    bodyTextColor: '#FFFFFF',
-    bodyTextColorType: 'solid',
-    // New: Header background
-    headerBackground: 'none',
-    headerBackgroundType: 'none',
-    headerBgBlur: 0,
-    // New: Image border radius
-    imageBorderRadius: '0px',
-    imageBorderRadiusMode: 'preset',
-    customImageBorderRadius: '0px'
-  });
+//   const [isEditorOpen, setIsEditorOpen] = useState(false);
+//   const [isVisible, setIsVisible] = useState(false);
+//   const [boxes, setBoxes] = useState([]);
+//   const [currentBoxIndex, setCurrentBoxIndex] = useState(0);
+//   const [isListening, setIsListening] = useState(false);
+//   const [inputPassword, setInputPassword] = useState('');
+//   const [showPasswordInput, setShowPasswordInput] = useState(false);
+//   const [autoRotate, setAutoRotate] = useState(true);
+//   const [editorMode, setEditorMode] = useState('create');
+//   const [boxDuration, setBoxDuration] = useState(5);
+//   const [notification, setNotification] = useState(null);
+//   const [uploading, setUploading] = useState(false);
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [isDeleting, setIsDeleting] = useState(false);
+//   const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
-  const tapCount = useRef(0);
-  const tapTimeout = useRef(null);
-  const keyPressCount = useRef(0);
-  const keyPressTimeout = useRef(null);
-  const rightClickCount = useRef(0);
-  const rightClickTimeout = useRef(null);
-  const carouselInterval = useRef(null);
-  const listeningTimeout = useRef(null);
+//   const cloudinaryConfig = {
+//     cloudName: 'dq46c3lf3',
+//     uploadPreset: 'acedunews-image'
+//   };
 
-  // Fixed animation presets
-  const animations = {
-    fade: {
-      name: 'Fade In',
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      exit: { opacity: 0 },
-      transition: { duration: 0.5 }
-    },
-    slide: {
-      name: 'Slide Up',
-      initial: { y: 20, opacity: 0 },
-      animate: { y: 0, opacity: 1 },
-      exit: { y: -20, opacity: 0 },
-      transition: { duration: 0.5 }
-    },
-    bounce: {
-      name: 'Bounce',
-      initial: { scale: 0.9, opacity: 0 },
-      animate: {
-        scale: 1,
-        opacity: 1
-      },
-      exit: { scale: 0.9, opacity: 0 },
-      transition: {
-        duration: 0.6,
-        type: "spring",
-        stiffness: 200
-      }
-    }
-  };
+//   const defaultBox = {
+//     id: null,
+//     imageUrl: '',
+//     imagePublicId: '',
+//     width: 350,
+//     height: 300,
+//     position: 'bottom-left',
+//     animation: 'fade',
+//     bgColor: '#000000',
+//     bgGradient: ['#000000', '#1a1a1a'],
+//     showTime: 'always',
+//     startTime: '',
+//     endTime: '',
+//     startDate: '',
+//     endDate: '',
+//     boxShadow: 'lg',
+//     opacity: 1,
+//     blur: 0,
+//     order: 0,
+//     borderRadius: { topLeft: '0px', topRight: '0px', bottomLeft: '0px', bottomRight: '0px', all: '0px' },
+//     borderRadiusMode: 'all',
+//     bgType: 'solid',
+//     borderSide: 'right',
+//     createdDate: new Date().toISOString().split('T')[0],
+//     imageFit: 'cover',
+//     imagePosition: 'center'
+//   };
 
-  // Updated color presets with White theme
-  const colorPresets = [
-    {
-      name: 'Black',
-      type: 'solid',
-      value: '#000000',
-      textColor: '#ffffff',
-      shadow: '0 4px 6px -1px rgba(255, 255, 255, 0.1)',
-      bgType: 'solid',
-      textBgOpacity: 0.3,
-      textBlur: 5
-    },
-    {
-      name: 'White',
-      type: 'solid',
-      value: '#FFFFFF',
-      textColor: '#000000',
-      shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      bgType: 'solid',
-      textBgOpacity: 0.1,
-      textBlur: 3
-    },
-    {
-      name: 'Dark Red',
-      type: 'solid',
-      value: '#8B0000',
-      textColor: '#ffffff',
-      shadow: '0 4px 6px -1px rgba(139, 0, 0, 0.3)',
-      bgType: 'solid',
-      textBgOpacity: 0.4,
-      textBlur: 5
-    },
-    {
-      name: 'Black-Red Gradient',
-      type: 'gradient',
-      gradient: ['#000000', '#8B0000'],
-      textColor: '#ffffff',
-      shadow: '0 4px 6px -1px rgba(139, 0, 0, 0.3)',
-      bgType: 'gradient',
-      textBgOpacity: 0.4,
-      textBlur: 5
-    },
-    {
-      name: 'Red-Black Gradient',
-      type: 'gradient',
-      gradient: ['#8B0000', '#000000'],
-      textColor: '#ffffff',
-      shadow: '0 4px 6px -1px rgba(139, 0, 0, 0.3)',
-      bgType: 'gradient',
-      textBgOpacity: 0.4,
-      textBlur: 5
-    },
-    {
-      name: 'Transparent Black Blur',
-      type: 'glass',
-      value: 'rgba(0, 0, 0, 0.15)',
-      textColor: '#ffffff',
-      blur: 10,
-      shadow: '0 8px 32px rgba(139, 0, 0, 0.2)',
-      bgType: 'glass',
-      textBgOpacity: 0.5,
-      textBlur: 8
-    },
-    {
-      name: 'Transparent Red Blur',
-      type: 'glass',
-      value: 'rgba(139, 0, 0, 0.15)',
-      textColor: '#ffffff',
-      blur: 10,
-      shadow: '0 8px 32px rgba(139, 0, 0, 0.2)',
-      bgType: 'glass',
-      textBgOpacity: 0.5,
-      textBlur: 8
-    }
-  ];
+//   const [currentBox, setCurrentBox] = useState(defaultBox);
 
-  // Header style options
-  const headerStyles = [
-    {
-      name: 'Gradient',
-      value: 'gradient',
-      icon: <div className="w-4 h-4 bg-linear-to-r from-red-500 to-red-700 rounded"></div>,
-      description: 'Red gradient border'
-    },
-    {
-      name: 'Solid',
-      value: 'solid',
-      icon: <div className="w-4 h-4 bg-red-600 rounded"></div>,
-      description: 'Solid red line'
-    },
-    {
-      name: 'Double',
-      value: 'double',
-      icon: <div className="w-4 h-4 flex flex-col justify-between">
-        <div className="h-[2px] bg-red-600"></div>
-        <div className="h-[2px] bg-red-600"></div>
-      </div>,
-      description: 'Double border'
-    },
-    {
-      name: 'Dotted',
-      value: 'dotted',
-      icon: <div className="w-4 h-4 flex items-center justify-center">
-        <div className="w-3 h-3 border-2 border-red-600 border-dotted rounded"></div>
-      </div>,
-      description: 'Dotted border'
-    },
-    {
-      name: 'Underline',
-      value: 'underline',
-      icon: <div className="w-4 h-4 flex items-end">
-        <div className="w-full h-1 bg-red-600"></div>
-      </div>,
-      description: 'Simple underline'
-    }
-  ];
+//   const tapCount = useRef(0);
+//   const tapTimeout = useRef(null);
+//   const keyPressCount = useRef(0);
+//   const keyPressTimeout = useRef(null);
+//   const rightClickCount = useRef(0);
+//   const rightClickTimeout = useRef(null);
+//   const carouselInterval = useRef(null);
+//   const listeningTimeout = useRef(null);
 
-  // Font family options
-  const fontFamilies = [
-    { name: 'Sans', value: 'font-sans', class: 'font-sans' },
-    { name: 'Serif', value: 'font-serif', class: 'font-serif' },
-    { name: 'Mono', value: 'font-mono', class: 'font-mono' },
-    { name: 'Cursive', value: 'font-cursive', class: 'font-[cursive]' }
-  ];
+//   // ─── Notification helper ───────────────────────────────────────────────────
+//   const showNotification = (message, type = 'info') => {
+//     setNotification({ message, type });
+//     setTimeout(() => setNotification(null), 4000);
+//   };
 
-  // Font weight options
-  const fontWeights = [
-    { name: 'Normal', value: 'font-normal', class: 'font-normal' },
-    { name: 'Medium', value: 'font-medium', class: 'font-medium' },
-    { name: 'Semibold', value: 'font-semibold', class: 'font-semibold' },
-    { name: 'Bold', value: 'font-bold', class: 'font-bold' },
-    { name: 'Extrabold', value: 'font-extrabold', class: 'font-extrabold' }
-  ];
+//   // ─── Confirm modal ─────────────────────────────────────────────────────────
+//   const showConfirm = (title, message, onConfirm) => {
+//     setConfirmModal({ isOpen: true, title, message, onConfirm });
+//   };
+//   const closeConfirm = () => setConfirmModal({ isOpen: false, title: '', message: '', onConfirm: null });
 
-  // Text size options
-  const textSizes = [
-    { name: 'Small', value: 'sm', class: 'text-sm' },
-    { name: 'Base', value: 'base', class: 'text-base' },
-    { name: 'Large', value: 'lg', class: 'text-lg' },
-    { name: 'XL', value: 'xl', class: 'text-xl' }
-  ];
+//   // ─── Animations ────────────────────────────────────────────────────────────
+//   const animations = {
+//     fade: { name: 'Fade In', initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.5 } },
+//     slide: { name: 'Slide Up', initial: { y: 20, opacity: 0 }, animate: { y: 0, opacity: 1 }, exit: { y: -20, opacity: 0 }, transition: { duration: 0.5 } },
+//     bounce: { name: 'Bounce', initial: { scale: 0.9, opacity: 0 }, animate: { scale: 1, opacity: 1 }, exit: { scale: 0.9, opacity: 0 }, transition: { duration: 0.6, type: 'spring', stiffness: 200 } }
+//   };
 
-  // Highlight color options
-  const highlightColors = [
-    { name: 'White', value: '#FFFFFF', textColor: '#000000' },
-    { name: 'Red', value: '#FF0000', textColor: '#FFFFFF' },
-    { name: 'Black', value: '#000000', textColor: '#FFFFFF' },
-    { name: 'Blue', value: '#2563EB', textColor: '#FFFFFF' }
-  ];
+//   const colorPresets = [
+//     { name: 'Black', type: 'solid', value: '#000000', bgType: 'solid' },
+//     { name: 'White', type: 'solid', value: '#FFFFFF', bgType: 'solid' },
+//     { name: 'Dark Red', type: 'solid', value: '#8B0000', bgType: 'solid' },
+//     { name: 'Red Gradient', type: 'gradient', gradient: ['#000000', '#8B0000'], bgType: 'gradient' },
+//     { name: 'Glass Black', type: 'glass', value: 'rgba(0,0,0,0.15)', blur: 10, bgType: 'glass' }
+//   ];
 
-  // Text color options for header and body
-  const textColorOptions = [
-    { 
-      name: 'Default (White)', 
-      value: '#FFFFFF', 
-      bgColor: '#000000',
-      type: 'solid'
-    },
-    { 
-      name: 'Red', 
-      value: '#FF0000', 
-      bgColor: '#000000',
-      type: 'solid'
-    },
-    { 
-      name: 'Black', 
-      value: '#000000', 
-      bgColor: '#FFFFFF',
-      type: 'solid'
-    },
-    { 
-      name: 'Blue', 
-      value: '#2563EB', 
-      bgColor: '#000000',
-      type: 'solid'
-    },
-    { 
-      name: 'Red-White Gradient', 
-      value: 'linear-gradient(45deg, #FF0000, #FFFFFF)', 
-      bgColor: '#000000',
-      type: 'gradient'
-    },
-    { 
-      name: 'White-Gold Gradient', 
-      value: 'linear-gradient(45deg, #FFFFFF, #FFD700)', 
-      bgColor: '#000000',
-      type: 'gradient'
-    },
-    { 
-      name: 'Glass Light', 
-      value: 'rgba(255, 255, 255, 0.9)', 
-      bgColor: '#000000',
-      type: 'glass',
-      blur: 5
-    },
-    { 
-      name: 'Glass Dark', 
-      value: 'rgba(0, 0, 0, 0.9)', 
-      bgColor: '#FFFFFF',
-      type: 'glass',
-      blur: 5
-    }
-  ];
+//   const positions = [
+//     { value: 'top-left', label: 'Top Left', style: { top: '80px', left: '20px' }, borderSide: 'right' },
+//     { value: 'top-right', label: 'Top Right', style: { top: '80px', right: '20px' }, borderSide: 'left' },
+//     { value: 'bottom-left', label: 'Bottom Left', style: { bottom: '20px', left: '20px' }, borderSide: 'right' },
+//     { value: 'bottom-right', label: 'Bottom Right', style: { bottom: '20px', right: '20px' }, borderSide: 'left' }
+//   ];
 
-  // Header background/effect options
-  const headerBgOptions = [
-    {
-      name: 'Default',
-      value: 'none',
-      bgColor: 'transparent',
-      borderStyle: 'gradient',
-      description: 'No background'
-    },
-    {
-      name: 'Red Solid',
-      value: '#8B0000',
-      bgColor: '#8B0000',
-      borderStyle: 'solid',
-      textColor: '#FFFFFF',
-      description: 'Solid dark red'
-    },
-    {
-      name: 'Black Solid',
-      value: '#000000',
-      bgColor: '#000000',
-      borderStyle: 'solid',
-      textColor: '#FFFFFF',
-      description: 'Solid black'
-    },
-    {
-      name: 'White Solid',
-      value: '#FFFFFF',
-      bgColor: '#FFFFFF',
-      borderStyle: 'solid',
-      textColor: '#000000',
-      description: 'Solid white'
-    },
-    {
-      name: 'Red Gradient',
-      value: 'linear-gradient(90deg, #FF0000, #8B0000)',
-      bgColor: 'linear-gradient',
-      borderStyle: 'gradient',
-      textColor: '#FFFFFF',
-      description: 'Red gradient'
-    },
-    {
-      name: 'Black-Red Gradient',
-      value: 'linear-gradient(90deg, #000000, #8B0000)',
-      bgColor: 'linear-gradient',
-      borderStyle: 'gradient',
-      textColor: '#FFFFFF',
-      description: 'Black to red'
-    },
-    {
-      name: 'Glass Light',
-      value: 'rgba(255, 255, 255, 0.15)',
-      bgColor: 'rgba(255, 255, 255, 0.15)',
-      borderStyle: 'glass',
-      textColor: '#FFFFFF',
-      blur: 10,
-      description: 'Light glass effect'
-    },
-    {
-      name: 'Glass Dark',
-      value: 'rgba(0, 0, 0, 0.3)',
-      bgColor: 'rgba(0, 0, 0, 0.3)',
-      borderStyle: 'glass',
-      textColor: '#FFFFFF',
-      blur: 10,
-      description: 'Dark glass effect'
-    }
-  ];
+//   const imageFitOptions = [
+//     { value: 'cover', label: 'Cover' },
+//     { value: 'contain', label: 'Contain' },
+//     { value: 'fill', label: 'Fill' }
+//   ];
 
-  // Image border radius options
-  const imageBorderRadiusOptions = [
-    { name: 'None', value: '0px', icon: <Square className="w-4 h-4" /> },
-    { name: 'Small', value: '8px', icon: <div className="w-4 h-4 border border-current rounded-sm" /> },
-    { name: 'Medium', value: '12px', icon: <div className="w-4 h-4 border border-current rounded-md" /> },
-    { name: 'Large', value: '16px', icon: <div className="w-4 h-4 border border-current rounded-lg" /> },
-    { name: 'Full', value: '50%', icon: <div className="w-4 h-4 border border-current rounded-full" /> },
-    { name: 'Custom', value: 'custom', icon: <Settings className="w-4 h-4" /> }
-  ];
+//   // ─── Fetch boxes ───────────────────────────────────────────────────────────
+//   const fetchBoxes = useCallback(async () => {
+//     try {
+//       const res = await fetch(`${API_URL}/boxes`);
+//       if (!res.ok) throw new Error('Failed to fetch');
+//       const data = await res.json();
+//       setBoxes(data);
+//     } catch (err) {
+//       console.error('Fetch error:', err);
+//     }
+//   }, []);
 
-  // Position options (avoiding navbar area)
-  const positions = [
-    {
-      value: 'top-left',
-      label: 'Top Left',
-      style: { top: '80px', left: '20px' },
-      description: 'Below navbar on left',
-      borderSide: 'right'
-    },
-    {
-      value: 'top-right',
-      label: 'Top Right',
-      style: { top: '80px', right: '20px' },
-      description: 'Below navbar on right',
-      borderSide: 'left'
-    },
-    {
-      value: 'bottom-left',
-      label: 'Bottom Left',
-      style: { bottom: '20px', left: '20px' },
-      description: 'Above footer on left',
-      borderSide: 'right'
-    },
-    {
-      value: 'bottom-right',
-      label: 'Bottom Right',
-      style: { bottom: '20px', right: '20px' },
-      description: 'Above footer on right',
-      borderSide: 'left'
-    }
-  ];
+//   useEffect(() => {
+//     fetchBoxes();
+//     const interval = setInterval(fetchBoxes, 30000);
+//     return () => clearInterval(interval);
+//   }, [fetchBoxes]);
 
-  // Save boxes to localStorage with error handling
-  useEffect(() => {
-    const saveBoxesToStorage = () => {
-      try {
-        localStorage.setItem('newMakerBoxes', JSON.stringify(boxes));
-        setStorageError('');
-      } catch (error) {
-        console.error('Storage error:', error);
-        setStorageError('Storage limit exceeded. Some data may not be saved. Try reducing image sizes or text content.');
+//   // ─── Auto-delete expired boxes ────────────────────────────────────
+//   const boxesRef = useRef(boxes);
+//   useEffect(() => { boxesRef.current = boxes; }, [boxes]);
 
-        if (error.name === 'QuotaExceededError') {
-          try {
-            const trimmedBoxes = boxes.map(box => ({
-              ...box,
-              imagePreview: box.imagePreview ? '[IMAGE_REMOVED_DUE_TO_STORAGE_LIMIT]' : ''
-            }));
-            localStorage.setItem('newMakerBoxes', JSON.stringify(trimmedBoxes));
-            setStorageError('Images removed due to storage limits. Text content saved successfully.');
-          } catch (e) {
-            try {
-              const minimalBoxes = boxes.map(box => ({
-                id: box.id,
-                title: box.title,
-                body: box.body.substring(0, 100),
-                width: box.width,
-                height: box.height,
-                position: box.position,
-                bgColor: box.bgColor,
-                textColor: box.textColor,
-                showTime: box.showTime,
-                createdDate: box.createdDate
-              }));
-              localStorage.setItem('newMakerBoxes', JSON.stringify(minimalBoxes));
-              setStorageError('Data trimmed to fit storage limits. Some content may be lost.');
-            } catch (finalError) {
-              setStorageError('Unable to save data. Storage is full. Please clear browser data.');
-            }
-          }
-        }
-      }
-    };
+//   useEffect(() => {
+//     const checkExpired = async () => {
+//       const now = new Date();
+//       const current = boxesRef.current;
+//       const expired = current.filter(box => {
+//         if (box.showTime === 'duration' && box.duration && box.createdDate) {
+//           const expiry = new Date(box.createdDate);
+//           expiry.setDate(expiry.getDate() + box.duration);
+//           return now > expiry;
+//         }
+//         return false;
+//       });
 
-    saveBoxesToStorage();
-  }, [boxes]);
+//       if (expired.length === 0) return;
 
-  // Handle triple tap - DISABLED when editor is open
-  useEffect(() => {
-    const handleTap = () => {
-      if (isEditorOpen || isVisible) return;
+//       for (const box of expired) {
+//         try {
+//           if (box.imagePublicId) {
+//             await fetch(`${API_URL}/delete-cloudinary-image`, {
+//               method: 'POST',
+//               headers: { 'Content-Type': 'application/json' },
+//               body: JSON.stringify({ publicId: box.imagePublicId })
+//             });
+//           }
+//           await fetch(`${API_URL}/boxes/${box.id}`, { method: 'DELETE' });
+//         } catch (e) {
+//           console.error('Auto-delete error:', e);
+//         }
+//       }
+
+//       await fetchBoxes();
+//       showNotification(`${expired.length} expired box(es) removed automatically.`, 'info');
+//     };
+
+//     const expiryInterval = setInterval(checkExpired, 60000);
+//     checkExpired();
+//     return () => clearInterval(expiryInterval);
+//   }, [fetchBoxes]);
+
+//   // ─── Delete box ──────────────────────────────────
+//   // Single, unified deleteBoxFromServer function with proper headers
+// const deleteBoxFromServer = async (boxId, imagePublicId) => {
+//   // Try to delete from Cloudinary first (but don't stop if it fails)
+//   if (imagePublicId) {
+//     try {
+//       const cloudinaryRes = await fetch(`${API_URL}/delete-cloudinary-image`, {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ publicId: imagePublicId })
+//       });
       
-      tapCount.current++;
-
-      if (tapTimeout.current) {
-        clearTimeout(tapTimeout.current);
-      }
-
-      tapTimeout.current = setTimeout(() => {
-        tapCount.current = 0;
-      }, 1000);
-
-      if (tapCount.current === 3) {
-        activatePasswordMode();
-        tapCount.current = 0;
-      }
-    };
-
-    document.addEventListener('click', handleTap);
-    return () => document.removeEventListener('click', handleTap);
-  }, [isEditorOpen, isVisible]);
-
-  // Handle P key press - DISABLED when editor is open
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (isEditorOpen || isVisible) return;
+//       // Check if response is JSON
+//       const contentType = cloudinaryRes.headers.get('content-type');
+//       if (contentType && contentType.includes('application/json')) {
+//         const cloudinaryData = await cloudinaryRes.json();
+//         console.log('Cloudinary deletion response:', cloudinaryData);
+//       } else {
+//         const text = await cloudinaryRes.text();
+//         console.warn('Cloudinary response (not JSON):', text.substring(0, 100));
+//       }
       
-      if (e.key.toLowerCase() === 'p') {
-        keyPressCount.current++;
-
-        if (keyPressTimeout.current) {
-          clearTimeout(keyPressTimeout.current);
-        }
-
-        keyPressTimeout.current = setTimeout(() => {
-          keyPressCount.current = 0;
-        }, 1000);
-
-        if (keyPressCount.current === 3) {
-          activatePasswordMode();
-          keyPressCount.current = 0;
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [isEditorOpen, isVisible]);
-
-  // Handle right click - DISABLED when editor is open
-  useEffect(() => {
-    const handleContextMenu = (e) => {
-      if (isEditorOpen || isVisible) return;
-      
-      e.preventDefault();
-      rightClickCount.current++;
-
-      if (rightClickTimeout.current) {
-        clearTimeout(rightClickTimeout.current);
-      }
-
-      rightClickTimeout.current = setTimeout(() => {
-        rightClickCount.current = 0;
-      }, 1000);
-
-      if (rightClickCount.current === 3) {
-        activatePasswordMode();
-        rightClickCount.current = 0;
-      }
-    };
-
-    document.addEventListener('contextmenu', handleContextMenu);
-    return () => document.removeEventListener('contextmenu', handleContextMenu);
-  }, [isEditorOpen, isVisible]);
-
-  const activatePasswordMode = () => {
-    if (isEditorOpen || isVisible) return;
-
-    setShowPasswordInput(true);
-    setIsListening(true);
-
-    listeningTimeout.current = setTimeout(() => {
-      setIsListening(false);
-      setShowPasswordInput(false);
-    }, 5 * 60 * 1000);
-  };
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    if (inputPassword === password) {
-      setIsEditorOpen(true);
-      setIsVisible(true);
-      setShowPasswordInput(false);
-      setIsListening(false);
-      setInputPassword('');
-
-      if (listeningTimeout.current) {
-        clearTimeout(listeningTimeout.current);
-      }
-    } else {
-      setInputPassword('');
-    }
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert('Image size must be less than 2MB');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCurrentBox({
-          ...currentBox,
-          image: file,
-          imagePreview: reader.result
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleColorSelect = (preset) => {
-    setCurrentBox({
-      ...currentBox,
-      bgColor: preset.value || '',
-      bgGradient: preset.gradient || ['#000000', '#8B0000'],
-      textColor: preset.textColor,
-      boxShadow: preset.shadow || 'lg',
-      blur: preset.blur || 0,
-      bgType: preset.type,
-      textBgOpacity: preset.textBgOpacity || 0.3,
-      textBlur: preset.textBlur || 5
-    });
-  };
-
-  // Count words in a string
-  const countWords = (text) => {
-    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
-  };
-
-  // Handle title change with word limit and capitalization
-  const handleTitleChange = (e) => {
-    const text = e.target.value;
-    const words = countWords(text);
-
-    if (words <= 10) {
-      const capitalized = text
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-      setCurrentBox({ ...currentBox, title: capitalized });
-    } else {
-      const wordsArray = text.trim().split(/\s+/);
-      const truncated = wordsArray.slice(0, 10).join(' ');
-      const capitalized = truncated
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-      setCurrentBox({ ...currentBox, title: capitalized });
-    }
-  };
-
-  // Handle body change with word limit and formatting
-  const handleBodyChange = (e) => {
-    const text = e.target.value;
-    const words = countWords(text);
-
-    if (words <= 200) {
-      setCurrentBox({ ...currentBox, body: text });
-    } else {
-      const wordsArray = text.trim().split(/\s+/);
-      const truncated = wordsArray.slice(0, 200).join(' ');
-      setCurrentBox({ ...currentBox, body: truncated });
-    }
-  };
-
-  // Format text for display with styling
-  const formatText = (text, highlightColor) => {
-    if (!text) return '';
-    
-    // Process asterisk for bold and highlight
-    let formatted = text.replace(/\*(.*?)\*/g, (match, content) => {
-      return `<span class="font-bold" style="color: ${highlightColor || '#FF0000'}">${content}</span>`;
-    });
-    
-    // Process underscore for italic
-    formatted = formatted.replace(/_(.*?)_/g, (match, content) => {
-      return `<span class="italic">${content}</span>`;
-    });
-    
-    // Process double asterisk for both bold and highlight
-    formatted = formatted.replace(/\*\*(.*?)\*\*/g, (match, content) => {
-      return `<span class="font-bold" style="color: ${highlightColor || '#FF0000'}">${content}</span>`;
-    });
-    
-    return formatted;
-  };
-
-  const addNewBox = () => {
-    if (boxes.length >= 4) {
-      alert('Maximum 4 boxes allowed!');
-      return;
-    }
-
-    if (!currentBox.body.trim() && !currentBox.imagePreview) {
-      alert('Please add either text content or an image before saving the box!');
-      return;
-    }
-
-    let boxPosition = currentBox.position;
-    let boxBorderSide = positions.find(p => p.value === currentBox.position)?.borderSide || 'right';
-
-    if (boxes.length > 0) {
-      boxPosition = boxes[0].position;
-      boxBorderSide = boxes[0].borderSide;
-    }
-
-    const newBox = {
-      ...currentBox,
-      id: Date.now() + Math.random(),
-      order: boxes.length,
-      duration: boxDuration,
-      position: boxPosition,
-      borderSide: boxBorderSide,
-      createdDate: new Date().toISOString().split('T')[0]
-    };
-
-    console.log('Adding new box:', newBox);
-
-    try {
-      setBoxes([...boxes, newBox]);
-      resetCurrentBox();
-    } catch (error) {
-      console.error('Error adding box:', error);
-      alert('Error saving box. The data might be too large. Try reducing image size or text content.');
-    }
-  };
-
-  const updateBox = () => {
-    if (!currentBox.body.trim() && !currentBox.imagePreview) {
-      alert('Please add either text content or an image before updating the box!');
-      return;
-    }
-
-    const updatedBoxes = [...boxes];
-    updatedBoxes[currentBoxIndex] = {
-      ...currentBox,
-      position: boxes.length > 0 ? boxes[0].position : currentBox.position,
-      borderSide: boxes.length > 0 ? boxes[0].borderSide : positions.find(p => p.value === currentBox.position)?.borderSide || 'right'
-    };
-
-    try {
-      setBoxes(updatedBoxes);
-      setEditorMode('create');
-      resetCurrentBox();
-    } catch (error) {
-      console.error('Error updating box:', error);
-      alert('Error updating box. The data might be too large.');
-    }
-  };
-
-  const deleteBox = (index) => {
-    const updatedBoxes = boxes.filter((_, i) => i !== index);
-
-    try {
-      setBoxes(updatedBoxes);
-
-      if (index === currentBoxIndex && updatedBoxes.length > 0) {
-        setCurrentBoxIndex(0);
-      } else if (updatedBoxes.length === 0) {
-        resetCurrentBox();
-      }
-    } catch (error) {
-      console.error('Error deleting box:', error);
-      alert('Error deleting box. Please try again.');
-    }
-  };
-
-  const resetCurrentBox = () => {
-    setCurrentBox({
-      id: Date.now(),
-      title: '',
-      body: '',
-      image: null,
-      imagePreview: '',
-      width: 350,
-      height: 300,
-      position: boxes.length > 0 ? boxes[0].position : 'bottom-left',
-      imagePosition: 'left',
-      animation: 'fade',
-      bgColor: '#000000',
-      bgGradient: ['#000000', '#1a1a1a'],
-      textColor: '#ffffff',
-      showTime: 'always',
-      startTime: '',
-      endTime: '',
-      startDate: '',
-      endDate: '',
-      boxShadow: 'lg',
-      opacity: 1,
-      blur: 0,
-      order: boxes.length,
-      borderRadius: {
-        topLeft: '0px',
-        topRight: '0px',
-        bottomLeft: '0px',
-        bottomRight: '0px',
-        all: '0px'
-      },
-      borderRadiusMode: 'all',
-      bgType: 'solid',
-      borderSide: boxes.length > 0 ? boxes[0].borderSide : 'right',
-      createdDate: new Date().toISOString().split('T')[0],
-      textBgOpacity: 0.3,
-      textBlur: 5,
-      highlightColor: '#FF0000',
-      headerStyle: 'gradient',
-      fontFamily: 'font-sans',
-      fontWeight: 'font-normal',
-      textSize: 'base',
-      headerTextColor: '#FFFFFF',
-      headerTextColorType: 'solid',
-      bodyTextColor: '#FFFFFF',
-      bodyTextColorType: 'solid',
-      headerBackground: 'none',
-      headerBackgroundType: 'none',
-      headerBgBlur: 0,
-      imageBorderRadius: '0px',
-      imageBorderRadiusMode: 'preset',
-      customImageBorderRadius: '0px'
-    });
-  };
-
-  // Get border radius string
-  const getBorderRadius = (box) => {
-    if (box.borderRadiusMode === 'all') {
-      return box.borderRadius.all;
-    } else {
-      return `${box.borderRadius.topLeft} ${box.borderRadius.topRight} ${box.borderRadius.bottomRight} ${box.borderRadius.bottomLeft}`;
-    }
-  };
-
-  const getBoxStyle = (box) => {
-    const position = positions.find(p => p.value === box.position);
-
-    let background = '';
-    if (box.bgType === 'gradient' && box.bgGradient) {
-      background = `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})`;
-    } else if (box.bgType === 'glass') {
-      background = box.bgColor || 'rgba(0, 0, 0, 0.15)';
-    } else {
-      background = box.bgColor || '#000000';
-    }
-
-    const style = {
-      position: 'fixed',
-      width: `${Math.min(box.width, 400)}px`,
-      height: `${Math.min(box.height, 400)}px`,
-      maxWidth: '400px',
-      maxHeight: '400px',
-      background,
-      backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
-      color: box.textColor,
-      boxShadow: box.boxShadow === 'lg' ?
-        '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' :
-        box.boxShadow === 'xl' ?
-          '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' :
-          '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      borderRadius: getBorderRadius(box),
-      opacity: box.opacity,
-      zIndex: 9998,
-      overflow: 'hidden',
-      ...position?.style
-    };
-
-    return style;
-  };
-
-  const checkBoxVisibility = (box) => {
-    if (box.showTime === 'always') return true;
-
-    const now = new Date();
-
-    if (box.showTime === 'scheduled') {
-      if (box.startDate) {
-        const startDate = new Date(box.startDate);
-        startDate.setHours(0, 0, 0, 0);
-
-        const today = new Date(now);
-        today.setHours(0, 0, 0, 0);
-
-        if (today < startDate) {
-          return false;
-        }
-      }
-
-      if (box.endDate) {
-        const endDate = new Date(box.endDate);
-        endDate.setHours(23, 59, 59, 999);
-
-        const today = new Date(now);
-        today.setHours(0, 0, 0, 0);
-
-        if (today > endDate) {
-          return false;
-        }
-      }
-
-      if (box.startTime && box.endTime) {
-        const currentTime = now.getHours() * 60 + now.getMinutes();
-        const [startHour, startMin] = box.startTime.split(':').map(Number);
-        const [endHour, endMin] = box.endTime.split(':').map(Number);
-        const startMinutes = startHour * 60 + startMin;
-        const endMinutes = endHour * 60 + endMin;
-
-        if (currentTime < startMinutes || currentTime > endMinutes) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    if (box.showTime === 'duration' && box.duration) {
-      if (box.createdDate) {
-        const createdDate = new Date(box.createdDate);
-        const expiryDate = new Date(createdDate);
-        expiryDate.setDate(expiryDate.getDate() + box.duration);
-
-        return now <= expiryDate;
-      }
-    }
-
-    return false;
-  };
-
-  // Start carousel rotation
-  useEffect(() => {
-    if (boxes.length > 1 && autoRotate && !isEditorOpen) {
-      carouselInterval.current = setInterval(() => {
-        setCurrentBoxIndex((prev) => (prev + 1) % boxes.length);
-      }, 5000);
-    }
-
-    return () => {
-      if (carouselInterval.current) {
-        clearInterval(carouselInterval.current);
-      }
-    };
-  }, [boxes.length, autoRotate, isEditorOpen]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (carouselInterval.current) clearInterval(carouselInterval.current);
-      if (listeningTimeout.current) clearTimeout(listeningTimeout.current);
-      if (tapTimeout.current) clearTimeout(tapTimeout.current);
-      if (keyPressTimeout.current) clearTimeout(keyPressTimeout.current);
-      if (rightClickTimeout.current) clearTimeout(rightClickTimeout.current);
-    };
-  }, []);
-
-  // Handle edit mode
-  useEffect(() => {
-    if (editorMode === 'edit' && boxes[currentBoxIndex]) {
-      setCurrentBox(boxes[currentBoxIndex]);
-    }
-  }, [editorMode, currentBoxIndex, boxes]);
-
-  const getBorderGradient = (box) => {
-    const isDarkRed = box.bgType === 'solid' && box.bgColor === '#8B0000';
-    const isRedGradient = box.bgType === 'gradient' && box.bgGradient?.[0]?.includes('8B0000');
-
-    if (isDarkRed || isRedGradient) {
-      return 'from-red-500 to-red-700';
-    }
-    return 'from-red-600 to-red-800';
-  };
-
-  const getBorderPosition = (borderSide) => {
-    return borderSide === 'right'
-      ? { left: '0', top: '0', bottom: '0', width: '3px' }
-      : { right: '0', top: '0', bottom: '0', width: '3px' };
-  };
-
-  // Get header style class
-  const getHeaderStyle = (box) => {
-    switch (box.headerStyle) {
-      case 'solid':
-        return 'border-b-2 border-red-600';
-      case 'double':
-        return 'border-b-4 border-red-600 border-double';
-      case 'dotted':
-        return 'border-b-2 border-red-600 border-dotted';
-      case 'underline':
-        return 'border-b border-red-600';
-      case 'gradient':
-      default:
-        return 'border-b-2 border-red-600';
-    }
-  };
-
-  // Clear all data
-  const clearAllData = () => {
-    if (window.confirm('Are you sure you want to clear all boxes? This cannot be undone.')) {
-      try {
-        localStorage.removeItem('newMakerBoxes');
-        setBoxes([]);
-        resetCurrentBox();
-        setCurrentBoxIndex(0);
-        setStorageError('');
-        alert('All data cleared successfully.');
-      } catch (error) {
-        console.error('Error clearing data:', error);
-        alert('Error clearing data. Please try again.');
-      }
-    }
-  };
-
-  return (
-    <>
-      {/* Password Input Modal */}
-      <AnimatePresence>
-        {showPasswordInput && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-10000 flex items-center justify-center"
-            onClick={() => {
-              setShowPasswordInput(false);
-              setIsListening(false);
-              if (listeningTimeout.current) {
-                clearTimeout(listeningTimeout.current);
-              }
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: -20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: -20 }}
-              className="bg-linear-to-b from-gray-900 to-black border-2 border-red-600 shadow-2xl rounded-xl p-6 max-w-md w-full mx-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <Lock className="w-6 h-6 text-red-500" />
-                <h3 className="text-lg font-bold text-white">Enter Password</h3>
-              </div>
-
-              <div className="mb-4 p-3 bg-linear-to-r from-red-900/30 to-black/30 border border-red-800/50 rounded-lg">
-                <div className="flex items-center gap-2 text-sm text-red-300">
-                  <div className={`w-2 h-2 rounded-full ${isListening ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}></div>
-                  <span>{isListening ? 'Listening for password...' : 'Ready for password'}</span>
-                </div>
-                <p className="text-xs text-red-400 mt-1">
-                  System will stop listening in 5 minutes
-                </p>
-              </div>
-
-              <form onSubmit={handlePasswordSubmit}>
-                <input
-                  type="password"
-                  value={inputPassword}
-                  onChange={(e) => setInputPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-900 border-2 border-red-700 rounded-lg text-white placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-900 mb-4"
-                  placeholder="Enter password"
-                  autoFocus
-                />
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    className="flex-1 bg-linear-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white py-3 rounded-lg font-medium transition-all duration-300 hover:scale-[1.02]"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowPasswordInput(false);
-                      setIsListening(false);
-                      if (listeningTimeout.current) {
-                        clearTimeout(listeningTimeout.current);
-                      }
-                    }}
-                    className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 py-3 rounded-lg font-medium transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-
-              <div className="mt-4 text-xs text-gray-400">
-                <p>Activation methods:</p>
-                <ul className="list-disc pl-5 mt-1 space-y-1">
-                  <li>Triple tap anywhere on screen</li>
-                  <li>Triple right-click anywhere</li>
-                  <li>Press 'P' key three times</li>
-                </ul>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Storage Error Alert */}
-      <AnimatePresence>
-        {storageError && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 right-4 z-10001 max-w-md"
-          >
-            <div className="bg-linear-to-r from-red-900 to-black border-2 border-red-600 rounded-lg shadow-2xl p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-6 h-6 text-red-400 shrink-0" />
-                <div className="flex-1">
-                  <h4 className="font-bold text-white mb-1">Storage Warning</h4>
-                  <p className="text-sm text-red-300 mb-2">{storageError}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={clearAllData}
-                      className="px-3 py-1 text-xs bg-red-800 hover:bg-red-700 text-white rounded transition-colors"
-                    >
-                      Clear All Data
-                    </button>
-                    <button
-                      onClick={() => setStorageError('')}
-                      className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded transition-colors"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Editor Panel */}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-6xl bg-linear-to-b from-gray-900 to-black shadow-2xl z-[9999] overflow-hidden border-2 border-red-600"
-          >
-            <div className="bg-linear-to-r from-black via-red-900 to-black p-4 relative">
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-red-500 to-transparent"></div>
-              <div className="absolute bottom-1 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-red-300 to-transparent opacity-50"></div>
-
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <Settings className="w-6 h-6 text-red-400" />
-                  <h2 className="text-xl font-bold text-white">New Maker - Content Box Creator</h2>
-                </div>
-                <button
-                  onClick={() => {
-                    setIsVisible(false);
-                    setIsEditorOpen(false);
-                  }}
-                  className="p-2 rounded-full hover:bg-red-900/30 transition-colors border border-red-800"
-                >
-                  <X className="w-5 h-5 text-red-400" />
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 max-h-[80vh] overflow-y-auto bg-linear-to-b from-gray-900 to-black custom-scrollbar">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Left Column - Form */}
-                <div>
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold mb-3 flex items-center gap-2 text-red-400 border-b border-red-700 pb-2">
-                      <Layout className="w-5 h-5" />
-                      Box Configuration
-                    </h3>
-
-                    {/* Size Controls */}
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-red-300">Width (px)</label>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="range"
-                            min="150"
-                            max="400"
-                            value={currentBox.width}
-                            onChange={(e) => setCurrentBox({ ...currentBox, width: parseInt(e.target.value) })}
-                            className="flex-1 accent-red-600"
-                          />
-                          <span className="w-20 px-2 py-1 border border-red-800 rounded text-center bg-gray-800 text-red-300">
-                            {currentBox.width}px
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-red-300">Height (px)</label>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="range"
-                            min="150"
-                            max="400"
-                            value={currentBox.height}
-                            onChange={(e) => setCurrentBox({ ...currentBox, height: parseInt(e.target.value) })}
-                            className="flex-1 accent-red-600"
-                          />
-                          <span className="w-20 px-2 py-1 border border-red-800 rounded text-center bg-gray-800 text-red-300">
-                            {currentBox.height}px
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Position */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Position on Page</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {positions.map((pos) => (
-                          <button
-                            key={pos.value}
-                            onClick={() => setCurrentBox({
-                              ...currentBox,
-                              position: pos.value,
-                              borderSide: pos.borderSide
-                            })}
-                            className={`p-3 border rounded-lg text-center transition-all duration-300 ${currentBox.position === pos.value
-                                ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                              }`}
-                          >
-                            <div className="font-medium">{pos.label}</div>
-                            <div className="text-xs text-gray-400">{pos.description}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Image Position */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Image Position</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {['left', 'right', 'top', 'bottom'].map((pos) => (
-                          <button
-                            key={pos}
-                            onClick={() => setCurrentBox({ ...currentBox, imagePosition: pos })}
-                            className={`p-3 border rounded-lg text-center transition-all duration-300 ${currentBox.imagePosition === pos
-                                ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                              }`}
-                          >
-                            {pos.charAt(0).toUpperCase() + pos.slice(1)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Border Radius Options */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Border Radius</label>
-                      <div className="space-y-3">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setCurrentBox({ ...currentBox, borderRadiusMode: 'all' })}
-                            className={`flex-1 p-2 border rounded-lg text-center transition-all duration-300 ${currentBox.borderRadiusMode === 'all'
-                                ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                              }`}
-                          >
-                            <Square className="w-4 h-4 mx-auto mb-1" />
-                            <div className="text-xs">All Corners</div>
-                          </button>
-                          <button
-                            onClick={() => setCurrentBox({ ...currentBox, borderRadiusMode: 'custom' })}
-                            className={`flex-1 p-2 border rounded-lg text-center transition-all duration-300 ${currentBox.borderRadiusMode === 'custom'
-                                ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                              }`}
-                          >
-                            <CornerUpLeft className="w-4 h-4 mx-auto mb-1" />
-                            <div className="text-xs">Custom Corners</div>
-                          </button>
-                        </div>
-
-                        {currentBox.borderRadiusMode === 'all' ? (
-                          <div>
-                            <label className="block text-xs mb-1 text-red-300">All Corners Radius: {currentBox.borderRadius.all}</label>
-                            <input
-                              type="range"
-                              min="0"
-                              max="50"
-                              value={parseInt(currentBox.borderRadius.all) || 0}
-                              onChange={(e) => setCurrentBox({
-                                ...currentBox,
-                                borderRadius: {
-                                  ...currentBox.borderRadius,
-                                  all: `${e.target.value}px`
-                                }
-                              })}
-                              className="w-full accent-red-600"
-                            />
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-2 gap-2">
-                            <div>
-                              <label className="block text-xs mb-1 text-red-300">Top Left</label>
-                              <div className="flex items-center gap-1">
-                                <CornerUpLeft className="w-4 h-4 text-red-400" />
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="50"
-                                  value={parseInt(currentBox.borderRadius.topLeft) || 0}
-                                  onChange={(e) => setCurrentBox({
-                                    ...currentBox,
-                                    borderRadius: {
-                                      ...currentBox.borderRadius,
-                                      topLeft: `${e.target.value}px`
-                                    }
-                                  })}
-                                  className="flex-1 accent-red-600"
-                                />
-                                <span className="text-xs text-red-300 w-10">{currentBox.borderRadius.topLeft}</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label className="block text-xs mb-1 text-red-300">Top Right</label>
-                              <div className="flex items-center gap-1">
-                                <CornerUpRight className="w-4 h-4 text-red-400" />
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="50"
-                                  value={parseInt(currentBox.borderRadius.topRight) || 0}
-                                  onChange={(e) => setCurrentBox({
-                                    ...currentBox,
-                                    borderRadius: {
-                                      ...currentBox.borderRadius,
-                                      topRight: `${e.target.value}px`
-                                    }
-                                  })}
-                                  className="flex-1 accent-red-600"
-                                />
-                                <span className="text-xs text-red-300 w-10">{currentBox.borderRadius.topRight}</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label className="block text-xs mb-1 text-red-300">Bottom Left</label>
-                              <div className="flex items-center gap-1">
-                                <CornerDownLeft className="w-4 h-4 text-red-400" />
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="50"
-                                  value={parseInt(currentBox.borderRadius.bottomLeft) || 0}
-                                  onChange={(e) => setCurrentBox({
-                                    ...currentBox,
-                                    borderRadius: {
-                                      ...currentBox.borderRadius,
-                                      bottomLeft: `${e.target.value}px`
-                                    }
-                                  })}
-                                  className="flex-1 accent-red-600"
-                                />
-                                <span className="text-xs text-red-300 w-10">{currentBox.borderRadius.bottomLeft}</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label className="block text-xs mb-1 text-red-300">Bottom Right</label>
-                              <div className="flex items-center gap-1">
-                                <CornerDownRight className="w-4 h-4 text-red-400" />
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="50"
-                                  value={parseInt(currentBox.borderRadius.bottomRight) || 0}
-                                  onChange={(e) => setCurrentBox({
-                                    ...currentBox,
-                                    borderRadius: {
-                                      ...currentBox.borderRadius,
-                                      bottomRight: `${e.target.value}px`
-                                    }
-                                  })}
-                                  className="flex-1 accent-red-600"
-                                />
-                                <span className="text-xs text-red-300 w-10">{currentBox.borderRadius.bottomRight}</span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Color Selection */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Box Color & Style</label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {colorPresets.map((preset) => (
-                          <button
-                            key={preset.name}
-                            onClick={() => handleColorSelect(preset)}
-                            className="p-2 border border-red-800 rounded-lg text-center group transition-transform hover:scale-105 duration-300"
-                            style={{
-                              background: preset.type === 'gradient'
-                                ? `linear-gradient(135deg, ${preset.gradient[0]}, ${preset.gradient[1]})`
-                                : preset.value,
-                              color: preset.textColor,
-                              boxShadow: preset.shadow
-                            }}
-                          >
-                            <div className="text-xs font-medium">{preset.name}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Text Background Settings */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Text Background</label>
-                      <div className="space-y-2">
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Opacity: {currentBox.textBgOpacity}</label>
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.1"
-                            value={currentBox.textBgOpacity}
-                            onChange={(e) => setCurrentBox({ ...currentBox, textBgOpacity: parseFloat(e.target.value) })}
-                            className="w-full accent-red-600"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Blur: {currentBox.textBlur}px</label>
-                          <input
-                            type="range"
-                            min="0"
-                            max="20"
-                            step="1"
-                            value={currentBox.textBlur}
-                            onChange={(e) => setCurrentBox({ ...currentBox, textBlur: parseInt(e.target.value) })}
-                            className="w-full accent-red-600"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Animation Selection */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Animation</label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {Object.entries(animations).map(([key, anim]) => (
-                          <button
-                            key={key}
-                            onClick={() => setCurrentBox({ ...currentBox, animation: key })}
-                            className={`p-3 border rounded-lg text-center transition-all duration-300 ${currentBox.animation === key
-                                ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                              }`}
-                          >
-                            <Zap className="w-4 h-4 mx-auto mb-1" />
-                            <div className="text-xs">{anim.name}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Timing Settings */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Display Timing</label>
-                      <div className="space-y-2">
-                        <select
-                          value={currentBox.showTime}
-                          onChange={(e) => setCurrentBox({ ...currentBox, showTime: e.target.value })}
-                          className="w-full p-2 border border-red-800 rounded bg-gray-800 text-white"
-                        >
-                          <option value="always">Always Visible</option>
-                          <option value="scheduled">Scheduled Date/Time</option>
-                          <option value="duration">Specific Duration (Days)</option>
-                        </select>
-
-                        {currentBox.showTime === 'scheduled' && (
-                          <>
-                            <div className="grid grid-cols-2 gap-2 mb-2">
-                              <div>
-                                <label className="block text-xs mb-1 text-red-300">Start Date</label>
-                                <input
-                                  type="date"
-                                  value={currentBox.startDate}
-                                  onChange={(e) => setCurrentBox({ ...currentBox, startDate: e.target.value })}
-                                  className="w-full p-2 border border-red-800 rounded bg-gray-800 text-white text-sm"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-xs mb-1 text-red-300">End Date</label>
-                                <input
-                                  type="date"
-                                  value={currentBox.endDate}
-                                  onChange={(e) => setCurrentBox({ ...currentBox, endDate: e.target.value })}
-                                  className="w-full p-2 border border-red-800 rounded bg-gray-800 text-white text-sm"
-                                />
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              <div>
-                                <label className="block text-xs mb-1 text-red-300">Start Time</label>
-                                <input
-                                  type="time"
-                                  value={currentBox.startTime}
-                                  onChange={(e) => setCurrentBox({ ...currentBox, startTime: e.target.value })}
-                                  className="w-full p-2 border border-red-800 rounded bg-gray-800 text-white text-sm"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-xs mb-1 text-red-300">End Time</label>
-                                <input
-                                  type="time"
-                                  value={currentBox.endTime}
-                                  onChange={(e) => setCurrentBox({ ...currentBox, endTime: e.target.value })}
-                                  className="w-full p-2 border border-red-800 rounded bg-gray-800 text-white text-sm"
-                                />
-                              </div>
-                            </div>
-                          </>
-                        )}
-
-                        {currentBox.showTime === 'duration' && (
-                          <div className="flex gap-2">
-                            <input
-                              type="number"
-                              min="1"
-                              max="365"
-                              value={boxDuration}
-                              onChange={(e) => setBoxDuration(parseInt(e.target.value))}
-                              className="flex-1 p-2 border border-red-800 rounded bg-gray-800 text-white"
-                              placeholder="Days"
-                            />
-                            <span className="self-center text-red-300">days</span>
-                            </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-          {/* Live Preview */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium mb-2 text-red-300">Live Preview</h4>
-                      <div
-                        className="border border-red-800 overflow-hidden preview-container"
-                        style={{
-                          width: `${Math.min(currentBox.width, 400)}px`,
-                          height: `${Math.min(currentBox.height, 400)}px`,
-                          maxWidth: '100%',
-                          maxHeight: '400px',
-                          margin: '0 auto',
-                          background: currentBox.bgType === 'gradient'
-                            ? `linear-gradient(135deg, ${currentBox.bgGradient[0]}, ${currentBox.bgGradient[1]})`
-                            : currentBox.bgColor,
-                          backdropFilter: currentBox.blur > 0 ? `blur(${currentBox.blur}px)` : 'none',
-                          color: currentBox.textColor,
-                          boxShadow: currentBox.boxShadow === 'lg'
-                            ? '0 10px 15px -3px rgba(139, 0, 0, 0.1)'
-                            : '0 4px 6px -1px rgba(139, 0, 0, 0.1)',
-                          borderRadius: getBorderRadius(currentBox)
-                        }}
-                      >
-                        {currentBox.imagePreview && !currentBox.body.trim() && !currentBox.title.trim() ? (
-                          <div className="w-full h-full">
-                            <img
-                              src={currentBox.imagePreview}
-                              alt="Preview"
-                              className="w-full h-full object-cover"
-                              style={{
-                                borderRadius: currentBox.imageBorderRadius
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <div className={`flex h-full ${currentBox.imagePosition === 'left' ? 'flex-row' :
-                              currentBox.imagePosition === 'right' ? 'flex-row-reverse' :
-                                currentBox.imagePosition === 'top' ? 'flex-col' :
-                                  'flex-col-reverse'
-                            }`}>
-                            {currentBox.imagePreview && (
-                              <div className={`${currentBox.imagePosition === 'left' || currentBox.imagePosition === 'right'
-                                  ? 'w-1/3 shrink-0'
-                                  : 'h-1/3 shrink-0'
-                                }`}>
-                                <img
-                                  src={currentBox.imagePreview}
-                                  alt="Preview"
-                                  className="w-full h-full object-cover"
-                                  style={{
-                                    borderRadius: currentBox.imageBorderRadius
-                                  }}
-                                />
-                              </div>
-                            )}
-                            <div className="flex-1 overflow-auto p-4 relative">
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  background: `rgba(255, 255, 255, ${currentBox.textBgOpacity || 0.3})`,
-                                  backdropFilter: `blur(${currentBox.textBlur || 5}px)`,
-                                  zIndex: 0
-                                }}
-                              ></div>
-                              <div className={`relative z-10 ${currentBox.fontFamily} ${currentBox.fontWeight}`}>
-                                {currentBox.title && (
-                                  <div className={`mb-4 pb-3 ${getHeaderStyle(currentBox)} relative overflow-hidden rounded-t-lg`}
-                                    style={{
-                                      background: currentBox.headerBackground !== 'none' ? currentBox.headerBackground : 'transparent',
-                                      backdropFilter: currentBox.headerBgBlur > 0 ? `blur(${currentBox.headerBgBlur}px)` : 'none',
-                                      margin: '-1rem -1rem 1rem -1rem',
-                                      padding: '1rem'
-                                    }}
-                                  >
-                                    <h4 
-                                      className={`font-bold ${currentBox.textSize === 'sm' ? 'text-lg' :
-                                          currentBox.textSize === 'base' ? 'text-xl' :
-                                          currentBox.textSize === 'lg' ? 'text-2xl' :
-                                          'text-3xl'
-                                        } text-left`}
-                                      style={{
-                                        background: currentBox.headerTextColorType === 'gradient' ? currentBox.headerTextColor : undefined,
-                                        color: currentBox.headerTextColorType === 'gradient' ? 'transparent' : currentBox.headerTextColor,
-                                        WebkitBackgroundClip: currentBox.headerTextColorType === 'gradient' ? 'text' : undefined,
-                                        backgroundClip: currentBox.headerTextColorType === 'gradient' ? 'text' : undefined,
-                                        textShadow: currentBox.headerTextColorType === 'glass' ? '0 0 10px rgba(255,255,255,0.5)' : 'none'
-                                      }}
-                                    >
-                                      {currentBox.title}
-                                    </h4>
-                                  </div>
-                                )}
-                                {currentBox.body && (
-                                  <div className={`${currentBox.textSize} text-left leading-relaxed`}
-                                    dangerouslySetInnerHTML={{
-                                      __html: formatText(currentBox.body, currentBox.highlightColor)
-                                    }}
-                                    style={{
-                                      background: currentBox.bodyTextColorType === 'gradient' ? currentBox.bodyTextColor : undefined,
-                                      color: currentBox.bodyTextColorType === 'gradient' ? 'transparent' : currentBox.bodyTextColor,
-                                      WebkitBackgroundClip: currentBox.bodyTextColorType === 'gradient' ? 'text' : undefined,
-                                      backgroundClip: currentBox.bodyTextColorType === 'gradient' ? 'text' : undefined,
-                                      textShadow: currentBox.bodyTextColorType === 'glass' ? '0 0 5px rgba(255,255,255,0.3)' : 'none'
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                </div>
-
-                {/* Right Column - Content & Preview */}
-                <div>
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold mb-3 flex items-center gap-2 text-red-400 border-b border-red-700 pb-2">
-                      <Type className="w-5 h-5" />
-                      Content & Typography
-                    </h3>
-
-                    {/* Title with word counter */}
-                    <div className="mb-4">
-                      <div className="flex justify-between items-center mb-1">
-                        <label className="block text-sm font-medium text-red-300">Title</label>
-                        <span className="text-xs text-red-400">
-                          {countWords(currentBox.title)}/10 words
-                        </span>
-                      </div>
-                      <input
-                        type="text"
-                        value={currentBox.title}
-                        onChange={handleTitleChange}
-                        className="w-full p-2 border border-red-800 rounded bg-gray-800 text-white"
-                        placeholder="Enter box title (max 10 words)"
-                      />
-                      {countWords(currentBox.title) >= 10 && (
-                        <p className="text-xs text-red-400 mt-1">Maximum 10 words reached</p>
-                      )}
-                    </div>
-
-                    {/* Text Formatting Help */}
-                    <div className="mb-4 p-3 bg-red-900/20 border border-red-800 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <TypeIcon className="w-4 h-4 text-red-400" />
-                        <h4 className="text-sm font-medium text-red-300">Text Formatting Guide</h4>
-                      </div>
-                      <div className="text-xs space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Bold className="w-3 h-3 text-red-400" />
-                          <span className="text-red-300">Wrap text with <code className="bg-red-900/50 px-1 rounded">*asterisks*</code> for bold and highlight</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Italic className="w-3 h-3 text-red-400" />
-                          <span className="text-red-300">Wrap text with <code className="bg-red-900/50 px-1 rounded">_underscores_</code> for italic</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Body Text with word counter */}
-                    <div className="mb-4">
-                      <div className="flex justify-between items-center mb-1">
-                        <label className="block text-sm font-medium text-red-300">
-                          Body Text <span className="text-red-500">*</span>
-                        </label>
-                        <span className="text-xs text-red-400">
-                          {countWords(currentBox.body)}/200 words
-                        </span>
-                      </div>
-                      <textarea
-                        value={currentBox.body}
-                        onChange={handleBodyChange}
-                        className="w-full p-2 border border-red-800 rounded h-32 bg-gray-800 text-white font-sans"
-                        placeholder="Enter main content (required if no image, max 200 words)"
-                      />
-                      <div className="flex justify-between mt-1">
-                        <p className="text-xs text-gray-400">
-                          * Required only if no image is uploaded
-                        </p>
-                        {countWords(currentBox.body) >= 200 && (
-                          <p className="text-xs text-red-400">Maximum 200 words reached</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Font Settings */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium mb-2 text-red-300">Typography Settings</h4>
-                      <div className="space-y-3">
-                        {/* Font Family */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Font Family</label>
-                          <div className="grid grid-cols-2 gap-2">
-                            {fontFamilies.map((font) => (
-                              <button
-                                key={font.value}
-                                onClick={() => setCurrentBox({ ...currentBox, fontFamily: font.value })}
-                                className={`p-2 border rounded text-center transition-all duration-300 ${currentBox.fontFamily === font.value
-                                    ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                    : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                                  }`}
-                              >
-                                <div className={`text-xs ${font.class}`}>{font.name}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Font Weight */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Font Weight</label>
-                          <div className="grid grid-cols-3 gap-2">
-                            {fontWeights.map((weight) => (
-                              <button
-                                key={weight.value}
-                                onClick={() => setCurrentBox({ ...currentBox, fontWeight: weight.value })}
-                                className={`p-2 border rounded text-center transition-all duration-300 ${currentBox.fontWeight === weight.value
-                                    ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                    : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                                  }`}
-                              >
-                                <div className={`text-xs ${weight.class}`}>{weight.name}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Text Size */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Text Size</label>
-                          <div className="grid grid-cols-4 gap-2">
-                            {textSizes.map((size) => (
-                              <button
-                                key={size.value}
-                                onClick={() => setCurrentBox({ ...currentBox, textSize: size.value })}
-                                className={`p-2 border rounded text-center transition-all duration-300 ${currentBox.textSize === size.value
-                                    ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                    : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                                  }`}
-                              >
-                                <div className={`text-xs ${size.class}`}>{size.name}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Header Style */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Header Style</label>
-                          <div className="grid grid-cols-3 gap-2">
-                            {headerStyles.map((style) => (
-                              <button
-                                key={style.value}
-                                onClick={() => setCurrentBox({ ...currentBox, headerStyle: style.value })}
-                                className={`p-2 border rounded text-center transition-all duration-300 ${currentBox.headerStyle === style.value
-                                    ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                    : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                                  }`}
-                              >
-                                <div className="flex flex-col items-center">
-                                  <div className="mb-1">{style.icon}</div>
-                                  <div className="text-xs">{style.name}</div>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Highlight Color */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Highlight Color</label>
-                          <div className="grid grid-cols-4 gap-2">
-                            {highlightColors.map((color) => (
-                              <button
-                                key={color.name}
-                                onClick={() => setCurrentBox({ ...currentBox, highlightColor: color.value })}
-                                className={`p-3 border rounded transition-all duration-300 ${currentBox.highlightColor === color.value
-                                    ? 'border-red-600 ring-2 ring-red-500'
-                                    : 'border-red-800 hover:border-red-700'
-                                  }`}
-                                style={{
-                                  backgroundColor: color.value,
-                                  color: color.textColor
-                                }}
-                              >
-                                <div className="text-xs font-medium">{color.name}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Text Color Options */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Text Colors</label>
-                      <div className="space-y-3">
-                        {/* Header Text Color */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Header Text Color</label>
-                          <div className="grid grid-cols-4 gap-2">
-                            {textColorOptions.slice(0, 4).map((color) => (
-                              <button
-                                key={color.name}
-                                onClick={() => setCurrentBox({
-                                  ...currentBox,
-                                  headerTextColor: color.value,
-                                  headerTextColorType: color.type
-                                })}
-                                className={`p-2 border rounded transition-all duration-300 ${currentBox.headerTextColor === color.value
-                                    ? 'border-red-600 ring-2 ring-red-500'
-                                    : 'border-red-800 hover:border-red-700'
-                                  }`}
-                                style={{
-                                  backgroundColor: color.bgColor,
-                                  color: color.value,
-                                  background: color.type === 'gradient' ? color.value : undefined
-                                }}
-                              >
-                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
-                              </button>
-                            ))}
-                          </div>
-                          <div className="grid grid-cols-4 gap-2 mt-2">
-                            {textColorOptions.slice(4).map((color) => (
-                              <button
-                                key={color.name}
-                                onClick={() => setCurrentBox({
-                                  ...currentBox,
-                                  headerTextColor: color.value,
-                                  headerTextColorType: color.type
-                                })}
-                                className={`p-2 border rounded transition-all duration-300 ${currentBox.headerTextColor === color.value
-                                    ? 'border-red-600 ring-2 ring-red-500'
-                                    : 'border-red-800 hover:border-red-700'
-                                  }`}
-                                style={{
-                                  backgroundColor: color.bgColor,
-                                  color: color.type === 'gradient' ? 'white' : color.value,
-                                  background: color.type === 'gradient' ? color.value : undefined
-                                }}
-                              >
-                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Body Text Color */}
-                        <div>
-                          <label className="block text-xs mb-1 text-red-300">Body Text Color</label>
-                          <div className="grid grid-cols-4 gap-2">
-                            {textColorOptions.slice(0, 4).map((color) => (
-                              <button
-                                key={color.name}
-                                onClick={() => setCurrentBox({
-                                  ...currentBox,
-                                  bodyTextColor: color.value,
-                                  bodyTextColorType: color.type
-                                })}
-                                className={`p-2 border rounded transition-all duration-300 ${currentBox.bodyTextColor === color.value
-                                    ? 'border-red-600 ring-2 ring-red-500'
-                                    : 'border-red-800 hover:border-red-700'
-                                  }`}
-                                style={{
-                                  backgroundColor: color.bgColor,
-                                  color: color.value,
-                                  background: color.type === 'gradient' ? color.value : undefined
-                                }}
-                              >
-                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
-                              </button>
-                            ))}
-                          </div>
-                          <div className="grid grid-cols-4 gap-2 mt-2">
-                            {textColorOptions.slice(4).map((color) => (
-                              <button
-                                key={color.name}
-                                onClick={() => setCurrentBox({
-                                  ...currentBox,
-                                  bodyTextColor: color.value,
-                                  bodyTextColorType: color.type
-                                })}
-                                className={`p-2 border rounded transition-all duration-300 ${currentBox.bodyTextColor === color.value
-                                    ? 'border-red-600 ring-2 ring-red-500'
-                                    : 'border-red-800 hover:border-red-700'
-                                  }`}
-                                style={{
-                                  backgroundColor: color.bgColor,
-                                  color: color.type === 'gradient' ? 'white' : color.value,
-                                  background: color.type === 'gradient' ? color.value : undefined
-                                }}
-                              >
-                                <div className="text-xs font-medium truncate">{color.name.split(' ')[0]}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Header Background Options */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2 text-red-300">Header Background/Effect</label>
-                      <div className="grid grid-cols-4 gap-2">
-                        {headerBgOptions.slice(0, 4).map((option) => (
-                          <button
-                            key={option.name}
-                            onClick={() => setCurrentBox({
-                              ...currentBox,
-                              headerBackground: option.value,
-                              headerBackgroundType: option.borderStyle,
-                              headerBgBlur: option.blur || 0
-                            })}
-                            className={`p-2 border rounded transition-all duration-300 flex flex-col items-center justify-center h-20 ${currentBox.headerBackground === option.value
-                                ? 'border-red-600 ring-2 ring-red-500'
-                                : 'border-red-800 hover:border-red-700'
-                              }`}
-                            style={{
-                              background: option.value === 'none' ? 'transparent' : option.value,
-                              color: option.textColor || '#FFFFFF',
-                              backdropFilter: option.blur ? `blur(${option.blur}px)` : 'none'
-                            }}
-                          >
-                            <div className="text-xs font-medium mb-1">{option.name}</div>
-                            <div className="text-[10px] opacity-75 text-center">{option.description}</div>
-                          </button>
-                        ))}
-                      </div>
-                      <div className="grid grid-cols-4 gap-2 mt-2">
-                        {headerBgOptions.slice(4).map((option) => (
-                          <button
-                            key={option.name}
-                            onClick={() => setCurrentBox({
-                              ...currentBox,
-                              headerBackground: option.value,
-                              headerBackgroundType: option.borderStyle,
-                              headerBgBlur: option.blur || 0
-                            })}
-                            className={`p-2 border rounded transition-all duration-300 flex flex-col items-center justify-center h-20 ${currentBox.headerBackground === option.value
-                                ? 'border-red-600 ring-2 ring-red-500'
-                                : 'border-red-800 hover:border-red-700'
-                              }`}
-                            style={{
-                              background: option.value,
-                              color: option.textColor || '#FFFFFF',
-                              backdropFilter: option.blur ? `blur(${option.blur}px)` : 'none'
-                            }}
-                          >
-                            <div className="text-xs font-medium mb-1">{option.name}</div>
-                            <div className="text-[10px] opacity-75 text-center">{option.description}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Image Upload */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1 text-red-300">Image Upload</label>
-                      <div className="border-2 border-dashed border-red-800 rounded-lg p-4 text-center bg-gray-900/50">
-                        {currentBox.imagePreview ? (
-                          <div className="space-y-2">
-                            <img
-                              src={currentBox.imagePreview}
-                              alt="Preview"
-                              className="mx-auto max-h-32 object-contain rounded"
-                              style={{
-                                borderRadius: currentBox.imageBorderRadius
-                              }}
-                            />
-                            <button
-                              onClick={() => setCurrentBox({ ...currentBox, image: null, imagePreview: '' })}
-                              className="text-red-400 text-sm hover:text-red-300"
-                            >
-                              Remove Image
-                            </button>
-                          </div>
-                        ) : (
-                          <label className="cursor-pointer">
-                            <Upload className="w-8 h-8 mx-auto text-red-600 mb-2" />
-                            <div className="text-sm text-red-400">
-                              Click to upload image
-                              <br />
-                              <span className="text-xs">(PNG, JPG, max 2MB)</span>
-                            </div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              className="hidden"
-                            />
-                          </label>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Image Border Radius */}
-                    {currentBox.imagePreview && (
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium mb-2 text-red-300">Image Border Radius</label>
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-3 gap-2">
-                            {imageBorderRadiusOptions.map((option) => (
-                              <button
-                                key={option.name}
-                                onClick={() => {
-                                  if (option.value === 'custom') {
-                                    setCurrentBox({
-                                      ...currentBox,
-                                      imageBorderRadiusMode: 'custom',
-                                      imageBorderRadius: currentBox.customImageBorderRadius
-                                    });
-                                  } else {
-                                    setCurrentBox({
-                                      ...currentBox,
-                                      imageBorderRadiusMode: 'preset',
-                                      imageBorderRadius: option.value
-                                    });
-                                  }
-                                }}
-                                className={`p-2 border rounded text-center transition-all duration-300 flex flex-col items-center ${currentBox.imageBorderRadius === option.value ||
-                                    (option.value === 'custom' && currentBox.imageBorderRadiusMode === 'custom')
-                                    ? 'bg-linear-to-b from-red-900 to-red-800 border-red-600 text-white shadow-lg'
-                                    : 'border-red-800 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-700'
-                                  }`}
-                              >
-                                <div className="mb-1 text-red-400">{option.icon}</div>
-                                <div className="text-xs">{option.name}</div>
-                              </button>
-                            ))}
-                          </div>
-                          
-                          {currentBox.imageBorderRadiusMode === 'custom' && (
-                            <div className="mt-2">
-                              <label className="block text-xs mb-1 text-red-300">Custom Radius: {currentBox.customImageBorderRadius}</label>
-                              <input
-                                type="range"
-                                min="0"
-                                max="50"
-                                value={parseInt(currentBox.customImageBorderRadius) || 0}
-                                onChange={(e) => setCurrentBox({
-                                  ...currentBox,
-                                  customImageBorderRadius: `${e.target.value}px`,
-                                  imageBorderRadius: `${e.target.value}px`
-                                })}
-                                className="w-full accent-red-600"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-          
-                  </div>
-                </div>
-              </div>
-
-              {/* Box Management */}
-              <div className="border-t border-red-800 pt-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold text-red-400">Your Boxes ({boxes.length}/4)</h3>
-                  <div className="flex gap-2">
-                    {editorMode === 'edit' ? (
-                      <button
-                        onClick={updateBox}
-                        disabled={!currentBox.body.trim() && !currentBox.imagePreview}
-                        className={`px-4 py-2 rounded-lg transition-all duration-300 ${(currentBox.body.trim() || currentBox.imagePreview)
-                            ? 'bg-linear-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:scale-[1.02]'
-                            : 'bg-gray-800 text-gray-500 cursor-not-allowed border border-red-900'
-                          }`}
-                      >
-                        <Save className="w-4 h-4 inline mr-2" />
-                        Update Box
-                      </button>
-                    ) : (
-                      <button
-                        onClick={addNewBox}
-                        disabled={boxes.length >= 4 || (!currentBox.body.trim() && !currentBox.imagePreview)}
-                        className={`px-4 py-2 rounded-lg transition-all duration-300 ${boxes.length >= 4
-                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-red-900'
-                            : (currentBox.body.trim() || currentBox.imagePreview)
-                              ? 'bg-linear-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:scale-[1.02]'
-                              : 'bg-gray-800 text-gray-500 cursor-not-allowed border border-red-900'
-                          }`}
-                      >
-                        <Save className="w-4 h-4 inline mr-2" />
-                        Save New Box
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setAutoRotate(!autoRotate)}
-                      className={`px-4 py-2 rounded-lg border border-red-800 transition-all duration-300 ${autoRotate ? 'bg-linear-to-r from-red-700 to-red-800 text-white' : 'bg-gray-800 text-red-300'
-                        }`}
-                    >
-                      {autoRotate ? 'Auto Rotate: ON' : 'Auto Rotate: OFF'}
-                    </button>
-                    <button
-                      onClick={clearAllData}
-                      className="px-4 py-2 rounded-lg bg-red-900/30 border border-red-800 text-red-300 hover:bg-red-800/40 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4 inline mr-2" />
-                      Clear All
-                    </button>
-                  </div>
-                </div>
-
-                {/* Box List */}
-                {boxes.length > 0 && (
-                  <div className="space-y-2">
-                    {boxes.map((box, index) => (
-                      <div
-                        key={box.id}
-                        className={`flex items-center justify-between p-3 border rounded-lg transition-all duration-300 ${currentBoxIndex === index
-                            ? 'bg-linear-to-r from-red-900/30 to-black/30 border-red-600'
-                            : 'border-red-800 bg-gray-800/50 hover:bg-gray-800/70'
-                          }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentBoxIndex === index
-                              ? 'bg-linear-to-r from-red-700 to-red-800 text-white'
-                              : 'bg-gray-700 text-red-300'
-                            }`}>
-                            {index + 1}
-                          </div>
-                          <div>
-                            <div className="font-medium text-white">{box.title || (box.imagePreview ? 'Image Box' : 'Untitled Box')}</div>
-                            <div className="text-sm text-gray-400">
-                              {box.width}×{box.height}px • {positions.find(p => p.value === box.position)?.label}
-                              {box.showTime !== 'always' && ' • Scheduled'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              setCurrentBox(box);
-                              setCurrentBoxIndex(index);
-                              setEditorMode('edit');
-                            }}
-                            className="px-3 py-1 text-sm border border-red-800 rounded hover:bg-red-900/30 text-red-300 transition-colors"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => deleteBox(index)}
-                            className="px-3 py-1 text-sm bg-red-900/30 text-red-400 rounded hover:bg-red-800/40 transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4 inline" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Carousel Controls */}
-                {boxes.length > 1 && (
-                  <div className="flex justify-center items-center gap-4 mt-4">
-                    <button
-                      onClick={() => setCurrentBoxIndex((prev) => (prev - 1 + boxes.length) % boxes.length)}
-                      className="p-2 rounded-full hover:bg-red-900/30 border border-red-800 transition-colors"
-                    >
-                      <ChevronLeft className="w-5 h-5 text-red-400" />
-                    </button>
-                    <span className="text-sm text-red-300">
-                      Box {currentBoxIndex + 1} of {boxes.length}
-                    </span>
-                    <button
-                      onClick={() => setCurrentBoxIndex((prev) => (prev + 1) % boxes.length)}
-                      className="p-2 rounded-full hover:bg-red-900/30 border border-red-800 transition-colors"
-                    >
-                      <ChevronRight className="w-5 h-5 text-red-400" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Display Created Boxes */}
-      <AnimatePresence>
-        {boxes.map((box, index) => {
-          if (currentBoxIndex !== index && boxes.length > 1) return null;
-
-          const isVisible = checkBoxVisibility(box);
-          if (!isVisible) return null;
-
-          const animation = animations[box.animation];
-
-          return (
-            <motion.div
-              key={box.id}
-              initial={animation.initial}
-              animate={animation.animate}
-              exit={animation.exit}
-              transition={animation.transition}
-              style={getBoxStyle(box)}
-              className="new-maker-box"
-            >
-              <div className="h-full flex relative">
-                {/* Dynamic border styling */}
-                <div
-                  className="absolute z-10"
-                  style={{
-                    ...getBorderPosition(box.borderSide),
-                  }}
-                >
-                  <div className={`w-full h-full bg-linear-to-b ${getBorderGradient(box)}`}></div>
-                  <div className="absolute inset-0 bg-linear-to-b from-red-400/30 to-transparent blur-sm"></div>
-                </div>
-
-                {/* Image only mode - full width/height */}
-                {box.imagePreview && !box.body.trim() && !box.title.trim() ? (
-                  <div className="w-full h-full">
-                    <img
-                      src={box.imagePreview}
-                      alt="Content"
-                      className="w-full h-full object-cover"
-                      style={{
-                        borderRadius: box.imageBorderRadius
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className={`flex h-full ${box.imagePosition === 'left' ? 'flex-row' :
-                      box.imagePosition === 'right' ? 'flex-row-reverse' :
-                        box.imagePosition === 'top' ? 'flex-col' :
-                          'flex-col-reverse'
-                    } flex-1`}>
-                    {box.imagePreview && (
-                      <div className={`${box.imagePosition === 'left' || box.imagePosition === 'right'
-                          ? 'w-1/3 shrink-0'
-                          : 'h-1/3 shrink-0'
-                        }`}>
-                        <img
-                          src={box.imagePreview}
-                          alt="Content"
-                          className="w-full h-full object-cover"
-                          style={{
-                            borderRadius: box.imageBorderRadius
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 relative overflow-hidden">
-                      {/* Extended text background that covers scrolling area */}
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          background: `rgba(255, 255, 255, ${box.textBgOpacity || 0.3})`,
-                          backdropFilter: `blur(${box.textBlur || 5}px)`,
-                          zIndex: 0
-                        }}
-                      ></div>
-
-                      {/* Scrollable content with proper padding */}
-                      <div className="relative z-10 h-full overflow-y-auto custom-scrollbar">
-                        <div className={`p-4 ${box.fontFamily} ${box.fontWeight}`}>
-                          {box.title && (
-                            <div className={`mb-4 pb-3 ${getHeaderStyle(box)} relative overflow-hidden rounded-t-lg`}
-                              style={{
-                                background: box.headerBackground !== 'none' ? box.headerBackground : 'transparent',
-                                backdropFilter: box.headerBgBlur > 0 ? `blur(${box.headerBgBlur}px)` : 'none',
-                                margin: '-1rem -1rem 1rem -1rem',
-                                padding: '1rem'
-                              }}
-                            >
-                              <h3 
-                                className={`font-bold ${box.textSize === 'sm' ? 'text-lg' :
-                                    box.textSize === 'base' ? 'text-xl' :
-                                    box.textSize === 'lg' ? 'text-2xl' :
-                                    'text-3xl'
-                                  } text-left`}
-                                style={{
-                                  background: box.headerTextColorType === 'gradient' ? box.headerTextColor : undefined,
-                                  color: box.headerTextColorType === 'gradient' ? 'transparent' : box.headerTextColor,
-                                  WebkitBackgroundClip: box.headerTextColorType === 'gradient' ? 'text' : undefined,
-                                  backgroundClip: box.headerTextColorType === 'gradient' ? 'text' : undefined,
-                                  textShadow: box.headerTextColorType === 'glass' ? '0 0 10px rgba(255,255,255,0.5)' : 'none'
-                                }}
-                              >
-                                {box.title}
-                              </h3>
-                            </div>
-                          )}
-                          {box.body && (
-                            <div className={`${box.textSize} text-left leading-relaxed`}
-                              dangerouslySetInnerHTML={{
-                                __html: formatText(box.body, box.highlightColor)
-                              }}
-                              style={{
-                                background: box.bodyTextColorType === 'gradient' ? box.bodyTextColor : undefined,
-                                color: box.bodyTextColorType === 'gradient' ? 'transparent' : box.bodyTextColor,
-                                WebkitBackgroundClip: box.bodyTextColorType === 'gradient' ? 'text' : undefined,
-                                backgroundClip: box.bodyTextColorType === 'gradient' ? 'text' : undefined,
-                                textShadow: box.bodyTextColorType === 'glass' ? '0 0 5px rgba(255,255,255,0.3)' : 'none'
-                              }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Carousel Indicator */}
-                {boxes.length > 1 && (
-                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-20">
-                    {boxes.map((_, i) => (
-                      <div
-                        key={i}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${i === currentBoxIndex
-                            ? 'bg-linear-to-r from-red-500 to-red-600 scale-125 shadow-lg shadow-red-500/50'
-                            : 'bg-red-900/50'
-                          }`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
-
-      <style jsx="true">{`
-       /* Responsive adjustments */
-        @media (max-width: 768px) {
-          .new-maker-box {
-            width: ${Math.min(currentBox.width, 300)}px !important;
-            height: ${Math.min(currentBox.height, 350)}px !important;
-            max-width: 300px !important;
-            max-height: 350px !important;
-          }
-          
-          .grid-cols-2 {
-            grid-template-columns: 1fr !important;
-          }
-        }
+//       if (!cloudinaryRes.ok) {
+//         console.warn('Cloudinary deletion failed, continuing with database deletion...');
+//       }
+//     } catch (e) {
+//       console.warn('Cloudinary deletion error (continuing anyway):', e);
+//     }
+//   }
+
+//   // Delete from database with proper headers
+//   const dbRes = await fetch(`${API_URL}/boxes/${boxId}`, { 
+//     method: 'DELETE',
+//     headers: { 'Content-Type': 'application/json' }
+//   });
+  
+//   // Check if response is JSON
+//   const contentType = dbRes.headers.get('content-type');
+//   if (!contentType || !contentType.includes('application/json')) {
+//     const text = await dbRes.text();
+//     console.error('Database response (not JSON):', text.substring(0, 200));
+//     throw new Error('Server returned HTML instead of JSON - backend may not be running');
+//   }
+  
+//   const dbData = await dbRes.json();
+//   console.log('Database deletion response:', dbData);
+  
+//   if (!dbRes.ok) {
+//     throw new Error(dbData.error || 'Server deletion failed');
+//   }
+  
+//   return true;
+// };
+
+// const deleteBox = (index) => {
+//   const box = boxes[index];
+//   showConfirm(
+//     'Delete Box',
+//     'This will permanently delete this box and its image. Continue?',
+//     async () => {
+//       closeConfirm();
+//       setIsDeleting(true);
+//       try {
+//         console.log('Deleting box:', box.id, 'Image public ID:', box.imagePublicId);
         
-        @media (max-width: 640px) {
-          .new-maker-box {
-            width: ${Math.min(currentBox.width, 270)}px !important;
-            height: ${Math.min(currentBox.height, 300)}px !important;
-            max-width: 270px !important;
-            max-height: 300px !important;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .new-maker-box {
-            width: ${Math.min(currentBox.width, 270)}px !important;
-            height: ${Math.min(currentBox.height, 300)}px !important;
-            max-width: 270px !important;
-            max-height: 300px !important;
-          }
-        }
-      `}</style>
-    </>
-  );
-};
+//         // Use the unified function
+//         await deleteBoxFromServer(box.id, box.imagePublicId);
 
-export default NewMaker;
+//         // Refresh boxes from server
+//         await fetchBoxes();
+        
+//         // Update current index if needed
+//         if (index === currentBoxIndex) {
+//           setCurrentBoxIndex(prev => Math.max(0, prev - 1));
+//         }
+        
+//         showNotification('Box deleted successfully.', 'success');
+//       } catch (err) {
+//         console.error('Delete error details:', err);
+//         showNotification(`Failed to delete box: ${err.message}`, 'error');
+//         // Refresh boxes to ensure UI is in sync
+//         await fetchBoxes();
+//       } finally {
+//         setIsDeleting(false);
+//       }
+//     }
+//   );
+// };
+
+// const clearAllData = () => {
+//   showConfirm(
+//     'Clear All Boxes',
+//     'This will delete ALL boxes and their images permanently. Are you sure?',
+//     async () => {
+//       closeConfirm();
+//       setIsDeleting(true);
+//       const current = [...boxes];
+//       let successCount = 0;
+//       let failCount = 0;
+      
+//       for (const box of current) {
+//         try { 
+//           await deleteBoxFromServer(box.id, box.imagePublicId);
+//           successCount++;
+//         } catch (e) { 
+//           console.error(e);
+//           failCount++;
+//         }
+//       }
+      
+//       await fetchBoxes();
+//       resetCurrentBox();
+//       setCurrentBoxIndex(0);
+//       setIsDeleting(false);
+      
+//       if (failCount > 0) {
+//         showNotification(`Cleared ${successCount} boxes, but ${failCount} failed.`, 'error');
+//       } else {
+//         showNotification('All boxes cleared.', 'success');
+//       }
+//     }
+//   );
+// };
+
+//   // ─── Triple-tap / key / right-click triggers ───────────────────────────────
+//   useEffect(() => {
+//     const handleTap = () => {
+//       if (isEditorOpen || isVisible) return;
+//       tapCount.current++;
+//       clearTimeout(tapTimeout.current);
+//       tapTimeout.current = setTimeout(() => { tapCount.current = 0; }, 1000);
+//       if (tapCount.current === 3) { activatePasswordMode(); tapCount.current = 0; }
+//     };
+//     document.addEventListener('click', handleTap);
+//     return () => document.removeEventListener('click', handleTap);
+//   }, [isEditorOpen, isVisible]);
+
+//   useEffect(() => {
+//     const handleKey = (e) => {
+//       if (isEditorOpen || isVisible) return;
+//       if (e.key.toLowerCase() !== 'p') return;
+//       keyPressCount.current++;
+//       clearTimeout(keyPressTimeout.current);
+//       keyPressTimeout.current = setTimeout(() => { keyPressCount.current = 0; }, 1000);
+//       if (keyPressCount.current === 3) { activatePasswordMode(); keyPressCount.current = 0; }
+//     };
+//     document.addEventListener('keydown', handleKey);
+//     return () => document.removeEventListener('keydown', handleKey);
+//   }, [isEditorOpen, isVisible]);
+
+//   useEffect(() => {
+//     const handleRC = (e) => {
+//       if (isEditorOpen || isVisible) return;
+//       e.preventDefault();
+//       rightClickCount.current++;
+//       clearTimeout(rightClickTimeout.current);
+//       rightClickTimeout.current = setTimeout(() => { rightClickCount.current = 0; }, 1000);
+//       if (rightClickCount.current === 3) { activatePasswordMode(); rightClickCount.current = 0; }
+//     };
+//     document.addEventListener('contextmenu', handleRC);
+//     return () => document.removeEventListener('contextmenu', handleRC);
+//   }, [isEditorOpen, isVisible]);
+
+//   const activatePasswordMode = () => {
+//     setShowPasswordInput(true);
+//     setIsListening(true);
+//     listeningTimeout.current = setTimeout(() => {
+//       setIsListening(false);
+//       setShowPasswordInput(false);
+//     }, 5 * 60 * 1000);
+//   };
+
+//   const handlePasswordSubmit = (e) => {
+//     e.preventDefault();
+//     if (inputPassword === 'just4acedu') {
+//       setIsEditorOpen(true);
+//       setIsVisible(true);
+//       setShowPasswordInput(false);
+//       setIsListening(false);
+//       setInputPassword('');
+//       clearTimeout(listeningTimeout.current);
+//     } else {
+//       setInputPassword('');
+//       showNotification('Incorrect password.', 'error');
+//     }
+//   };
+
+//   // ─── Cloudinary upload ─────────────────────────────────────────────────────
+//   const uploadToCloudinary = async (file) => {
+//     if (file.size > 5 * 1024 * 1024) { showNotification('Image must be under 5MB', 'error'); return null; }
+//     if (!file.type.startsWith('image/')) { showNotification('Please select an image file', 'error'); return null; }
+
+//     const fd = new FormData();
+//     fd.append('file', file);
+//     fd.append('upload_preset', cloudinaryConfig.uploadPreset);
+//     fd.append('cloud_name', cloudinaryConfig.cloudName);
+
+//     try {
+//       setUploading(true);
+//       setUploadProgress(0);
+//       const res = await axios.post(
+//         `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
+//         fd,
+//         { onUploadProgress: (e) => setUploadProgress(Math.round((e.loaded * 100) / e.total)) }
+//       );
+//       return { url: res.data.secure_url, publicId: res.data.public_id };
+//     } catch (e) {
+//       console.error('Upload error:', e);
+//       showNotification('Image upload failed. Try again.', 'error');
+//       return null;
+//     } finally {
+//       setUploading(false);
+//       setUploadProgress(0);
+//     }
+//   };
+
+//   const handleImageUpload = async (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     const result = await uploadToCloudinary(file);
+//     if (result) setCurrentBox(prev => ({ ...prev, imageUrl: result.url, imagePublicId: result.publicId }));
+//   };
+
+//   const handleColorSelect = (preset) => {
+//     setCurrentBox(prev => ({
+//       ...prev,
+//       bgColor: preset.value || '',
+//       bgGradient: preset.gradient || ['#000000', '#8B0000'],
+//       blur: preset.blur || 0,
+//       bgType: preset.type
+//     }));
+//   };
+
+//   // ─── Save / Update box ─────────────────────────────────────────────────────
+//   const addNewBox = async () => {
+//     if (boxes.length >= 4) { showNotification('Maximum 4 boxes allowed!', 'error'); return; }
+//     if (!currentBox.imageUrl) { showNotification('Please upload an image first.', 'error'); return; }
+
+//     const position = boxes.length > 0 ? boxes[0].position : currentBox.position;
+//     const borderSide = boxes.length > 0 ? boxes[0].borderSide : (positions.find(p => p.value === position)?.borderSide || 'right');
+
+//     const newBox = { ...currentBox, id: Date.now().toString(), order: boxes.length, duration: boxDuration, position, borderSide, createdDate: new Date().toISOString().split('T')[0] };
+
+//     try {
+//       setUploading(true);
+//       const res = await fetch(`${API_URL}/boxes`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newBox) });
+//       if (!res.ok) throw new Error();
+//       await fetchBoxes();
+//       resetCurrentBox();
+//       showNotification('Box saved successfully!', 'success');
+//     } catch {
+//       showNotification('Failed to save box.', 'error');
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
+
+//   const updateBox = async () => {
+//     if (!currentBox.imageUrl || !currentBox.id) { showNotification('Please upload an image.', 'error'); return; }
+
+//     const updated = {
+//       ...currentBox,
+//       position: boxes.length > 0 ? boxes[0].position : currentBox.position,
+//       borderSide: boxes.length > 0 ? boxes[0].borderSide : (positions.find(p => p.value === currentBox.position)?.borderSide || 'right')
+//     };
+
+//     try {
+//       setUploading(true);
+//       const res = await fetch(`${API_URL}/boxes/${currentBox.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
+//       if (!res.ok) throw new Error();
+//       await fetchBoxes();
+//       setEditorMode('create');
+//       resetCurrentBox();
+//       showNotification('Box updated!', 'success');
+//     } catch {
+//       showNotification('Failed to update box.', 'error');
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
+
+//   const resetCurrentBox = () => {
+//     setCurrentBox({
+//       ...defaultBox,
+//       position: boxes.length > 0 ? boxes[0].position : 'bottom-left',
+//       borderSide: boxes.length > 0 ? boxes[0].borderSide : 'right',
+//       order: boxes.length
+//     });
+//   };
+
+//   // ─── Helpers ───────────────────────────────────────────────────────────────
+//   const getBorderRadius = (box) => {
+//     if (box.borderRadiusMode === 'all') return box.borderRadius.all;
+//     return `${box.borderRadius.topLeft} ${box.borderRadius.topRight} ${box.borderRadius.bottomRight} ${box.borderRadius.bottomLeft}`;
+//   };
+
+//   const getBoxStyle = (box) => {
+//     const pos = positions.find(p => p.value === box.position);
+//     const bg = box.bgType === 'gradient' ? `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})` : box.bgColor || '#000';
+//     return {
+//       position: 'fixed', width: `${Math.min(box.width, 400)}px`, height: `${Math.min(box.height, 400)}px`,
+//       maxWidth: '400px', maxHeight: '400px', background: bg,
+//       backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
+//       boxShadow: '0 25px 50px -12px rgba(139,0,0,0.4), 0 0 0 1px rgba(139,0,0,0.2)',
+//       borderRadius: getBorderRadius(box), opacity: box.opacity, zIndex: 9998, overflow: 'hidden',
+//       ...pos?.style
+//     };
+//   };
+
+//   const checkBoxVisibility = (box) => {
+//     if (box.showTime === 'always') return true;
+//     const now = new Date();
+//     if (box.showTime === 'scheduled') {
+//       if (box.startDate) { const sd = new Date(box.startDate); sd.setHours(0,0,0,0); const td = new Date(now); td.setHours(0,0,0,0); if (td < sd) return false; }
+//       if (box.endDate) { const ed = new Date(box.endDate); ed.setHours(23,59,59,999); if (now > ed) return false; }
+//       if (box.startTime && box.endTime) {
+//         const cur = now.getHours() * 60 + now.getMinutes();
+//         const [sh, sm] = box.startTime.split(':').map(Number);
+//         const [eh, em] = box.endTime.split(':').map(Number);
+//         if (cur < sh * 60 + sm || cur > eh * 60 + em) return false;
+//       }
+//       return true;
+//     }
+//     if (box.showTime === 'duration' && box.duration && box.createdDate) {
+//       const exp = new Date(box.createdDate);
+//       exp.setDate(exp.getDate() + box.duration);
+//       return now <= exp;
+//     }
+//     return false;
+//   };
+
+//   // ─── Carousel ──────────────────────────────────────────────────────────────
+//   useEffect(() => {
+//     if (boxes.length > 1 && autoRotate && !isEditorOpen) {
+//       carouselInterval.current = setInterval(() => {
+//         setCurrentBoxIndex(prev => (prev + 1) % boxes.length);
+//       }, 5000);
+//     }
+//     return () => clearInterval(carouselInterval.current);
+//   }, [boxes.length, autoRotate, isEditorOpen]);
+
+//   useEffect(() => {
+//     if (editorMode === 'edit' && boxes[currentBoxIndex]) setCurrentBox(boxes[currentBoxIndex]);
+//   }, [editorMode, currentBoxIndex]);
+
+//   // ─── Border helpers ────────────────────────────────────────────────────────
+//   const getBorderPosition = (side) => side === 'right'
+//     ? { left: '0', top: '0', bottom: '0', width: '3px' }
+//     : { right: '0', top: '0', bottom: '0', width: '3px' };
+
+//   // ─── Render ────────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       <style>{`
+//         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap');
+
+//         .nm-root * { box-sizing: border-box; }
+
+//         .nm-panel {
+//           font-family: 'DM Sans', sans-serif;
+//           background: linear-gradient(160deg, #0a0a0a 0%, #111 40%, #0a0a0a 100%);
+//           border: 1px solid rgba(180,0,0,0.35);
+//           box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 40px 80px rgba(0,0,0,0.9), 0 0 60px rgba(139,0,0,0.15);
+//         }
+
+//         .nm-header {
+//           background: linear-gradient(90deg, #0a0a0a 0%, #1a0000 40%, #0a0a0a 100%);
+//           border-bottom: 1px solid rgba(180,0,0,0.3);
+//           position: relative;
+//         }
+//         .nm-header::after {
+//           content: '';
+//           position: absolute;
+//           bottom: 0; left: 0; right: 0;
+//           height: 1px;
+//           background: linear-gradient(90deg, transparent, #cc0000, transparent);
+//         }
+
+//         .nm-title {
+//           font-family: 'Bebas Neue', sans-serif;
+//           letter-spacing: 0.1em;
+//           color: #fff;
+//           font-size: 1.4rem;
+//         }
+
+//         .nm-section-title {
+//           font-family: 'Bebas Neue', sans-serif;
+//           letter-spacing: 0.12em;
+//           font-size: 1rem;
+//           color: #cc2222;
+//           text-transform: uppercase;
+//         }
+
+//         .nm-label {
+//           font-size: 11px;
+//           font-weight: 600;
+//           letter-spacing: 0.08em;
+//           text-transform: uppercase;
+//           color: rgba(255,255,255,0.5);
+//           display: block;
+//           margin-bottom: 6px;
+//         }
+
+//         .nm-input {
+//           width: 100%;
+//           padding: 10px 14px;
+//           background: rgba(255,255,255,0.04);
+//           border: 1px solid rgba(180,0,0,0.25);
+//           border-radius: 6px;
+//           color: #fff;
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 13px;
+//           outline: none;
+//           transition: border-color 0.2s;
+//         }
+//         .nm-input:focus { border-color: rgba(200,0,0,0.6); background: rgba(255,255,255,0.06); }
+//         .nm-input::placeholder { color: rgba(255,255,255,0.2); }
+
+//         .nm-select {
+//           width: 100%;
+//           padding: 10px 14px;
+//           background: rgba(255,255,255,0.04);
+//           border: 1px solid rgba(180,0,0,0.25);
+//           border-radius: 6px;
+//           color: #fff;
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 13px;
+//           outline: none;
+//           cursor: pointer;
+//           appearance: none;
+//           -webkit-appearance: none;
+//         }
+//         .nm-select option { background: #111; }
+
+//         .nm-btn-primary {
+//           display: inline-flex;
+//           align-items: center;
+//           gap: 6px;
+//           padding: 10px 20px;
+//           background: linear-gradient(135deg, #cc0000, #8b0000);
+//           border: none;
+//           border-radius: 6px;
+//           color: #fff;
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 13px;
+//           font-weight: 600;
+//           cursor: pointer;
+//           transition: all 0.2s;
+//           white-space: nowrap;
+//         }
+//         .nm-btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #e00000, #aa0000); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(180,0,0,0.4); }
+//         .nm-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+//         .nm-btn-secondary {
+//           display: inline-flex;
+//           align-items: center;
+//           gap: 6px;
+//           padding: 10px 16px;
+//           background: rgba(255,255,255,0.05);
+//           border: 1px solid rgba(180,0,0,0.3);
+//           border-radius: 6px;
+//           color: rgba(255,255,255,0.7);
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 13px;
+//           font-weight: 500;
+//           cursor: pointer;
+//           transition: all 0.2s;
+//           white-space: nowrap;
+//         }
+//         .nm-btn-secondary:hover { background: rgba(180,0,0,0.12); border-color: rgba(180,0,0,0.5); color: #fff; }
+
+//         .nm-btn-ghost {
+//           display: inline-flex;
+//           align-items: center;
+//           gap: 4px;
+//           padding: 7px 12px;
+//           background: transparent;
+//           border: 1px solid rgba(180,0,0,0.2);
+//           border-radius: 5px;
+//           color: rgba(255,255,255,0.5);
+//           font-size: 12px;
+//           cursor: pointer;
+//           transition: all 0.2s;
+//         }
+//         .nm-btn-ghost:hover { border-color: rgba(180,0,0,0.5); color: #fff; background: rgba(180,0,0,0.1); }
+
+//         .nm-btn-danger {
+//           display: inline-flex;
+//           align-items: center;
+//           gap: 4px;
+//           padding: 7px 12px;
+//           background: rgba(139,0,0,0.2);
+//           border: 1px solid rgba(180,0,0,0.3);
+//           border-radius: 5px;
+//           color: #ff4444;
+//           font-size: 12px;
+//           cursor: pointer;
+//           transition: all 0.2s;
+//         }
+//         .nm-btn-danger:hover { background: rgba(180,0,0,0.35); border-color: #cc0000; }
+
+//         .nm-chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+//         .nm-chip {
+//           padding: 7px 14px;
+//           border: 1px solid rgba(180,0,0,0.25);
+//           border-radius: 5px;
+//           background: rgba(255,255,255,0.03);
+//           color: rgba(255,255,255,0.55);
+//           font-size: 12px;
+//           font-weight: 500;
+//           cursor: pointer;
+//           transition: all 0.2s;
+//           white-space: nowrap;
+//         }
+//         .nm-chip:hover { border-color: rgba(180,0,0,0.5); color: #fff; }
+//         .nm-chip.active { background: linear-gradient(135deg, rgba(180,0,0,0.3), rgba(100,0,0,0.4)); border-color: #cc0000; color: #fff; }
+
+//         .nm-color-chip {
+//           padding: 10px 8px;
+//           border: 1px solid rgba(180,0,0,0.3);
+//           border-radius: 6px;
+//           font-size: 11px;
+//           font-weight: 600;
+//           cursor: pointer;
+//           transition: transform 0.2s, box-shadow 0.2s;
+//           text-align: center;
+//           color: #fff;
+//           text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+//         }
+//         .nm-color-chip:hover { transform: scale(1.04); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+
+//         .nm-range {
+//           width: 100%;
+//           accent-color: #cc0000;
+//           cursor: pointer;
+//         }
+
+//         .nm-divider {
+//           border: none;
+//           border-top: 1px solid rgba(180,0,0,0.15);
+//           margin: 20px 0;
+//         }
+
+//         .nm-box-card {
+//           display: flex;
+//           align-items: center;
+//           gap: 12px;
+//           padding: 12px 14px;
+//           border: 1px solid rgba(180,0,0,0.2);
+//           border-radius: 8px;
+//           background: rgba(255,255,255,0.02);
+//           transition: all 0.2s;
+//         }
+//         .nm-box-card:hover { border-color: rgba(180,0,0,0.4); background: rgba(255,255,255,0.04); }
+//         .nm-box-card.active { border-color: #cc0000; background: rgba(180,0,0,0.08); }
+
+//         .nm-badge {
+//           width: 28px; height: 28px;
+//           border-radius: 50%;
+//           display: flex; align-items: center; justify-content: center;
+//           font-size: 12px; font-weight: 700;
+//           background: rgba(180,0,0,0.2);
+//           color: #cc4444;
+//           border: 1px solid rgba(180,0,0,0.3);
+//           flex-shrink: 0;
+//         }
+//         .nm-badge.active { background: #cc0000; color: #fff; border-color: #cc0000; }
+
+//         .nm-upload-zone {
+//           border: 1.5px dashed rgba(180,0,0,0.35);
+//           border-radius: 10px;
+//           background: rgba(180,0,0,0.03);
+//           transition: all 0.2s;
+//         }
+//         .nm-upload-zone:hover { border-color: rgba(180,0,0,0.6); background: rgba(180,0,0,0.06); }
+
+//         .nm-scrollbar::-webkit-scrollbar { width: 3px; }
+//         .nm-scrollbar::-webkit-scrollbar-track { background: transparent; }
+//         .nm-scrollbar::-webkit-scrollbar-thumb { background: rgba(180,0,0,0.4); border-radius: 2px; }
+
+//         .nm-progress-bar {
+//           height: 3px;
+//           background: rgba(255,255,255,0.08);
+//           border-radius: 2px;
+//           overflow: hidden;
+//         }
+//         .nm-progress-fill {
+//           height: 100%;
+//           background: linear-gradient(90deg, #cc0000, #ff4444);
+//           transition: width 0.3s;
+//           border-radius: 2px;
+//         }
+
+//         .nm-close-btn {
+//           width: 32px; height: 32px;
+//           display: flex; align-items: center; justify-content: center;
+//           border-radius: 50%;
+//           border: 1px solid rgba(180,0,0,0.3);
+//           background: transparent;
+//           color: rgba(255,255,255,0.5);
+//           cursor: pointer;
+//           transition: all 0.2s;
+//         }
+//         .nm-close-btn:hover { border-color: #cc0000; color: #fff; background: rgba(180,0,0,0.2); }
+
+//         .nm-tag {
+//           display: inline-flex;
+//           align-items: center;
+//           gap: 4px;
+//           padding: 2px 8px;
+//           background: rgba(180,0,0,0.15);
+//           border: 1px solid rgba(180,0,0,0.3);
+//           border-radius: 12px;
+//           font-size: 10px;
+//           color: #ff6666;
+//           font-weight: 600;
+//           letter-spacing: 0.05em;
+//           text-transform: uppercase;
+//         }
+
+//         /* New maker floating box */
+//         .new-maker-box { transition: none; }
+
+//         @media (max-width: 640px) {
+//           .new-maker-box { width: 260px !important; height: 280px !important; }
+//         }
+//         @media (max-width: 380px) {
+//           .new-maker-box { width: 220px !important; height: 240px !important; }
+//         }
+
+//         /* FIX: Ensure modals are properly centered */
+//         .nm-modal-centered {
+//           position: fixed;
+//           top: 3vh;
+//           left: 10%;
+//           transform: translate(-50%, -50%);
+//           z-index: 9999;
+//           max-width: calc(100vw - 32px);
+//           max-height: calc(100vh - 32px);
+//         }
+//       `}</style>
+
+//       <div className="nm-root">
+
+//         {/* ── Confirm Modal ───────────────────────────────────────────────── */}
+//         <AnimatePresence>
+//           {confirmModal.isOpen && (
+//             <motion.div
+//               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+//               style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)', zIndex: 10003, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
+//               onClick={closeConfirm}
+//             >
+//               <motion.div
+//                 initial={{ scale: 0.92, y: -16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: -16 }}
+//                 style={{ background: 'linear-gradient(160deg,#111,#0a0a0a)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '12px', padding: '28px', maxWidth: '420px', width: '100%', boxShadow: '0 40px 80px rgba(0,0,0,0.8)' }}
+//                 onClick={e => e.stopPropagation()}
+//               >
+//                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+//                   <AlertTriangle size={20} color="#cc0000" />
+//                   <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '1.2rem', color: '#fff', letterSpacing: '0.08em' }}>{confirmModal.title}</span>
+//                 </div>
+//                 <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', lineHeight: 1.6, marginBottom: '24px' }}>{confirmModal.message}</p>
+//                 <div style={{ display: 'flex', gap: '10px' }}>
+//                   <button className="nm-btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={confirmModal.onConfirm}>
+//                     Yes, Delete
+//                   </button>
+//                   <button className="nm-btn-secondary" style={{ flex: 1, justifyContent: 'center' }} onClick={closeConfirm}>
+//                     Cancel
+//                   </button>
+//                 </div>
+//               </motion.div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {/* ── Password Modal ──────────────────────────────────────────────── */}
+//         <AnimatePresence>
+//           {showPasswordInput && (
+//             <motion.div
+//               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+//               style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(4px)', zIndex: 10002, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
+//               onClick={() => { setShowPasswordInput(false); setIsListening(false); clearTimeout(listeningTimeout.current); }}
+//             >
+//               <motion.div
+//                 initial={{ scale: 0.92, y: -16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: -16 }}
+//                 style={{ background: 'linear-gradient(160deg,#111,#0a0a0a)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '12px', padding: '32px', maxWidth: '400px', width: '100%', boxShadow: '0 40px 80px rgba(0,0,0,0.8)' }}
+//                 onClick={e => e.stopPropagation()}
+//               >
+//                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+//                   <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(180,0,0,0.15)', border: '1px solid rgba(180,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+//                     <Lock size={16} color="#cc4444" />
+//                   </div>
+//                   <div>
+//                     <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '1.3rem', color: '#fff', letterSpacing: '0.08em' }}>Admin Access</div>
+//                     <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)' }}>
+//                       <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: isListening ? '#22cc44' : '#555', marginRight: '6px', verticalAlign: 'middle' }}></span>
+//                       {isListening ? 'Listening...' : 'Ready'}
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 <form onSubmit={handlePasswordSubmit}>
+//                   <label className="nm-label">Password</label>
+//                   <input
+//                     type="password"
+//                     value={inputPassword}
+//                     onChange={e => setInputPassword(e.target.value)}
+//                     className="nm-input"
+//                     placeholder="Enter admin password"
+//                     autoFocus
+//                     style={{ marginBottom: '16px' }}
+//                   />
+//                   <div style={{ display: 'flex', gap: '10px' }}>
+//                     <button type="submit" className="nm-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Unlock</button>
+//                     <button type="button" className="nm-btn-secondary" onClick={() => { setShowPasswordInput(false); setIsListening(false); clearTimeout(listeningTimeout.current); }}>
+//                       Cancel
+//                     </button>
+//                   </div>
+//                 </form>
+
+//                 <div style={{ marginTop: '20px', padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}>
+//                   <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', lineHeight: 1.8 }}>
+//                     Triggers: Triple-tap · Triple right-click · Press P × 3
+//                   </div>
+//                 </div>
+//               </motion.div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {/* ── Toast Notification ──────────────────────────────────────────── */}
+//         <AnimatePresence>
+//           {notification && (
+//             <motion.div
+//               initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
+//               style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 10005 }}
+//             >
+//               <div style={{
+//                 display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 18px',
+//                 background: notification.type === 'success' ? 'rgba(0,60,0,0.95)' : notification.type === 'error' ? 'rgba(80,0,0,0.95)' : 'rgba(20,20,20,0.95)',
+//                 border: `1px solid ${notification.type === 'success' ? 'rgba(0,180,0,0.4)' : notification.type === 'error' ? 'rgba(200,0,0,0.5)' : 'rgba(180,180,180,0.2)'}`,
+//                 borderRadius: '8px', backdropFilter: 'blur(12px)',
+//                 boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+//                 fontFamily: 'DM Sans, sans-serif', fontSize: '13px', color: '#fff', whiteSpace: 'nowrap'
+//               }}>
+//                 {notification.type === 'success' && <CheckCircle size={15} color="#44dd44" />}
+//                 {notification.type === 'error' && <AlertCircle size={15} color="#ff4444" />}
+//                 {notification.type === 'info' && <AlertCircle size={15} color="#4488ff" />}
+//                 {notification.message}
+//               </div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {/* ── Editor Panel ────────────────────────────────────────────────── */}
+//         <AnimatePresence>
+//           {isVisible && (
+//             <>
+//               {/* Backdrop */}
+//               <motion.div
+//                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+//                 style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)', zIndex: 9998 }}
+//                 onClick={() => { setIsVisible(false); setIsEditorOpen(false); }}
+//               />
+
+//               {/* Modal - FIXED: Properly centered with className */}
+//               <motion.div
+//                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
+//                 animate={{ scale: 1, opacity: 1, y: 0 }}
+//                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
+//                 transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+//                 className="nm-panel nm-modal-centered"
+//                 style={{
+//                   width: 'calc(100vw - 32px)',
+//                   maxWidth: '1080px',
+//                   maxHeight: 'calc(100vh - 32px)',
+//                   display: 'flex',
+//                   flexDirection: 'column',
+//                   borderRadius: '14px',
+//                   overflow: 'hidden',
+//                 }}
+//                 onClick={e => e.stopPropagation()}
+//               >
+//                 {/* Header */}
+//                 <div className="nm-header" style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+//                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+//                     <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(180,0,0,0.2)', border: '1px solid rgba(180,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+//                       <Settings size={16} color="#cc4444" />
+//                     </div>
+//                     <div>
+//                       <div className="nm-title">New Maker</div>
+//                       <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Image Box Creator</div>
+//                     </div>
+//                     <div className="nm-tag">{boxes.length}/4 Active</div>
+//                   </div>
+//                   <button className="nm-close-btn" onClick={() => { setIsVisible(false); setIsEditorOpen(false); }}>
+//                     <X size={16} />
+//                   </button>
+//                 </div>
+
+//                 {/* Body — scrolls inside the modal */}
+//                 <div className="nm-scrollbar" style={{ padding: '24px', overflowY: 'auto', flex: 1, minHeight: 0 }}>
+//                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '32px' }}>
+
+//                     {/* ── Left: Config ─────────────────────────────────────── */}
+//                     <div>
+//                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+//                         <Layout size={15} color="#cc2222" />
+//                         <span className="nm-section-title">Box Configuration</span>
+//                       </div>
+
+//                       {/* Size */}
+//                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+//                         {['width', 'height'].map(dim => (
+//                           <div key={dim}>
+//                             <label className="nm-label">{dim} (px)</label>
+//                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+//                               <input type="range" min="150" max="400" value={currentBox[dim]} onChange={e => setCurrentBox(p => ({ ...p, [dim]: parseInt(e.target.value) }))} className="nm-range" style={{ flex: 1 }} />
+//                               <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.5)', width: '42px', textAlign: 'right' }}>{currentBox[dim]}</span>
+//                             </div>
+//                           </div>
+//                         ))}
+//                       </div>
+
+//                       {/* Position */}
+//                       <div style={{ marginBottom: '20px' }}>
+//                         <label className="nm-label">Position</label>
+//                         <div className="nm-chip-group">
+//                           {positions.map(p => (
+//                             <button key={p.value} className={`nm-chip${currentBox.position === p.value ? ' active' : ''}`} onClick={() => setCurrentBox(prev => ({ ...prev, position: p.value, borderSide: p.borderSide }))}>{p.label}</button>
+//                           ))}
+//                         </div>
+//                       </div>
+
+//                       {/* Border Radius */}
+//                       <div style={{ marginBottom: '20px' }}>
+//                         <label className="nm-label">Border Radius</label>
+//                         <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+//                           {['all', 'custom'].map(mode => (
+//                             <button key={mode} className={`nm-chip${currentBox.borderRadiusMode === mode ? ' active' : ''}`} style={{ flex: 1, textAlign: 'center' }} onClick={() => setCurrentBox(p => ({ ...p, borderRadiusMode: mode }))}>
+//                               {mode === 'all' ? 'Uniform' : 'Per Corner'}
+//                             </button>
+//                           ))}
+//                         </div>
+//                         {currentBox.borderRadiusMode === 'all' ? (
+//                           <div>
+//                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+//                               <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>All corners</span>
+//                               <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>{currentBox.borderRadius.all}</span>
+//                             </div>
+//                             <input type="range" min="0" max="50" value={parseInt(currentBox.borderRadius.all) || 0} onChange={e => setCurrentBox(p => ({ ...p, borderRadius: { ...p.borderRadius, all: `${e.target.value}px` } }))} className="nm-range" />
+//                           </div>
+//                         ) : (
+//                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+//                             {[['topLeft', 'TL', CornerUpLeft], ['topRight', 'TR', CornerUpRight], ['bottomLeft', 'BL', CornerDownLeft], ['bottomRight', 'BR', CornerDownRight]].map(([key, label, Icon]) => (
+//                               <div key={key}>
+//                                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '4px' }}>
+//                                   <Icon size={12} color="#cc4444" />
+//                                   <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)' }}>{label} · {currentBox.borderRadius[key]}</span>
+//                                 </div>
+//                                 <input type="range" min="0" max="50" value={parseInt(currentBox.borderRadius[key]) || 0} onChange={e => setCurrentBox(p => ({ ...p, borderRadius: { ...p.borderRadius, [key]: `${e.target.value}px` } }))} className="nm-range" />
+//                               </div>
+//                             ))}
+//                           </div>
+//                         )}
+//                       </div>
+
+//                       {/* Color */}
+//                       <div style={{ marginBottom: '20px' }}>
+//                         <label className="nm-label">Background Style</label>
+//                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '6px' }}>
+//                           {colorPresets.map(p => (
+//                             <button
+//                               key={p.name}
+//                               className="nm-color-chip"
+//                               style={{ background: p.type === 'gradient' ? `linear-gradient(135deg,${p.gradient[0]},${p.gradient[1]})` : p.value }}
+//                               onClick={() => handleColorSelect(p)}
+//                               title={p.name}
+//                             >
+//                               {p.name.split(' ')[0]}
+//                             </button>
+//                           ))}
+//                         </div>
+//                       </div>
+
+//                       {/* Image Fit */}
+//                       <div style={{ marginBottom: '20px' }}>
+//                         <label className="nm-label">Image Fit</label>
+//                         <div className="nm-chip-group">
+//                           {imageFitOptions.map(o => (
+//                             <button key={o.value} className={`nm-chip${currentBox.imageFit === o.value ? ' active' : ''}`} onClick={() => setCurrentBox(p => ({ ...p, imageFit: o.value }))}>{o.label}</button>
+//                           ))}
+//                         </div>
+//                       </div>
+
+//                       {/* Animation */}
+//                       <div style={{ marginBottom: '20px' }}>
+//                         <label className="nm-label">Entry Animation</label>
+//                         <div className="nm-chip-group">
+//                           {Object.entries(animations).map(([k, a]) => (
+//                             <button key={k} className={`nm-chip${currentBox.animation === k ? ' active' : ''}`} onClick={() => setCurrentBox(p => ({ ...p, animation: k }))}>{a.name}</button>
+//                           ))}
+//                         </div>
+//                       </div>
+
+//                       {/* Timing */}
+//                       <div>
+//                         <label className="nm-label">Display Timing</label>
+//                         <select value={currentBox.showTime} onChange={e => setCurrentBox(p => ({ ...p, showTime: e.target.value }))} className="nm-select" style={{ marginBottom: '12px' }}>
+//                           <option value="always">Always Visible</option>
+//                           <option value="scheduled">Scheduled Date / Time</option>
+//                           <option value="duration">Duration (Days)</option>
+//                         </select>
+
+//                         {currentBox.showTime === 'scheduled' && (
+//                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+//                             {[['Start Date', 'startDate', 'date'], ['End Date', 'endDate', 'date'], ['Start Time', 'startTime', 'time'], ['End Time', 'endTime', 'time']].map(([lbl, key, type]) => (
+//                               <div key={key}>
+//                                 <label className="nm-label">{lbl}</label>
+//                                 <input type={type} value={currentBox[key]} onChange={e => setCurrentBox(p => ({ ...p, [key]: e.target.value }))} className="nm-input" />
+//                               </div>
+//                             ))}
+//                           </div>
+//                         )}
+
+//                         {currentBox.showTime === 'duration' && (
+//                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+//                             <input type="number" min="1" max="365" value={boxDuration} onChange={e => setBoxDuration(parseInt(e.target.value))} className="nm-input" style={{ width: '100px' }} />
+//                             <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)' }}>days from creation</span>
+//                           </div>
+//                         )}
+//                       </div>
+//                     </div>
+
+//                     {/* ── Right: Image + Preview ────────────────────────────── */}
+//                     <div>
+//                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+//                         <ImageIcon size={15} color="#cc2222" />
+//                         <span className="nm-section-title">Image</span>
+//                       </div>
+
+//                       {/* Upload zone */}
+//                       <div className="nm-upload-zone" style={{ padding: '24px', textAlign: 'center', marginBottom: '20px' }}>
+//                         {uploading ? (
+//                           <div style={{ padding: '16px 0' }}>
+//                             <Loader size={32} color="#cc4444" style={{ animation: 'spin 1s linear infinite', margin: '0 auto 12px' }} />
+//                             <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Uploading to Cloudinary... {uploadProgress}%</div>
+//                             <div className="nm-progress-bar"><div className="nm-progress-fill" style={{ width: `${uploadProgress}%` }} /></div>
+//                           </div>
+//                         ) : currentBox.imageUrl ? (
+//                           <div>
+//                             <div style={{ position: 'relative', display: 'inline-block', marginBottom: '12px' }}>
+//                               <img src={currentBox.imageUrl} alt="Preview" style={{ maxHeight: '200px', maxWidth: '100%', objectFit: 'contain', borderRadius: '6px', border: '1px solid rgba(180,0,0,0.2)' }} />
+//                             </div>
+//                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '12px', color: '#44aa44', marginBottom: '10px' }}>
+//                               <CheckCircle size={13} /> Uploaded to Cloudinary
+//                             </div>
+//                             <button className="nm-btn-ghost" onClick={() => setCurrentBox(p => ({ ...p, imageUrl: '', imagePublicId: '' }))} style={{ fontSize: '11px' }}>
+//                               <X size={12} /> Remove
+//                             </button>
+//                           </div>
+//                         ) : (
+//                           <label style={{ cursor: 'pointer', display: 'block' }}>
+//                             <Cloud size={40} color="rgba(180,0,0,0.5)" style={{ margin: '0 auto 12px' }} />
+//                             <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '6px', fontWeight: 500 }}>Click to upload image</div>
+//                             <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)', marginBottom: '16px' }}>PNG · JPG · GIF · Max 5MB</div>
+//                             <span className="nm-btn-primary">
+//                               <Upload size={14} /> Select Image
+//                             </span>
+//                             <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+//                           </label>
+//                         )}
+//                       </div>
+
+//                       {/* Live preview */}
+//                       {currentBox.imageUrl && (
+//                         <div style={{ marginBottom: '20px' }}>
+//                           <label className="nm-label">Live Preview</label>
+//                           <div style={{
+//                             width: `${Math.min(currentBox.width, 320)}px`, height: `${Math.min(currentBox.height, 260)}px`,
+//                             maxWidth: '100%', maxHeight: '260px',
+//                             background: currentBox.bgType === 'gradient' ? `linear-gradient(135deg,${currentBox.bgGradient[0]},${currentBox.bgGradient[1]})` : currentBox.bgColor,
+//                             borderRadius: getBorderRadius(currentBox),
+//                             overflow: 'hidden',
+//                             border: '1px solid rgba(180,0,0,0.3)',
+//                             boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+//                           }}>
+//                             <img src={currentBox.imageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: currentBox.imageFit, objectPosition: currentBox.imagePosition }} />
+//                           </div>
+//                         </div>
+//                       )}
+//                     </div>
+//                   </div>
+
+//                   {/* ── Box Management ──────────────────────────────────────── */}
+//                   <hr className="nm-divider" />
+
+//                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+//                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+//                       <span className="nm-section-title">Boxes</span>
+//                       <span className="nm-tag">{boxes.length} / 4</span>
+//                     </div>
+//                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+//                       {editorMode === 'edit' ? (
+//                         <button className="nm-btn-primary" onClick={updateBox} disabled={!currentBox.imageUrl || uploading || isDeleting}>
+//                           {uploading ? <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={14} />} Update
+//                         </button>
+//                       ) : (
+//                         <button className="nm-btn-primary" onClick={addNewBox} disabled={boxes.length >= 4 || !currentBox.imageUrl || uploading || isDeleting}>
+//                           {uploading ? <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={14} />} Save Box
+//                         </button>
+//                       )}
+//                       <button className={`nm-btn-secondary${autoRotate ? '' : ''}`} onClick={() => setAutoRotate(p => !p)} style={{ opacity: autoRotate ? 1 : 0.6 }}>
+//                         <RefreshCw size={13} /> {autoRotate ? 'Auto-Rotate On' : 'Auto-Rotate Off'}
+//                       </button>
+//                       <button className="nm-btn-ghost" onClick={clearAllData} disabled={isDeleting || boxes.length === 0}>
+//                         {isDeleting ? <Loader size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={12} />} Clear All
+//                       </button>
+//                     </div>
+//                   </div>
+
+//                   {/* Box list */}
+//                   {boxes.length > 0 ? (
+//                     <div className="nm-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '240px', overflowY: 'auto', paddingRight: '4px' }}>
+//                       {boxes.map((box, i) => (
+//                         <div key={box.id} className={`nm-box-card${currentBoxIndex === i ? ' active' : ''}`}>
+//                           <div className={`nm-badge${currentBoxIndex === i ? ' active' : ''}`}>{i + 1}</div>
+//                           {box.imageUrl && <img src={box.imageUrl} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '5px', border: '1px solid rgba(180,0,0,0.25)', flexShrink: 0 }} />}
+//                           <div style={{ flex: 1, minWidth: 0 }}>
+//                             <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '2px' }}>Image Box #{i + 1}</div>
+//                             <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>
+//                               {box.width}×{box.height}px · {positions.find(p => p.value === box.position)?.label}
+//                               {box.showTime === 'duration' && box.duration && box.createdDate && (
+//                                 <span style={{ color: '#cc4444', marginLeft: '6px' }}>
+//                                   · Expires {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
+//                                 </span>
+//                               )}
+//                             </div>
+//                           </div>
+//                           <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+//                             <button className="nm-btn-ghost" style={{ fontSize: '11px', padding: '5px 10px' }} onClick={() => { setCurrentBox(box); setCurrentBoxIndex(i); setEditorMode('edit'); }}>
+//                               Edit
+//                             </button>
+//                             <button className="nm-btn-danger" style={{ padding: '5px 8px' }} onClick={() => deleteBox(i)} disabled={isDeleting}>
+//                               {isDeleting ? <Loader size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={12} />}
+//                             </button>
+//                           </div>
+//                         </div>
+//                       ))}
+//                     </div>
+//                   ) : (
+//                     <div style={{ textAlign: 'center', padding: '32px', border: '1px dashed rgba(180,0,0,0.2)', borderRadius: '10px', color: 'rgba(255,255,255,0.2)', fontSize: '13px' }}>
+//                       No boxes yet. Upload an image and save your first box.
+//                     </div>
+//                   )}
+
+//                   {/* Carousel nav */}
+//                   {boxes.length > 1 && (
+//                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
+//                       <button className="nm-close-btn" onClick={() => setCurrentBoxIndex(p => (p - 1 + boxes.length) % boxes.length)}><ChevronLeft size={14} /></button>
+//                       <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Box {currentBoxIndex + 1} of {boxes.length}</span>
+//                       <button className="nm-close-btn" onClick={() => setCurrentBoxIndex(p => (p + 1) % boxes.length)}><ChevronRight size={14} /></button>
+//                     </div>
+//                   )}
+//                 </div>
+//                 {/* end scrollable body */}
+//               </motion.div>
+//               {/* end modal */}
+//             </>
+//           )}
+//         </AnimatePresence>
+
+//         {/* ── Display Floating Boxes ──────────────────────────────────────── */}
+//         <AnimatePresence>
+//           {boxes.map((box, index) => {
+//             if (boxes.length > 1 && currentBoxIndex !== index) return null;
+//             if (!checkBoxVisibility(box)) return null;
+//             const anim = animations[box.animation];
+//             return (
+//               <motion.div
+//                 key={box.id}
+//                 initial={anim.initial}
+//                 animate={anim.animate}
+//                 exit={anim.exit}
+//                 transition={anim.transition}
+//                 style={getBoxStyle(box)}
+//                 className="new-maker-box"
+//               >
+//                 <div style={{ height: '100%', position: 'relative' }}>
+//                   {/* Side border accent */}
+//                   <div style={{ position: 'absolute', ...getBorderPosition(box.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
+
+//                   <img src={box.imageUrl} alt="Content" style={{ width: '100%', height: '100%', objectFit: box.imageFit || 'cover', objectPosition: box.imagePosition || 'center', borderRadius: getBorderRadius(box) }} />
+
+//                   {/* Expiry badge */}
+//                   {box.showTime === 'duration' && box.duration && box.createdDate && (
+//                     <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
+//                       Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
+//                     </div>
+//                   )}
+
+//                   {/* Carousel dots */}
+//                   {boxes.length > 1 && (
+//                     <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', zIndex: 20 }}>
+//                       {boxes.map((_, i) => (
+//                         <div key={i} style={{ width: i === currentBoxIndex ? '16px' : '6px', height: '6px', borderRadius: '3px', background: i === currentBoxIndex ? '#cc0000' : 'rgba(255,255,255,0.25)', transition: 'all 0.3s' }} />
+//                       ))}
+//                     </div>
+//                   )}
+//                 </div>
+//               </motion.div>
+//             );
+//           })}
+//         </AnimatePresence>
+
+//         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default NewMaker;
+
+

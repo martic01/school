@@ -16,7 +16,7 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
-import { contactInfoData } from '../data/Data';
+import { contactInfoData, hostelData } from '../data/Data';
 import logo from "../assets/images/acd.png";
 
 const link = [
@@ -541,7 +541,7 @@ const Navbar = ({ showHostel = true }) => {
           className={`${showHostel ? "hidden" : "block"} bg-blue-900 hover:bg-blue-700 py-2 px-2 text-white shadow-lg shadow-blue-600/30`}
           onClick={() => navigate('/hostel')}
           icon="bed"
-           disabled={true} // set to false to enable or remove the prop
+           disabled={!hostelData.status} // set hosteldata.status to true to enable everything concerning hostel in data.js
         >
           <FaBed className="mr-2" />
           View Our Hostel

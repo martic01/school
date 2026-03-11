@@ -946,5 +946,6 @@ export const hostelData = {
     sharedRoom: "₦50,000/month",
     privateRoom: "₦80,000/month",
     includes: ["WiFi", "Electricity", "Water", "Security", "Cleaning"]
-  }
+  },
+  status:false
 };
