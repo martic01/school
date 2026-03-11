@@ -799,3 +799,144 @@ html {
   position: relative;
   z-index: 10;
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nm-modal-centered {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+  }
+  
+  .nm-header {
+    padding: 12px 16px !important;
+  }
+  
+  .nm-header .nm-title {
+    font-size: 1.2rem !important;
+  }
+  
+  .nm-scrollbar {
+    padding: 16px !important;
+  }
+  
+  .nm-chip-group {
+    gap: 4px !important;
+  }
+  
+  .nm-chip {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+  
+  .nm-color-chip {
+    padding: 8px 4px !important;
+    font-size: 10px !important;
+  }
+  
+  .nm-input, .nm-select {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+  
+  .nm-btn-primary, .nm-btn-secondary, .nm-btn-ghost, .nm-btn-danger {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+  
+  /* Stack the two columns on small screens */
+  .nm-scrollbar > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  
+  /* Adjust range container */
+  .nm-range + span {
+    width: 35px !important;
+    font-size: 11px !important;
+  }
+  
+  /* Box list adjustments */
+  .nm-box-card {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+  
+  .nm-box-card img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  .nm-badge {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .nm-modal-centered {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    padding: 0 !important;
+  }
+  
+  .nm-header {
+    padding: 10px 12px !important;
+  }
+  
+  .nm-header .nm-title {
+    font-size: 1rem !important;
+  }
+  
+  .nm-tag {
+    font-size: 8px !important;
+    padding: 2px 6px !important;
+  }
+  
+  .nm-scrollbar {
+    padding: 12px !important;
+  }
+  
+  .nm-section-title {
+    font-size: 0.9rem !important;
+  }
+  
+  .nm-label {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+  }
+  
+  .nm-chip {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+  
+  .nm-color-chip {
+    padding: 6px 2px !important;
+    font-size: 9px !important;
+  }
+  
+  /* Stack action buttons */
+  .nm-header + div > div:last-child {
+    flex-wrap: wrap !important;
+  }
+  
+  .nm-btn-primary, .nm-btn-secondary, .nm-btn-ghost, .nm-btn-danger {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+  
+  /* Ensure upload zone doesn't overflow */
+  .nm-upload-zone {
+    padding: 16px !important;
+  }
+  
+  .nm-upload-zone svg {
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
