@@ -13,7 +13,7 @@ import {
 import axios from 'axios';
 
 const NewMaker = () => {
-  const API_URL = 'http://localhost:3001/api';
+  const API_URL = 'https://school-backend-frri.onrender.com/api';
 
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
