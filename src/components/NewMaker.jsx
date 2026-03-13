@@ -7,7 +7,8 @@ import {
   Save, Trash2, ChevronLeft, ChevronRight,
   Lock, Settings, Square, AlertCircle,
   CornerUpLeft, CornerUpRight, CornerDownLeft, CornerDownRight,
-  Cloud, Loader, AlertTriangle, CheckCircle, RefreshCw
+  Cloud, Loader, AlertTriangle, CheckCircle, RefreshCw,
+  Link as LinkIcon
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -18,9 +19,8 @@ const NewMaker = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [boxes, setBoxes] = useState([]);
   const [currentBoxIndex, setCurrentBoxIndex] = useState(0);
+  const [passwordBuffer, setPasswordBuffer] = useState('');
   const [isListening, setIsListening] = useState(false);
-  const [inputPassword, setInputPassword] = useState('');
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
   const [editorMode, setEditorMode] = useState('create');
   const [boxDuration, setBoxDuration] = useState(5);
@@ -34,6 +34,19 @@ const NewMaker = () => {
     cloudName: 'dq46c3lf3',
     uploadPreset: 'acedunews-image'
   };
+
+  const buttonLinkOptions = [
+    '/about',
+    '/course/1',
+    '/course/2',
+    '/products',
+    '/ai-chat',
+    '/hostel',
+    '/projects',
+    '/register',
+    '/register',
+    'custom'
+  ];
 
   const defaultBox = {
     id: null,
@@ -60,19 +73,27 @@ const NewMaker = () => {
     borderSide: 'right',
     createdDate: new Date().toISOString().split('T')[0],
     imageFit: 'cover',
-    imagePosition: 'center'
+    imagePosition: 'center',
+    button: {
+      enabled: false,
+      text: 'Learn More',
+      link: '',
+      customLink: '',
+      color: '#cc0000',
+      textColor: '#ffffff',
+      size: 40
+    }
   };
 
   const [currentBox, setCurrentBox] = useState(defaultBox);
 
   const tapCount = useRef(0);
   const tapTimeout = useRef(null);
-  const keyPressCount = useRef(0);
-  const keyPressTimeout = useRef(null);
   const rightClickCount = useRef(0);
   const rightClickTimeout = useRef(null);
   const carouselInterval = useRef(null);
   const listeningTimeout = useRef(null);
+  const passwordTimeout = useRef(null);
 
   // ─── Notification helper ───────────────────────────────────────────────────
   const showNotification = (message, type = 'info') => {
@@ -114,6 +135,8 @@ const NewMaker = () => {
     { value: 'fill', label: 'Fill' }
   ];
 
+  const thePassword = 'the4memaker';
+
   // ─── Fetch boxes ───────────────────────────────────────────────────────────
   const fetchBoxes = useCallback(async () => {
     try {
@@ -124,12 +147,11 @@ const NewMaker = () => {
     } catch (err) {
       console.error('Fetch error:', err);
     }
-  }, [API_URL]); // Add API_URL as dependency (though it's constant)
+  }, [API_URL]);
 
   useEffect(() => {
     fetchBoxes();
     const interval = setInterval(() => {
-      // Only fetch if not in the middle of a delete operation
       if (!isDeleting) {
         fetchBoxes();
       }
@@ -141,22 +163,17 @@ const NewMaker = () => {
   const boxesRef = useRef(boxes);
   useEffect(() => { boxesRef.current = boxes; }, [boxes]);
 
-  // ─── Auto-delete expired boxes ────────────────────────────────────
-  // ─── Auto-delete expired boxes ────────────────────────────────────
-useEffect(() => {
+ useEffect(() => {
   const checkExpired = async () => {
     const now = new Date();
-    // Use the ref to get the latest boxes without causing re-renders
     const expired = boxesRef.current.filter(box => {
-      if (box.showTime === 'duration' && box.duration && box.createdDate) {
-        const expiry = new Date(box.createdDate);
-        expiry.setDate(expiry.getDate() + box.duration);
-        return now > expiry;
-      }
-      return false;
+      // Use the improved isBoxExpired function
+      return isBoxExpired(box);
     });
 
     if (expired.length === 0) return;
+
+    console.log('Found expired boxes:', expired.map(b => ({ id: b.id, showTime: b.showTime })));
 
     for (const box of expired) {
       try {
@@ -168,6 +185,7 @@ useEffect(() => {
           });
         }
         await fetch(`${API_URL}/boxes/${box.id}`, { method: 'DELETE' });
+        console.log(`Deleted expired box: ${box.id}`);
       } catch (e) {
         console.error('Auto-delete error:', e);
       }
@@ -177,49 +195,45 @@ useEffect(() => {
     showNotification(`${expired.length} expired box(es) removed automatically.`, 'info');
   };
 
-  const expiryInterval = setInterval(checkExpired, 60000);
+  const expiryInterval = setInterval(checkExpired, 60000); // Check every minute
   checkExpired(); // Run once immediately
 
   return () => clearInterval(expiryInterval);
-}, []); // No dependencies – runs only once on mountadd new box fix
-// dd all dependencies
+}, []);
 
   // ─── Delete box ──────────────────────────────────
-  // Single, unified deleteBoxFromServer function with proper headers
-  // Single, unified deleteBoxFromServer function with proper error handling
   const deleteBoxFromServer = async (boxId, imagePublicId) => {
-  console.log('Starting delete for box:', boxId);
-  
-  // ALWAYS delete from database first
-  console.log('Deleting from database...');
-  const dbRes = await fetch(`${API_URL}/boxes/${boxId}`, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' }
-  });
+    console.log('Starting delete for box:', boxId);
 
-  if (!dbRes.ok) {
-    const errorText = await dbRes.text();
-    throw new Error(`Database deletion failed: ${errorText}`);
-  }
+    console.log('Deleting from database...');
+    const dbRes = await fetch(`${API_URL}/boxes/${boxId}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-  console.log('Database deletion successful');
-
-  // Then try Cloudinary (but don't fail if it doesn't work)
-  if (imagePublicId) {
-    try {
-      console.log('Cleaning up Cloudinary:', imagePublicId);
-      await fetch(`${API_URL}/delete-cloudinary-image`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ publicId: imagePublicId })
-      });
-    } catch (e) {
-      console.warn('Cloudinary cleanup failed (non-critical):', e);
+    if (!dbRes.ok) {
+      const errorText = await dbRes.text();
+      throw new Error(`Database deletion failed: ${errorText}`);
     }
-  }
 
-  return true;
-};
+    console.log('Database deletion successful');
+
+    if (imagePublicId) {
+      try {
+        console.log('Cleaning up Cloudinary:', imagePublicId);
+        await fetch(`${API_URL}/delete-cloudinary-image`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ publicId: imagePublicId })
+        });
+      } catch (e) {
+        console.warn('Cloudinary cleanup failed (non-critical):', e);
+      }
+    }
+
+    return true;
+  };
+
   const clearAllData = () => {
     showConfirm(
       'Clear All Boxes',
@@ -229,7 +243,6 @@ useEffect(() => {
         setIsDeleting(true);
         const currentBoxes = [...boxes];
 
-        // Optimistically clear UI
         setBoxes([]);
         setCurrentBoxIndex(0);
 
@@ -250,7 +263,6 @@ useEffect(() => {
 
         if (failCount > 0) {
           showNotification(`Cleared ${successCount} boxes, but ${failCount} failed.`, 'error');
-          // Refresh to show what's left
           fetchBoxes();
         } else {
           showNotification('All boxes cleared.', 'success');
@@ -259,68 +271,111 @@ useEffect(() => {
     );
   };
 
-  // ─── Triple-tap / key / right-click triggers ───────────────────────────────
+  // ─── Triple-tap trigger ───────────────────────────────────
   useEffect(() => {
     const handleTap = () => {
       if (isEditorOpen || isVisible) return;
+
       tapCount.current++;
       clearTimeout(tapTimeout.current);
-      tapTimeout.current = setTimeout(() => { tapCount.current = 0; }, 1000);
-      if (tapCount.current === 3) { activatePasswordMode(); tapCount.current = 0; }
+
+      tapTimeout.current = setTimeout(() => {
+        tapCount.current = 0;
+      }, 1000);
+
+      if (tapCount.current === 3) {
+        setIsListening(true);
+        setPasswordBuffer('');
+
+        if (passwordTimeout.current) {
+          clearTimeout(passwordTimeout.current);
+        }
+
+        passwordTimeout.current = setTimeout(() => {
+          setIsListening(false);
+          setPasswordBuffer('');
+        }, 10000);
+
+        tapCount.current = 0;
+      }
     };
+
     document.addEventListener('click', handleTap);
     return () => document.removeEventListener('click', handleTap);
   }, [isEditorOpen, isVisible]);
 
+  // ─── Invisible password typing ───────────────────────────
   useEffect(() => {
-    const handleKey = (e) => {
-      if (isEditorOpen || isVisible) return;
-      if (e.key.toLowerCase() !== 'p') return;
-      keyPressCount.current++;
-      clearTimeout(keyPressTimeout.current);
-      keyPressTimeout.current = setTimeout(() => { keyPressCount.current = 0; }, 1000);
-      if (keyPressCount.current === 3) { activatePasswordMode(); keyPressCount.current = 0; }
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [isEditorOpen, isVisible]);
+    const handleKeyDown = (e) => {
+      if (!isListening) return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
+      if (passwordTimeout.current) {
+        clearTimeout(passwordTimeout.current);
+      }
+
+      const newBuffer = passwordBuffer + e.key;
+      setPasswordBuffer(newBuffer);
+
+      if (newBuffer === thePassword) {
+        setIsEditorOpen(true);
+        setIsVisible(true);
+        setIsListening(false);
+        setPasswordBuffer('');
+        if (passwordTimeout.current) {
+          clearTimeout(passwordTimeout.current);
+        }
+      } else if (newBuffer.length >= 11 || !thePassword.startsWith(newBuffer)) {
+        setPasswordBuffer('');
+        setIsListening(false);
+        if (passwordTimeout.current) {
+          clearTimeout(passwordTimeout.current);
+        }
+      } else {
+        passwordTimeout.current = setTimeout(() => {
+          setIsListening(false);
+          setPasswordBuffer('');
+        }, 10000);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isListening, passwordBuffer]);
+
+  // ─── Right-click trigger (alternative) ────────────────────
   useEffect(() => {
     const handleRC = (e) => {
       if (isEditorOpen || isVisible) return;
       e.preventDefault();
+
       rightClickCount.current++;
       clearTimeout(rightClickTimeout.current);
-      rightClickTimeout.current = setTimeout(() => { rightClickCount.current = 0; }, 1000);
-      if (rightClickCount.current === 3) { activatePasswordMode(); rightClickCount.current = 0; }
+
+      rightClickTimeout.current = setTimeout(() => {
+        rightClickCount.current = 0;
+      }, 1000);
+
+      if (rightClickCount.current === 3) {
+        setIsListening(true);
+        setPasswordBuffer('');
+
+        if (passwordTimeout.current) {
+          clearTimeout(passwordTimeout.current);
+        }
+
+        passwordTimeout.current = setTimeout(() => {
+          setIsListening(false);
+          setPasswordBuffer('');
+        }, 10000);
+
+        rightClickCount.current = 0;
+      }
     };
+
     document.addEventListener('contextmenu', handleRC);
     return () => document.removeEventListener('contextmenu', handleRC);
   }, [isEditorOpen, isVisible]);
-
-  const activatePasswordMode = () => {
-    setShowPasswordInput(true);
-    setIsListening(true);
-    listeningTimeout.current = setTimeout(() => {
-      setIsListening(false);
-      setShowPasswordInput(false);
-    }, 5 * 60 * 1000);
-  };
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    if (inputPassword === 'just4acedu') {
-      setIsEditorOpen(true);
-      setIsVisible(true);
-      setShowPasswordInput(false);
-      setIsListening(false);
-      setInputPassword('');
-      clearTimeout(listeningTimeout.current);
-    } else {
-      setInputPassword('');
-      showNotification('Incorrect password.', 'error');
-    }
-  };
 
   // ─── Cloudinary upload ─────────────────────────────────────────────────────
   const uploadToCloudinary = async (file) => {
@@ -444,6 +499,63 @@ useEffect(() => {
     };
   };
 
+  // Replace your existing isBoxExpired function with this improved version
+  const isBoxExpired = (box) => {
+  const now = new Date();
+  
+  // Case 1: Duration-based expiry
+  if (box.showTime === 'duration' && box.duration && box.createdDate) {
+    const createdDate = new Date(box.createdDate);
+    const expiry = new Date(createdDate);
+    expiry.setDate(expiry.getDate() + box.duration);
+    expiry.setHours(23, 59, 59, 999); // End of the expiry day
+    return now > expiry;
+  }
+
+  // Case 2: Scheduled with end date only
+  if (box.showTime === 'scheduled' && box.endDate && !box.endTime) {
+    const endDate = new Date(box.endDate);
+    endDate.setHours(23, 59, 59, 999); // End of the day
+    return now > endDate;
+  }
+
+  // Case 3: Scheduled with end time only (same day)
+  if (box.showTime === 'scheduled' && box.endTime && !box.endDate) {
+    const [eh, em] = box.endTime.split(':').map(Number);
+    const endTime = new Date();
+    endTime.setHours(eh, em, 0, 0);
+    return now > endTime;
+  }
+
+  // Case 4: Scheduled with both end date and end time
+  if (box.showTime === 'scheduled' && box.endDate && box.endTime) {
+    const endDateTime = new Date(box.endDate);
+    const [eh, em] = box.endTime.split(':').map(Number);
+    endDateTime.setHours(eh, em, 0, 0);
+    return now > endDateTime;
+  }
+
+  // Case 5: Check if current time is past end time on the end date
+  if (box.showTime === 'scheduled' && box.endDate) {
+    const endDate = new Date(box.endDate);
+    endDate.setHours(23, 59, 59, 999);
+    
+    if (now > endDate) return true;
+    
+    // If it's the end date, check the time
+    if (now.toDateString() === endDate.toDateString() && box.endTime) {
+      const [eh, em] = box.endTime.split(':').map(Number);
+      const endTimeToday = new Date();
+      endTimeToday.setHours(eh, em, 0, 0);
+      return now > endTimeToday;
+    }
+  }
+
+  return false;
+};
+
+
+
   const checkBoxVisibility = (box) => {
     if (box.showTime === 'always') return true;
     const now = new Date();
@@ -466,15 +578,48 @@ useEffect(() => {
     return false;
   };
 
-  // ─── Carousel ──────────────────────────────────────────────────────────────
-  useEffect(() => {
-    if (boxes.length > 1 && autoRotate && !isEditorOpen) {
-      carouselInterval.current = setInterval(() => {
-        setCurrentBoxIndex(prev => (prev + 1) % boxes.length);
-      }, 5000);
-    }
-    return () => clearInterval(carouselInterval.current);
-  }, [boxes.length, autoRotate, isEditorOpen]);
+  const getActiveBoxes = useCallback(() => {
+    return boxes.filter(box => !isBoxExpired(box));
+  }, [boxes]);
+
+  // ─── Force re-check expiration every minute ─────────────────────────────
+useEffect(() => {
+  const forceExpiryCheck = () => {
+    // This empty setState will trigger a re-render
+    setBoxes(prev => [...prev]);
+  };
+  
+  const interval = setInterval(forceExpiryCheck, 60000); // Check every minute
+  return () => clearInterval(interval);
+}, []);
+
+ // ─── Carousel ──────────────────────────────────────────────────────────────
+useEffect(() => {
+  // Get boxes that are both visible (by schedule) and not expired
+  const visibleActiveBoxes = boxes.filter(box => 
+    checkBoxVisibility(box) && !isBoxExpired(box)
+  );
+  
+  if (visibleActiveBoxes.length > 1 && autoRotate && !isEditorOpen) {
+    carouselInterval.current = setInterval(() => {
+      setCurrentBoxIndex(prev => (prev + 1) % visibleActiveBoxes.length);
+    }, 5000);
+  }
+  return () => clearInterval(carouselInterval.current);
+}, [boxes, autoRotate, isEditorOpen]);
+
+// Reset currentBoxIndex if it's out of bounds for visible boxes
+useEffect(() => {
+  const visibleActiveBoxes = boxes.filter(box => 
+    checkBoxVisibility(box) && !isBoxExpired(box)
+  );
+  
+  if (visibleActiveBoxes.length === 0) {
+    setCurrentBoxIndex(0);
+  } else if (currentBoxIndex >= visibleActiveBoxes.length) {
+    setCurrentBoxIndex(visibleActiveBoxes.length - 1);
+  }
+}, [boxes, currentBoxIndex]);
 
   useEffect(() => {
     if (editorMode === 'edit' && boxes[currentBoxIndex]) setCurrentBox(boxes[currentBoxIndex]);
@@ -755,7 +900,24 @@ useEffect(() => {
           text-transform: uppercase;
         }
 
-        /* New maker floating box */
+        .nm-modal-centered {
+          position: fixed;
+          top: 50% !important;
+          left: 50% !important;
+          transform: translate(-50%, -50%) !important;
+          z-index: 9999;
+          max-width: calc(100vw - 32px);
+          max-height: calc(100vh - 32px);
+        }
+
+        @media (max-width: 768px) {
+          .nm-modal-centered {
+            width: 95vw !important;
+            max-width: 95vw !important;
+            max-height: 90vh !important;
+          }
+        }
+
         .new-maker-box { transition: none; }
 
         @media (max-width: 640px) {
@@ -764,22 +926,10 @@ useEffect(() => {
         @media (max-width: 380px) {
           .new-maker-box { width: 220px !important; height: 240px !important; }
         }
-
-        /* FIX: Ensure modals are properly centered */
-        .nm-modal-centered {
-          position: fixed;
-          top: 3vh;
-          left: 10%;
-          transform: translate(-50%, -50%);
-          z-index: 9999;
-          max-width: calc(100vw - 32px);
-          max-height: calc(100vh - 32px);
-        }
       `}</style>
 
       <div className="nm-root">
-
-        {/* ── Confirm Modal ───────────────────────────────────────────────── */}
+        {/* Confirm Modal */}
         <AnimatePresence>
           {confirmModal.isOpen && (
             <motion.div
@@ -810,62 +960,7 @@ useEffect(() => {
           )}
         </AnimatePresence>
 
-        {/* ── Password Modal ──────────────────────────────────────────────── */}
-        <AnimatePresence>
-          {showPasswordInput && (
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(4px)', zIndex: 10002, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
-              onClick={() => { setShowPasswordInput(false); setIsListening(false); clearTimeout(listeningTimeout.current); }}
-            >
-              <motion.div
-                initial={{ scale: 0.92, y: -16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: -16 }}
-                style={{ background: 'linear-gradient(160deg,#111,#0a0a0a)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '12px', padding: '32px', maxWidth: '400px', width: '100%', boxShadow: '0 40px 80px rgba(0,0,0,0.8)' }}
-                onClick={e => e.stopPropagation()}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(180,0,0,0.15)', border: '1px solid rgba(180,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Lock size={16} color="#cc4444" />
-                  </div>
-                  <div>
-                    <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '1.3rem', color: '#fff', letterSpacing: '0.08em' }}>Admin Access</div>
-                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)' }}>
-                      <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: isListening ? '#22cc44' : '#555', marginRight: '6px', verticalAlign: 'middle' }}></span>
-                      {isListening ? 'Listening...' : 'Ready'}
-                    </div>
-                  </div>
-                </div>
-
-                <form onSubmit={handlePasswordSubmit}>
-                  <label className="nm-label">Password</label>
-                  <input
-                    type="password"
-                    value={inputPassword}
-                    onChange={e => setInputPassword(e.target.value)}
-                    className="nm-input"
-                    placeholder="Enter admin password"
-                    autoFocus
-                    style={{ marginBottom: '16px' }}
-                  />
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="submit" className="nm-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Unlock</button>
-                    <button type="button" className="nm-btn-secondary" onClick={() => { setShowPasswordInput(false); setIsListening(false); clearTimeout(listeningTimeout.current); }}>
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-
-                <div style={{ marginTop: '20px', padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', lineHeight: 1.8 }}>
-                    Triggers: Triple-tap · Triple right-click · Press P × 3
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ── Toast Notification ──────────────────────────────────────────── */}
+        {/* Toast Notification */}
         <AnimatePresence>
           {notification && (
             <motion.div
@@ -889,18 +984,16 @@ useEffect(() => {
           )}
         </AnimatePresence>
 
-        {/* ── Editor Panel ────────────────────────────────────────────────── */}
+        {/* Editor Panel */}
         <AnimatePresence>
           {isVisible && (
             <>
-              {/* Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)', zIndex: 9998 }}
                 onClick={() => { setIsVisible(false); setIsEditorOpen(false); }}
               />
 
-              {/* Modal - FIXED: Properly centered with className */}
               <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -935,11 +1028,10 @@ useEffect(() => {
                   </button>
                 </div>
 
-                {/* Body — scrolls inside the modal */}
+                {/* Body */}
                 <div className="nm-scrollbar" style={{ padding: '24px', overflowY: 'auto', flex: 1, minHeight: 0 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '32px' }}>
-
-                    {/* ── Left: Config ─────────────────────────────────────── */}
+                    {/* Left: Config */}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
                         <Layout size={15} color="#cc2222" />
@@ -1041,7 +1133,7 @@ useEffect(() => {
                       </div>
 
                       {/* Timing */}
-                      <div>
+                      <div style={{ marginBottom: '20px' }}>
                         <label className="nm-label">Display Timing</label>
                         <select value={currentBox.showTime} onChange={e => setCurrentBox(p => ({ ...p, showTime: e.target.value }))} className="nm-select" style={{ marginBottom: '12px' }}>
                           <option value="always">Always Visible</option>
@@ -1067,9 +1159,282 @@ useEffect(() => {
                           </div>
                         )}
                       </div>
+
+                      {/* Button Configuration */}
+                      <div style={{ marginTop: '20px', border: '1px solid rgba(180,0,0,0.2)', borderRadius: '8px', padding: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                          <label className="nm-label" style={{ marginBottom: 0 }}>Action Button</label>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                            <input
+                              type="checkbox"
+                              checked={currentBox.button?.enabled || false}
+                              onChange={(e) => setCurrentBox(p => ({
+                                ...p,
+                                button: {
+                                  ...p.button,
+                                  enabled: e.target.checked,
+                                  text: p.button?.text || 'Learn More',
+                                  color: p.button?.color || '#cc0000',
+                                  textColor: p.button?.textColor || '#ffffff',
+                                  size: p.button?.size || 40,
+                                  link: p.button?.link || '',
+                                  customLink: p.button?.customLink || ''
+                                }
+                              }))}
+                            />
+                            <span style={{ fontSize: '12px', color: 'white' }}>Enable Button</span>
+                          </label>
+                        </div>
+
+                        {currentBox.button?.enabled && (
+                          <>
+                            {/* Button Text */}
+                            <div style={{ marginBottom: '12px' }}>
+                              <label className="nm-label">Button Text</label>
+                              <input
+                                type="text"
+                                value={currentBox.button?.text || 'Learn More'}
+                                onChange={(e) => setCurrentBox(p => ({
+                                  ...p,
+                                  button: { ...p.button, text: e.target.value }
+                                }))}
+                                className="nm-input"
+                                placeholder="Button text"
+                              />
+                            </div>
+                            {/* Button Link */}
+                            <div style={{ marginBottom: '12px' }}>
+                              <label className="nm-label">Button Link</label>
+                              <select
+                                value={(() => {
+                                  // Determine what to show in select
+                                  const currentLink = currentBox.button?.link || '';
+
+                                  // Check if it's a section ID
+                                  const sectionOption = buttonLinkOptions.find(
+                                    opt => opt.type === 'section' && opt.value === currentLink
+                                  );
+                                  if (sectionOption) return currentLink;
+
+                                  // Check if it's a regular route
+                                  if (buttonLinkOptions.some(opt => opt.type === undefined && opt === currentLink)) {
+                                    return currentLink;
+                                  }
+
+                                  // Check if it's custom
+                                  if (currentLink && !buttonLinkOptions.some(opt =>
+                                    (opt.type === 'section' && opt.value === currentLink) ||
+                                    (typeof opt === 'string' && opt === currentLink)
+                                  )) {
+                                    return 'custom';
+                                  }
+
+                                  return '';
+                                })()}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+
+                                  if (val === 'custom') {
+                                    setCurrentBox(p => ({
+                                      ...p,
+                                      button: {
+                                        ...p.button,
+                                        link: 'custom',
+                                        customLink: p.button?.customLink || ''
+                                      }
+                                    }));
+                                  } else {
+                                    setCurrentBox(p => ({
+                                      ...p,
+                                      button: {
+                                        ...p.button,
+                                        link: val,
+                                        customLink: ''
+                                      }
+                                    }));
+                                  }
+                                }}
+                                className="nm-select"
+                                style={{ marginBottom: '8px' }}
+                              >
+                                <option value="">Select a link</option>
+
+                                {/* Regular routes */}
+                                <optgroup label="Pages">
+                                  {buttonLinkOptions
+                                    .filter(opt => typeof opt === 'string')
+                                    .map(option => (
+                                      <option key={option} value={option}>{option}</option>
+                                    ))}
+                                </optgroup>
+
+                                {/* Section IDs */}
+                                <optgroup label="Page Sections (Auto-scroll)">
+                                  {buttonLinkOptions
+                                    .filter(opt => opt.type === 'section')
+                                    .map(option => (
+                                      <option key={option.value} value={option.value}>{option.label}</option>
+                                    ))}
+                                </optgroup>
+
+                                {/* Custom option */}
+                                <optgroup label="Custom">
+                                  {buttonLinkOptions
+                                    .filter(opt => opt.type === 'custom')
+                                    .map(option => (
+                                      <option key={option.value} value={option.value}>{option.label}</option>
+                                    ))}
+                                </optgroup>
+                              </select>
+
+                              {/* Custom URL input */}
+                              {(currentBox.button?.link === 'custom' ||
+                                (currentBox.button?.link &&
+                                  !buttonLinkOptions.some(opt =>
+                                    (opt.type === 'section' && opt.value === currentBox.button?.link) ||
+                                    (typeof opt === 'string' && opt === currentBox.button?.link)
+                                  ))) && (
+                                  <input
+                                    type="text"
+                                    value={currentBox.button?.customLink ||
+                                      (currentBox.button?.link &&
+                                        currentBox.button?.link !== 'custom' &&
+                                        !buttonLinkOptions.some(opt =>
+                                          (opt.type === 'section' && opt.value === currentBox.button?.link) ||
+                                          (typeof opt === 'string' && opt === currentBox.button?.link)
+                                        ) ? currentBox.button?.link : '')}
+                                    onChange={(e) => {
+                                      const customVal = e.target.value;
+                                      setCurrentBox(p => ({
+                                        ...p,
+                                        button: {
+                                          ...p.button,
+                                          customLink: customVal,
+                                          link: customVal
+                                        }
+                                      }));
+                                    }}
+                                    className="nm-input"
+                                    placeholder="Enter custom URL (https://example.com or #section-id)"
+                                  />
+                                )}
+
+                              {/* Helper text for section IDs */}
+                              {currentBox.button?.link && currentBox.button.link.startsWith('#') && (
+                                <div style={{
+                                  marginTop: '6px',
+                                  fontSize: '11px',
+                                  color: '#3498db',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
+                                }}>
+                                  <span>🔗</span> This will auto-scroll to the section on the same page
+                                </div>
+                              )}
+                            </div>
+                            {/* Button Size */}
+                            <div style={{ marginBottom: '12px' }}>
+                              <label className="nm-label">Button Size (% of box width)</label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <input
+                                  type="range"
+                                  min="20"
+                                  max="80"
+                                  value={currentBox.button?.size || 40}
+                                  onChange={(e) => setCurrentBox(p => ({
+                                    ...p,
+                                    button: { ...p.button, size: parseInt(e.target.value) }
+                                  }))}
+                                  className="nm-range"
+                                  style={{ flex: 1 }}
+                                />
+                                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', width: '40px' }}>
+                                  {currentBox.button?.size || 40}%
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Button Colors */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+                              <div>
+                                <label className="nm-label">Button Color</label>
+                                <div style={{ display: 'flex', gap: '4px' }}>
+                                  <input
+                                    type="color"
+                                    value={currentBox.button?.color || '#cc0000'}
+                                    onChange={(e) => setCurrentBox(p => ({
+                                      ...p,
+                                      button: { ...p.button, color: e.target.value }
+                                    }))}
+                                    style={{ width: '40px', height: '30px', background: 'transparent', border: '1px solid rgba(180,0,0,0.3)', borderRadius: '4px' }}
+                                  />
+                                  <input
+                                    type="text"
+                                    value={currentBox.button?.color || '#cc0000'}
+                                    onChange={(e) => setCurrentBox(p => ({
+                                      ...p,
+                                      button: { ...p.button, color: e.target.value }
+                                    }))}
+                                    className="nm-input"
+                                    style={{ flex: 1 }}
+                                    placeholder="#cc0000"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="nm-label">Text Color</label>
+                                <div style={{ display: 'flex', gap: '4px' }}>
+                                  <input
+                                    type="color"
+                                    value={currentBox.button?.textColor || '#ffffff'}
+                                    onChange={(e) => setCurrentBox(p => ({
+                                      ...p,
+                                      button: { ...p.button, textColor: e.target.value }
+                                    }))}
+                                    style={{ width: '40px', height: '30px', background: 'transparent', border: '1px solid rgba(180,0,0,0.3)', borderRadius: '4px' }}
+                                  />
+                                  <input
+                                    type="text"
+                                    value={currentBox.button?.textColor || '#ffffff'}
+                                    onChange={(e) => setCurrentBox(p => ({
+                                      ...p,
+                                      button: { ...p.button, textColor: e.target.value }
+                                    }))}
+                                    className="nm-input"
+                                    style={{ flex: 1 }}
+                                    placeholder="#ffffff"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Preview */}
+                            <div style={{
+                              padding: '8px',
+                              background: 'rgba(0,0,0,0.3)',
+                              borderRadius: '4px',
+                              border: '1px solid rgba(180,0,0,0.2)'
+                            }}>
+                              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>Preview:</div>
+                              <div style={{
+                                background: currentBox.button?.color || '#cc0000',
+                                color: currentBox.button?.textColor || '#ffffff',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                display: 'inline-block',
+                                fontWeight: 600
+                              }}>
+                                {currentBox.button?.text || 'Learn More'}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
 
-                    {/* ── Right: Image + Preview ────────────────────────────── */}
+                    {/* Right: Image + Preview */}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
                         <ImageIcon size={15} color="#cc2222" />
@@ -1120,16 +1485,43 @@ useEffect(() => {
                             borderRadius: getBorderRadius(currentBox),
                             overflow: 'hidden',
                             border: '1px solid rgba(180,0,0,0.3)',
-                            boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                            position: 'relative'
                           }}>
                             <img src={currentBox.imageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: currentBox.imageFit, objectPosition: currentBox.imagePosition }} />
+
+                            {/* Preview Button */}
+                            {currentBox.button?.enabled && currentBox.button.link && (
+                              <div style={{
+                                position: 'absolute',
+                                bottom: '10px',
+                                right: '10px',
+                                zIndex: 30,
+                                background: currentBox.button.color,
+                                color: currentBox.button.textColor,
+                                padding: '6px 12px',
+                                borderRadius: '4px',
+                                fontSize: `${Math.max(10, Math.floor(currentBox.width * (currentBox.button.size / 100) * 0.1))}px`,
+                                fontWeight: 600,
+                                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                                maxWidth: `${currentBox.button.size}%`,
+                                textAlign: 'center',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                pointerEvents: 'none',
+                                opacity: 0.8
+                              }}>
+                                {currentBox.button.text || 'Learn More'}
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* ── Box Management ──────────────────────────────────────── */}
+                  {/* Box Management */}
                   <hr className="nm-divider" />
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
@@ -1159,100 +1551,157 @@ useEffect(() => {
                   {/* Box list */}
                   {boxes.length > 0 ? (
                     <div className="nm-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '240px', overflowY: 'auto', paddingRight: '4px' }}>
-                      {boxes.map((box, i) => (
-                        <div key={box.id} className={`nm-box-card${currentBoxIndex === i ? ' active' : ''}`}>
-                          <div className={`nm-badge${currentBoxIndex === i ? ' active' : ''}`}>{i + 1}</div>
-                          {box.imageUrl && <img src={box.imageUrl} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '5px', border: '1px solid rgba(180,0,0,0.25)', flexShrink: 0 }} />}
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '2px' }}>Image Box #{i + 1}</div>
-                            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>
-                              {box.width}×{box.height}px · {positions.find(p => p.value === box.position)?.label}
-                              {box.showTime === 'duration' && box.duration && box.createdDate && (
-                                <span style={{ color: '#cc4444', marginLeft: '6px' }}>
-                                  · Expires {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
-                                </span>
-                              )}
+                      {boxes.map((box, i) => {
+                        const expired = isBoxExpired(box);
+                        const isScheduled = box.showTime === 'scheduled' && !expired;
+
+                        return (
+                          <div key={box.id} className={`nm-box-card${currentBoxIndex === i ? ' active' : ''}`}>
+                            <div className={`nm-badge${currentBoxIndex === i ? ' active' : ''}`}>{i + 1}</div>
+                            {box.imageUrl && (
+                              <div style={{ position: 'relative' }}>
+                                <img
+                                  src={box.imageUrl}
+                                  alt=""
+                                  style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    objectFit: 'cover',
+                                    borderRadius: '5px',
+                                    border: '1px solid rgba(180,0,0,0.25)',
+                                    filter: expired ? 'grayscale(80%)' : 'none',
+                                    opacity: expired ? 0.7 : 1
+                                  }}
+                                />
+                                {expired && (
+                                  <span style={{
+                                    position: 'absolute',
+                                    top: -2,
+                                    right: -2,
+                                    background: '#ff4444',
+                                    color: 'white',
+                                    fontSize: '8px',
+                                    padding: '2px 4px',
+                                    borderRadius: '4px',
+                                    fontWeight: 'bold'
+                                  }}>
+                                    EXP
+                                  </span>
+                                )}
+                                {isScheduled && (
+                                  <span style={{
+                                    position: 'absolute',
+                                    top: -2,
+                                    left: -2,
+                                    background: '#3498db',
+                                    color: 'white',
+                                    fontSize: '8px',
+                                    padding: '2px 4px',
+                                    borderRadius: '4px',
+                                    fontWeight: 'bold'
+                                  }}>
+                                    SCH
+                                  </span>
+                                )}
+                                {box.button?.enabled && !expired && (
+                                  <span style={{
+                                    position: 'absolute',
+                                    bottom: -2,
+                                    right: -2,
+                                    background: box.button.color || '#cc0000',
+                                    color: 'white',
+                                    fontSize: '8px',
+                                    padding: '2px 4px',
+                                    borderRadius: '4px',
+                                    fontWeight: 'bold'
+                                  }}>
+                                    BTN
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '2px' }}>
+                                Image Box #{i + 1}
+                                {expired && <span style={{ color: '#ff4444', marginLeft: '6px' }}>(Expired)</span>}
+                                {isScheduled && <span style={{ color: '#3498db', marginLeft: '6px' }}>(Scheduled)</span>}
+                              </div>
+                              <div style={{ fontSize: '11px', color: expired ? 'rgba(255,68,68,0.5)' : 'rgba(255,255,255,0.35)' }}>
+                                {box.width}×{box.height}px · {positions.find(p => p.value === box.position)?.label}
+                                {box.showTime === 'duration' && box.duration && box.createdDate && !expired && (
+                                  <span style={{ color: '#cc4444', marginLeft: '6px' }}>
+                                    · Expires {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
+                                  </span>
+                                )}
+                                {isScheduled && box.startDate && (
+                                  <span style={{ color: '#3498db', marginLeft: '6px' }}>
+                                    · Starts {new Date(box.startDate).toLocaleDateString()}
+                                  </span>
+                                )}
+                                {expired && (
+                                  <span style={{ color: '#ff4444', marginLeft: '6px' }}>
+                                    · Expired
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                              <button className="nm-btn-ghost" style={{ fontSize: '11px', padding: '5px 10px' }} onClick={() => { setCurrentBox(box); setCurrentBoxIndex(i); setEditorMode('edit'); }}>
+                                Edit
+                              </button>
+                              <button
+                                className="nm-btn-danger"
+                                style={{ padding: '5px 8px' }}
+                                onClick={async () => {
+                                  const box = boxes[i];
+                                  setConfirmModal({
+                                    isOpen: true,
+                                    title: 'Delete Box',
+                                    message: 'This will permanently delete this box and its image. Continue?',
+                                    onConfirm: async () => {
+                                      closeConfirm();
+                                      setIsDeleting(true);
+                                      try {
+                                        console.log('Deleting box:', box.id);
+                                        const response = await fetch(`${API_URL}/boxes/${box.id}`, {
+                                          method: 'DELETE',
+                                          headers: { 'Content-Type': 'application/json' }
+                                        });
+                                        console.log('Delete response status:', response.status);
+                                        if (!response.ok) {
+                                          const errorText = await response.text();
+                                          throw new Error(`Server returned ${response.status}: ${errorText}`);
+                                        }
+                                        if (box.imagePublicId) {
+                                          fetch(`${API_URL}/delete-cloudinary-image`, {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ publicId: box.imagePublicId })
+                                          }).catch(err => console.warn('Cloudinary cleanup failed:', err));
+                                        }
+                                        setBoxes(prev => prev.filter(b => b.id !== box.id));
+                                        if (i === currentBoxIndex) {
+                                          setCurrentBoxIndex(prev => Math.max(0, prev - 1));
+                                        }
+                                        showNotification('Box deleted successfully', 'success');
+                                      } catch (err) {
+                                        console.error('Delete failed:', err);
+                                        showNotification(`Delete failed: ${err.message}`, 'error');
+                                        fetchBoxes();
+                                      } finally {
+                                        setIsDeleting(false);
+                                      }
+                                    }
+                                  });
+                                }}
+                                disabled={isDeleting}
+                              >
+                                {isDeleting ? <Loader size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={12} />}
+                              </button>
                             </div>
                           </div>
-                          <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-                            <button className="nm-btn-ghost" style={{ fontSize: '11px', padding: '5px 10px' }} onClick={() => { setCurrentBox(box); setCurrentBoxIndex(i); setEditorMode('edit'); }}>
-                              Edit
-                            </button>
-                            <button
-                              className="nm-btn-danger"
-                              style={{ padding: '5px 8px' }}
-                              onClick={async () => {
-                                const box = boxes[i];
-
-                                // Show confirm modal
-                                setConfirmModal({
-                                  isOpen: true,
-                                  title: 'Delete Box',
-                                  message: 'This will permanently delete this box and its image. Continue?',
-                                  onConfirm: async () => {
-                                    closeConfirm();
-                                    setIsDeleting(true);
-
-                                    try {
-                                      console.log('Deleting box:', box.id);
-
-                                      // Send DELETE request to server
-                                      const response = await fetch(`${API_URL}/boxes/${box.id}`, {
-                                        method: 'DELETE',
-                                        headers: { 'Content-Type': 'application/json' }
-                                      });
-
-                                      console.log('Delete response status:', response.status);
-
-                                      if (!response.ok) {
-                                        const errorText = await response.text();
-                                        throw new Error(`Server returned ${response.status}: ${errorText}`);
-                                      }
-
-                                      // Try to parse response (if any)
-                                      try {
-                                        const data = await response.json();
-                                        console.log('Delete response:', data);
-                                      } catch (e) {
-                                        console.log('No JSON response (normal for DELETE)');
-                                      }
-
-                                      // Delete from Cloudinary in background
-                                      if (box.imagePublicId) {
-                                        fetch(`${API_URL}/delete-cloudinary-image`, {
-                                          method: 'POST',
-                                          headers: { 'Content-Type': 'application/json' },
-                                          body: JSON.stringify({ publicId: box.imagePublicId })
-                                        }).catch(err => console.warn('Cloudinary cleanup failed:', err));
-                                      }
-
-                                      // Update UI immediately
-                                      setBoxes(prev => prev.filter(b => b.id !== box.id));
-
-                                      // Update current index if needed
-                                      if (i === currentBoxIndex) {
-                                        setCurrentBoxIndex(prev => Math.max(0, prev - 1));
-                                      }
-
-                                      showNotification('Box deleted successfully', 'success');
-                                    } catch (err) {
-                                      console.error('Delete failed:', err);
-                                      showNotification(`Delete failed: ${err.message}`, 'error');
-                                      // Refresh to ensure UI is in sync
-                                      fetchBoxes();
-                                    } finally {
-                                      setIsDeleting(false);
-                                    }
-                                  }
-                                });
-                              }}
-                              disabled={isDeleting}
-                            >
-                              {isDeleting ? <Loader size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={12} />}
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : (
                     <div style={{ textAlign: 'center', padding: '32px', border: '1px dashed rgba(180,0,0,0.2)', borderRadius: '10px', color: 'rgba(255,255,255,0.2)', fontSize: '13px' }}>
@@ -1261,26 +1710,34 @@ useEffect(() => {
                   )}
 
                   {/* Carousel nav */}
-                  {boxes.length > 1 && (
+                  {getActiveBoxes().length > 1 && (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
-                      <button className="nm-close-btn" onClick={() => setCurrentBoxIndex(p => (p - 1 + boxes.length) % boxes.length)}><ChevronLeft size={14} /></button>
-                      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Box {currentBoxIndex + 1} of {boxes.length}</span>
-                      <button className="nm-close-btn" onClick={() => setCurrentBoxIndex(p => (p + 1) % boxes.length)}><ChevronRight size={14} /></button>
+                      <button className="nm-close-btn" onClick={() => setCurrentBoxIndex(p => (p - 1 + getActiveBoxes().length) % getActiveBoxes().length)}><ChevronLeft size={14} /></button>
+                      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
+                        Box {currentBoxIndex + 1} of {getActiveBoxes().length} (Active)
+                      </span>
+                      <button className="nm-close-btn" onClick={() => setCurrentBoxIndex(p => (p + 1) % getActiveBoxes().length)}><ChevronRight size={14} /></button>
                     </div>
                   )}
                 </div>
-                {/* end scrollable body */}
               </motion.div>
-              {/* end modal */}
             </>
           )}
         </AnimatePresence>
 
-        {/* ── Display Floating Boxes ──────────────────────────────────────── */}
+        {/* Display Floating Boxes - Only Show Visible (Based on Schedule) and Non-Expired */}
         <AnimatePresence>
           {boxes.map((box, index) => {
-            if (boxes.length > 1 && currentBoxIndex !== index) return null;
+            // Check if box should be visible based on schedule
             if (!checkBoxVisibility(box)) return null;
+
+            // Check if box is expired
+            if (isBoxExpired(box)) return null;
+
+            // For carousel, only show current index when multiple boxes
+            const activeBoxes = boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b));
+            if (activeBoxes.length > 1 && currentBoxIndex !== index) return null;
+
             const anim = animations[box.animation];
             return (
               <motion.div
@@ -1293,22 +1750,74 @@ useEffect(() => {
                 className="new-maker-box"
               >
                 <div style={{ height: '100%', position: 'relative' }}>
-                  {/* Side border accent */}
                   <div style={{ position: 'absolute', ...getBorderPosition(box.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
-
                   <img src={box.imageUrl} alt="Content" style={{ width: '100%', height: '100%', objectFit: box.imageFit || 'cover', objectPosition: box.imagePosition || 'center', borderRadius: getBorderRadius(box) }} />
 
-                  {/* Expiry badge */}
-                  {box.showTime === 'duration' && box.duration && box.createdDate && (
+                  {/* Action Button */}
+                  {box.button?.enabled && box.button.link && (
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const link = box.button.link;
+
+                        if (link.startsWith('#')) {
+                          e.preventDefault();
+                          const element = document.getElementById(link.substring(1));
+                          if (element) {
+                            element.scrollIntoView({
+                              behavior: 'smooth',
+                              block: 'start'
+                            });
+                          } else {
+                            window.location.href = link;
+                          }
+                        } else if (link.startsWith('http://') || link.startsWith('https://')) {
+                          window.open(link, '_blank', 'noopener,noreferrer');
+                        } else {
+                          window.open(link, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                      style={{
+                        position: 'absolute',
+                        bottom: '10px',
+                        right: '10px',
+                        zIndex: 30,
+                        background: box.button.color,
+                        color: box.button.textColor,
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        fontSize: `${Math.max(10, Math.floor(box.width * (box.button.size / 100) * 0.1))}px`,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                        transition: 'transform 0.2s',
+                        maxWidth: `${box.button.size}%`,
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        border: 'none',
+                        pointerEvents: 'auto'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      title={box.button.link.startsWith('#') ? 'Scroll to section' : 'Open link'}
+                    >
+                      {box.button.text || 'Learn More'}
+                    </div>
+                  )}
+
+                  {/* Duration expiry badge */}
+                  {box.showTime === 'duration' && box.duration && box.createdDate && !isBoxExpired(box) && (
                     <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
                       Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
                     </div>
                   )}
 
-                  {/* Carousel dots */}
-                  {boxes.length > 1 && (
+                  {/* Carousel dots - only show for visible active boxes */}
+                  {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).length > 1 && (
                     <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', zIndex: 20 }}>
-                      {boxes.map((_, i) => (
+                      {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).map((_, i) => (
                         <div key={i} style={{ width: i === currentBoxIndex ? '16px' : '6px', height: '6px', borderRadius: '3px', background: i === currentBoxIndex ? '#cc0000' : 'rgba(255,255,255,0.25)', transition: 'all 0.3s' }} />
                       ))}
                     </div>
@@ -1326,4 +1835,3 @@ useEffect(() => {
 };
 
 export default NewMaker;
-

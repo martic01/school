@@ -147,7 +147,7 @@ const Homepage = () => {
       <div className="w-full h-fit" id="courses-section">
         <CourseModulesHome />
       </div>
-
+ 
 
       <div className="w-full h-fit" id="product-section">
         <ProductsShowcase />
