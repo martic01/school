@@ -8,7 +8,7 @@ import {
   Lock, Settings, Square, AlertCircle,
   CornerUpLeft, CornerUpRight, CornerDownLeft, CornerDownRight,
   Cloud, Loader, AlertTriangle, CheckCircle, RefreshCw,
-  Link as LinkIcon
+  Link as LinkIcon, Smartphone, Monitor
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -54,6 +54,9 @@ const NewMaker = () => {
     imagePublicId: '',
     width: 350,
     height: 300,
+    mobileWidth: 260,
+    mobileHeight: 280,
+    useMobileSize: false,
     position: 'bottom-left',
     animation: 'fade',
     bgColor: '#000000',
@@ -486,11 +489,20 @@ const NewMaker = () => {
     return `${box.borderRadius.topLeft} ${box.borderRadius.topRight} ${box.borderRadius.bottomRight} ${box.borderRadius.bottomLeft}`;
   };
 
-  const getBoxStyle = (box) => {
+  const getBoxStyle = (box, isMobile = false) => {
     const pos = positions.find(p => p.value === box.position);
     const bg = box.bgType === 'gradient' ? `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})` : box.bgColor || '#000';
+    
+    // Determine which dimensions to use based on screen size and user preference
+    const width = isMobile && box.useMobileSize 
+      ? Math.min(box.mobileWidth || box.width, 400) 
+      : Math.min(box.width, 400);
+    const height = isMobile && box.useMobileSize 
+      ? Math.min(box.mobileHeight || box.height, 400) 
+      : Math.min(box.height, 400);
+    
     return {
-      position: 'fixed', width: `${Math.min(box.width, 400)}px`, height: `${Math.min(box.height, 400)}px`,
+      position: 'fixed', width: `${width}px`, height: `${height}px`,
       maxWidth: '400px', maxHeight: '400px', background: bg,
       backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
       boxShadow: '0 25px 50px -12px rgba(139,0,0,0.4), 0 0 0 1px rgba(139,0,0,0.2)',
@@ -624,6 +636,17 @@ useEffect(() => {
   useEffect(() => {
     if (editorMode === 'edit' && boxes[currentBoxIndex]) setCurrentBox(boxes[currentBoxIndex]);
   }, [editorMode, currentBoxIndex]);
+
+  // Add window resize listener to update styles dynamically
+  useEffect(() => {
+    const handleResize = () => {
+      // Force a re-render when window resizes to apply mobile/desktop dimensions
+      setBoxes(prev => [...prev]);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // ─── Border helpers ────────────────────────────────────────────────────────
   const getBorderPosition = (side) => side === 'right'
@@ -926,6 +949,36 @@ useEffect(() => {
         @media (max-width: 380px) {
           .new-maker-box { width: 220px !important; height: 240px !important; }
         }
+
+        /* Mobile preview styles */
+        .preview-container {
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin-top: 20px;
+        }
+
+        .preview-item {
+          text-align: center;
+          background: rgba(0,0,0,0.3);
+          padding: 15px;
+          border-radius: 8px;
+          border: 1px solid rgba(180,0,0,0.2);
+        }
+
+        .preview-label {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          margin-bottom: 10px;
+          font-size: 12px;
+          color: #888;
+        }
+
+        .preview-label.desktop { color: #cc0000; }
+        .preview-label.mobile { color: #3498db; }
       `}</style>
 
       <div className="nm-root">
@@ -1049,6 +1102,97 @@ useEffect(() => {
                             </div>
                           </div>
                         ))}
+                      </div>
+
+                      {/* Mobile Size Toggle & Controls */}
+                      <div style={{ 
+                        marginTop: '16px', 
+                        marginBottom: '20px',
+                        padding: '12px', 
+                        background: 'rgba(180,0,0,0.05)', 
+                        borderRadius: '8px',
+                        border: '1px solid rgba(180,0,0,0.2)'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                          <label className="nm-label" style={{ marginBottom: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Smartphone size={14} color="#3498db" /> Mobile-Specific Size
+                          </label>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                            <input
+                              type="checkbox"
+                              checked={currentBox.useMobileSize || false}
+                              onChange={(e) => setCurrentBox(p => ({ 
+                                ...p, 
+                                useMobileSize: e.target.checked,
+                                mobileWidth: p.mobileWidth || p.width,
+                                mobileHeight: p.mobileHeight || p.height
+                              }))}
+                            />
+                            <span style={{ fontSize: '12px', color: 'white' }}>Enable</span>
+                          </label>
+                        </div>
+
+                        {currentBox.useMobileSize && (
+                          <>
+                            <div style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '8px', 
+                              marginBottom: '12px',
+                              background: 'rgba(0,0,0,0.3)',
+                              padding: '8px',
+                              borderRadius: '6px'
+                            }}>
+                              <span style={{ fontSize: '11px', color: '#3498db' }}>📱</span>
+                              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>
+                                Mobile dimensions apply on screens smaller than 768px
+                              </span>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                              <div>
+                                <label className="nm-label">Mobile Width (px)</label>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <input 
+                                    type="range" 
+                                    min="40" 
+                                    max="400" 
+                                    value={currentBox.mobileWidth || currentBox.width}
+                                    onChange={(e) => setCurrentBox(p => ({ 
+                                      ...p, 
+                                      mobileWidth: parseInt(e.target.value) 
+                                    }))} 
+                                    className="nm-range" 
+                                    style={{ flex: 1 }} 
+                                  />
+                                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.5)', width: '42px', textAlign: 'right' }}>
+                                    {currentBox.mobileWidth || currentBox.width}
+                                  </span>
+                                </div>
+                              </div>
+                              <div>
+                                <label className="nm-label">Mobile Height (px)</label>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <input 
+                                    type="range" 
+                                    min="40" 
+                                    max="400" 
+                                    value={currentBox.mobileHeight || currentBox.height}
+                                    onChange={(e) => setCurrentBox(p => ({ 
+                                      ...p, 
+                                      mobileHeight: parseInt(e.target.value) 
+                                    }))} 
+                                    className="nm-range" 
+                                    style={{ flex: 1 }} 
+                                  />
+                                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.5)', width: '42px', textAlign: 'right' }}>
+                                    {currentBox.mobileHeight || currentBox.height}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Position */}
@@ -1474,45 +1618,110 @@ useEffect(() => {
                         )}
                       </div>
 
-                      {/* Live preview */}
+                      {/* Dual Preview - Desktop & Mobile */}
                       {currentBox.imageUrl && (
-                        <div style={{ marginBottom: '20px' }}>
-                          <label className="nm-label">Live Preview</label>
-                          <div style={{
-                            width: `${Math.min(currentBox.width, 320)}px`, height: `${Math.min(currentBox.height, 260)}px`,
-                            maxWidth: '100%', maxHeight: '260px',
-                            background: currentBox.bgType === 'gradient' ? `linear-gradient(135deg,${currentBox.bgGradient[0]},${currentBox.bgGradient[1]})` : currentBox.bgColor,
-                            borderRadius: getBorderRadius(currentBox),
-                            overflow: 'hidden',
-                            border: '1px solid rgba(180,0,0,0.3)',
-                            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                            position: 'relative'
-                          }}>
-                            <img src={currentBox.imageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: currentBox.imageFit, objectPosition: currentBox.imagePosition }} />
-
-                            {/* Preview Button */}
-                            {currentBox.button?.enabled && currentBox.button.link && (
+                        <div>
+                          <label className="nm-label" style={{ marginBottom: '12px' }}>Live Preview</label>
+                          <div className="preview-container">
+                            {/* Desktop Preview */}
+                            <div className="preview-item">
+                              <div className="preview-label desktop">
+                                <Monitor size={14} /> Desktop View ({currentBox.width}×{currentBox.height})
+                              </div>
                               <div style={{
-                                position: 'absolute',
-                                bottom: '10px',
-                                right: '10px',
-                                zIndex: 30,
-                                background: currentBox.button.color,
-                                color: currentBox.button.textColor,
-                                padding: '6px 12px',
-                                borderRadius: '4px',
-                                fontSize: `${Math.max(10, Math.floor(currentBox.width * (currentBox.button.size / 100) * 0.1))}px`,
-                                fontWeight: 600,
-                                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                                maxWidth: `${currentBox.button.size}%`,
-                                textAlign: 'center',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                pointerEvents: 'none',
-                                opacity: 0.8
+                                ...getBoxStyle(currentBox, false),
+                                position: 'relative',
+                                margin: '0 auto'
                               }}>
-                                {currentBox.button.text || 'Learn More'}
+                                <div style={{ height: '100%', position: 'relative' }}>
+                                  <div style={{ position: 'absolute', ...getBorderPosition(currentBox.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
+                                  <img 
+                                    src={currentBox.imageUrl} 
+                                    alt="Desktop Preview" 
+                                    style={{ 
+                                      width: '100%', 
+                                      height: '100%', 
+                                      objectFit: currentBox.imageFit, 
+                                      objectPosition: currentBox.imagePosition 
+                                    }} 
+                                  />
+                                  {currentBox.button?.enabled && currentBox.button.link && (
+                                    <div style={{
+                                      position: 'absolute',
+                                      bottom: '10px',
+                                      right: '10px',
+                                      zIndex: 30,
+                                      background: currentBox.button.color,
+                                      color: currentBox.button.textColor,
+                                      padding: '6px 12px',
+                                      borderRadius: '4px',
+                                      fontSize: `${Math.max(10, Math.floor(currentBox.width * (currentBox.button.size / 100) * 0.1))}px`,
+                                      fontWeight: 600,
+                                      boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                                      maxWidth: `${currentBox.button.size}%`,
+                                      textAlign: 'center',
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      pointerEvents: 'none',
+                                      opacity: 0.8
+                                    }}>
+                                      {currentBox.button.text || 'Learn More'}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Mobile Preview (if enabled) */}
+                            {currentBox.useMobileSize && (
+                              <div className="preview-item">
+                                <div className="preview-label mobile">
+                                  <Smartphone size={14} /> Mobile View ({currentBox.mobileWidth || currentBox.width}×{currentBox.mobileHeight || currentBox.height})
+                                </div>
+                                <div style={{
+                                  ...getBoxStyle(currentBox, true),
+                                  position: 'relative',
+                                  margin: '0 auto'
+                                }}>
+                                  <div style={{ height: '100%', position: 'relative' }}>
+                                    <div style={{ position: 'absolute', ...getBorderPosition(currentBox.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
+                                    <img 
+                                      src={currentBox.imageUrl} 
+                                      alt="Mobile Preview" 
+                                      style={{ 
+                                        width: '100%', 
+                                        height: '100%', 
+                                        objectFit: currentBox.imageFit, 
+                                        objectPosition: currentBox.imagePosition 
+                                      }} 
+                                    />
+                                    {currentBox.button?.enabled && currentBox.button.link && (
+                                      <div style={{
+                                        position: 'absolute',
+                                        bottom: '10px',
+                                        right: '10px',
+                                        zIndex: 30,
+                                        background: currentBox.button.color,
+                                        color: currentBox.button.textColor,
+                                        padding: '6px 12px',
+                                        borderRadius: '4px',
+                                        fontSize: `${Math.max(10, Math.floor((currentBox.mobileWidth || currentBox.width) * (currentBox.button.size / 100) * 0.1))}px`,
+                                        fontWeight: 600,
+                                        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                                        maxWidth: `${currentBox.button.size}%`,
+                                        textAlign: 'center',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        pointerEvents: 'none',
+                                        opacity: 0.8
+                                      }}>
+                                        {currentBox.button.text || 'Learn More'}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -1625,9 +1834,15 @@ useEffect(() => {
                                 Image Box #{i + 1}
                                 {expired && <span style={{ color: '#ff4444', marginLeft: '6px' }}>(Expired)</span>}
                                 {isScheduled && <span style={{ color: '#3498db', marginLeft: '6px' }}>(Scheduled)</span>}
+                                {box.useMobileSize && <span style={{ color: '#3498db', marginLeft: '6px' }}>📱</span>}
                               </div>
                               <div style={{ fontSize: '11px', color: expired ? 'rgba(255,68,68,0.5)' : 'rgba(255,255,255,0.35)' }}>
-                                {box.width}×{box.height}px · {positions.find(p => p.value === box.position)?.label}
+                                Desktop: {box.width}×{box.height}px · {positions.find(p => p.value === box.position)?.label}
+                                {box.useMobileSize && (
+                                  <span style={{ color: '#3498db', marginLeft: '6px' }}>
+                                    📱 Mobile: {box.mobileWidth || box.width}×{box.mobileHeight || box.height}px
+                                  </span>
+                                )}
                                 {box.showTime === 'duration' && box.duration && box.createdDate && !expired && (
                                   <span style={{ color: '#cc4444', marginLeft: '6px' }}>
                                     · Expires {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
@@ -1739,6 +1954,8 @@ useEffect(() => {
             if (activeBoxes.length > 1 && currentBoxIndex !== index) return null;
 
             const anim = animations[box.animation];
+            const isMobile = window.innerWidth <= 768;
+            
             return (
               <motion.div
                 key={box.id}
@@ -1746,7 +1963,7 @@ useEffect(() => {
                 animate={anim.animate}
                 exit={anim.exit}
                 transition={anim.transition}
-                style={getBoxStyle(box)}
+                style={getBoxStyle(box, isMobile)}
                 className="new-maker-box"
               >
                 <div style={{ height: '100%', position: 'relative' }}>
@@ -1786,7 +2003,7 @@ useEffect(() => {
                         color: box.button.textColor,
                         padding: '6px 12px',
                         borderRadius: '4px',
-                        fontSize: `${Math.max(10, Math.floor(box.width * (box.button.size / 100) * 0.1))}px`,
+                        fontSize: `${Math.max(10, Math.floor((isMobile && box.useMobileSize ? (box.mobileWidth || box.width) : box.width) * (box.button.size / 100) * 0.1))}px`,
                         fontWeight: 600,
                         cursor: 'pointer',
                         boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
@@ -1811,6 +2028,13 @@ useEffect(() => {
                   {box.showTime === 'duration' && box.duration && box.createdDate && !isBoxExpired(box) && (
                     <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
                       Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
+                    </div>
+                  )}
+
+                  {/* Mobile indicator */}
+                  {box.useMobileSize && isMobile && (
+                    <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(52,152,219,0.85)', border: '1px solid rgba(52,152,219,0.5)', borderRadius: '10px', fontSize: '10px', color: 'white', backdropFilter: 'blur(6px)' }}>
+                      📱 Mobile
                     </div>
                   )}
 
