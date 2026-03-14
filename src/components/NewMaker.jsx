@@ -141,6 +141,7 @@ const NewMaker = () => {
   const thePassword = 'the4memaker';
 
   // ─── Fetch boxes ───────────────────────────────────────────────────────────
+  // ─── Fetch boxes ───────────────────────────────────────────────────────────
   const fetchBoxes = useCallback(async () => {
     try {
       const res = await fetch(`${API_URL}/boxes`);
@@ -162,56 +163,66 @@ const NewMaker = () => {
     return () => clearInterval(interval);
   }, [fetchBoxes, isDeleting]);
 
+  // ─── Auth helper for protected routes ────────────────────────────────────
+  const getAuthHeaders = () => {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${thePassword}`
+    };
+  };
+
   // ─── Auto-delete expired boxes ────────────────────────────────────
   const boxesRef = useRef(boxes);
   useEffect(() => { boxesRef.current = boxes; }, [boxes]);
 
- useEffect(() => {
-  const checkExpired = async () => {
-    const now = new Date();
-    const expired = boxesRef.current.filter(box => {
-      // Use the improved isBoxExpired function
-      return isBoxExpired(box);
-    });
+  useEffect(() => {
+    const checkExpired = async () => {
+      const now = new Date();
+      const expired = boxesRef.current.filter(box => {
+        return isBoxExpired(box);
+      });
 
-    if (expired.length === 0) return;
+      if (expired.length === 0) return;
 
-    console.log('Found expired boxes:', expired.map(b => ({ id: b.id, showTime: b.showTime })));
+      console.log('Found expired boxes:', expired.map(b => ({ id: b.id, showTime: b.showTime })));
 
-    for (const box of expired) {
-      try {
-        if (box.imagePublicId) {
-          await fetch(`${API_URL}/delete-cloudinary-image`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ publicId: box.imagePublicId })
+      for (const box of expired) {
+        try {
+          if (box.imagePublicId) {
+            await fetch(`${API_URL}/delete-cloudinary-image`, {
+              method: 'POST',
+              headers: getAuthHeaders(),
+              body: JSON.stringify({ publicId: box.imagePublicId })
+            });
+          }
+          await fetch(`${API_URL}/boxes/${box.id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
           });
+          console.log(`Deleted expired box: ${box.id}`);
+        } catch (e) {
+          console.error('Auto-delete error:', e);
         }
-        await fetch(`${API_URL}/boxes/${box.id}`, { method: 'DELETE' });
-        console.log(`Deleted expired box: ${box.id}`);
-      } catch (e) {
-        console.error('Auto-delete error:', e);
       }
-    }
 
-    await fetchBoxes();
-    showNotification(`${expired.length} expired box(es) removed automatically.`, 'info');
-  };
+      await fetchBoxes();
+      showNotification(`${expired.length} expired box(es) removed automatically.`, 'info');
+    };
 
-  const expiryInterval = setInterval(checkExpired, 60000); // Check every minute
-  checkExpired(); // Run once immediately
+    const expiryInterval = setInterval(checkExpired, 60000);
+    checkExpired();
 
-  return () => clearInterval(expiryInterval);
-}, []);
+    return () => clearInterval(expiryInterval);
+  }, []);
 
-  // ─── Delete box ──────────────────────────────────
+  // ─── Delete box ──────────────────────────────────────────────────────────
   const deleteBoxFromServer = async (boxId, imagePublicId) => {
     console.log('Starting delete for box:', boxId);
 
     console.log('Deleting from database...');
     const dbRes = await fetch(`${API_URL}/boxes/${boxId}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' }
+      headers: getAuthHeaders()
     });
 
     if (!dbRes.ok) {
@@ -226,7 +237,7 @@ const NewMaker = () => {
         console.log('Cleaning up Cloudinary:', imagePublicId);
         await fetch(`${API_URL}/delete-cloudinary-image`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ publicId: imagePublicId })
         });
       } catch (e) {
@@ -274,7 +285,7 @@ const NewMaker = () => {
     );
   };
 
-  // ─── Triple-tap trigger ───────────────────────────────────
+  // ─── Triple-tap trigger ───────────────────────────────────────────────────
   useEffect(() => {
     const handleTap = () => {
       if (isEditorOpen || isVisible) return;
@@ -307,7 +318,7 @@ const NewMaker = () => {
     return () => document.removeEventListener('click', handleTap);
   }, [isEditorOpen, isVisible]);
 
-  // ─── Invisible password typing ───────────────────────────
+  // ─── Invisible password typing ───────────────────────────────────────────
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!isListening) return;
@@ -346,7 +357,7 @@ const NewMaker = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isListening, passwordBuffer]);
 
-  // ─── Right-click trigger (alternative) ────────────────────
+  // ─── Right-click trigger (alternative) ────────────────────────────────────
   useEffect(() => {
     const handleRC = (e) => {
       if (isEditorOpen || isVisible) return;
@@ -438,7 +449,11 @@ const NewMaker = () => {
 
     try {
       setUploading(true);
-      const res = await fetch(`${API_URL}/boxes`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newBox) });
+      const res = await fetch(`${API_URL}/boxes`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(newBox)
+      });
       if (!res.ok) throw new Error();
       await fetchBoxes();
       resetCurrentBox();
@@ -461,7 +476,11 @@ const NewMaker = () => {
 
     try {
       setUploading(true);
-      const res = await fetch(`${API_URL}/boxes/${currentBox.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
+      const res = await fetch(`${API_URL}/boxes/${currentBox.id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updated)
+      });
       if (!res.ok) throw new Error();
       await fetchBoxes();
       setEditorMode('create');
@@ -482,88 +501,87 @@ const NewMaker = () => {
       order: boxes.length
     });
   };
-
   // ─── Helpers ───────────────────────────────────────────────────────────────
   const getBorderRadius = (box) => {
     if (box.borderRadiusMode === 'all') return box.borderRadius.all;
     return `${box.borderRadius.topLeft} ${box.borderRadius.topRight} ${box.borderRadius.bottomRight} ${box.borderRadius.bottomLeft}`;
   };
 
- const getBoxStyle = (box, isMobile = false) => {
-  const pos = positions.find(p => p.value === box.position);
-  const bg = box.bgType === 'gradient' ? `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})` : box.bgColor || '#000';
-  
-  // Determine which dimensions to use based on screen size and user preference
-  const width = isMobile && box.useMobileSize 
-    ? Math.min(box.mobileWidth || box.width, 400) 
-    : Math.min(box.width, 400);
-  const height = isMobile && box.useMobileSize 
-    ? Math.min(box.mobileHeight || box.height, 400) 
-    : Math.min(box.height, 400);
-  
-  return {
-    position: 'fixed', width: `${width}px`, height: `${height}px`,
-    maxWidth: '400px', maxHeight: '400px', background: bg,
-    backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
-    boxShadow: '0 25px 50px -12px rgba(139,0,0,0.4), 0 0 0 1px rgba(139,0,0,0.2)',
-    borderRadius: getBorderRadius(box), opacity: box.opacity, zIndex: 9998, overflow: 'hidden',
-    ...pos?.style
+  const getBoxStyle = (box, isMobile = false) => {
+    const pos = positions.find(p => p.value === box.position);
+    const bg = box.bgType === 'gradient' ? `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})` : box.bgColor || '#000';
+
+    // Determine which dimensions to use based on screen size and user preference
+    const width = isMobile && box.useMobileSize
+      ? Math.min(box.mobileWidth || box.width, 400)
+      : Math.min(box.width, 400);
+    const height = isMobile && box.useMobileSize
+      ? Math.min(box.mobileHeight || box.height, 400)
+      : Math.min(box.height, 400);
+
+    return {
+      position: 'fixed', width: `${width}px`, height: `${height}px`,
+      maxWidth: '400px', maxHeight: '400px', background: bg,
+      backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
+      boxShadow: '0 25px 50px -12px rgba(139,0,0,0.4), 0 0 0 1px rgba(139,0,0,0.2)',
+      borderRadius: getBorderRadius(box), opacity: box.opacity, zIndex: 9998, overflow: 'hidden',
+      ...pos?.style
+    };
   };
-};
   // Replace your existing isBoxExpired function with this improved version
   const isBoxExpired = (box) => {
-  const now = new Date();
-  
-  // Case 1: Duration-based expiry
-  if (box.showTime === 'duration' && box.duration && box.createdDate) {
-    const createdDate = new Date(box.createdDate);
-    const expiry = new Date(createdDate);
-    expiry.setDate(expiry.getDate() + box.duration);
-    expiry.setHours(23, 59, 59, 999); // End of the expiry day
-    return now > expiry;
-  }
+    const now = new Date();
 
-  // Case 2: Scheduled with end date only
-  if (box.showTime === 'scheduled' && box.endDate && !box.endTime) {
-    const endDate = new Date(box.endDate);
-    endDate.setHours(23, 59, 59, 999); // End of the day
-    return now > endDate;
-  }
-
-  // Case 3: Scheduled with end time only (same day)
-  if (box.showTime === 'scheduled' && box.endTime && !box.endDate) {
-    const [eh, em] = box.endTime.split(':').map(Number);
-    const endTime = new Date();
-    endTime.setHours(eh, em, 0, 0);
-    return now > endTime;
-  }
-
-  // Case 4: Scheduled with both end date and end time
-  if (box.showTime === 'scheduled' && box.endDate && box.endTime) {
-    const endDateTime = new Date(box.endDate);
-    const [eh, em] = box.endTime.split(':').map(Number);
-    endDateTime.setHours(eh, em, 0, 0);
-    return now > endDateTime;
-  }
-
-  // Case 5: Check if current time is past end time on the end date
-  if (box.showTime === 'scheduled' && box.endDate) {
-    const endDate = new Date(box.endDate);
-    endDate.setHours(23, 59, 59, 999);
-    
-    if (now > endDate) return true;
-    
-    // If it's the end date, check the time
-    if (now.toDateString() === endDate.toDateString() && box.endTime) {
-      const [eh, em] = box.endTime.split(':').map(Number);
-      const endTimeToday = new Date();
-      endTimeToday.setHours(eh, em, 0, 0);
-      return now > endTimeToday;
+    // Case 1: Duration-based expiry
+    if (box.showTime === 'duration' && box.duration && box.createdDate) {
+      const createdDate = new Date(box.createdDate);
+      const expiry = new Date(createdDate);
+      expiry.setDate(expiry.getDate() + box.duration);
+      expiry.setHours(23, 59, 59, 999); // End of the expiry day
+      return now > expiry;
     }
-  }
 
-  return false;
-};
+    // Case 2: Scheduled with end date only
+    if (box.showTime === 'scheduled' && box.endDate && !box.endTime) {
+      const endDate = new Date(box.endDate);
+      endDate.setHours(23, 59, 59, 999); // End of the day
+      return now > endDate;
+    }
+
+    // Case 3: Scheduled with end time only (same day)
+    if (box.showTime === 'scheduled' && box.endTime && !box.endDate) {
+      const [eh, em] = box.endTime.split(':').map(Number);
+      const endTime = new Date();
+      endTime.setHours(eh, em, 0, 0);
+      return now > endTime;
+    }
+
+    // Case 4: Scheduled with both end date and end time
+    if (box.showTime === 'scheduled' && box.endDate && box.endTime) {
+      const endDateTime = new Date(box.endDate);
+      const [eh, em] = box.endTime.split(':').map(Number);
+      endDateTime.setHours(eh, em, 0, 0);
+      return now > endDateTime;
+    }
+
+    // Case 5: Check if current time is past end time on the end date
+    if (box.showTime === 'scheduled' && box.endDate) {
+      const endDate = new Date(box.endDate);
+      endDate.setHours(23, 59, 59, 999);
+
+      if (now > endDate) return true;
+
+      // If it's the end date, check the time
+      if (now.toDateString() === endDate.toDateString() && box.endTime) {
+        const [eh, em] = box.endTime.split(':').map(Number);
+        const endTimeToday = new Date();
+        endTimeToday.setHours(eh, em, 0, 0);
+        return now > endTimeToday;
+      }
+    }
+
+    return false;
+  };
 
 
 
@@ -594,43 +612,43 @@ const NewMaker = () => {
   }, [boxes]);
 
   // ─── Force re-check expiration every minute ─────────────────────────────
-useEffect(() => {
-  const forceExpiryCheck = () => {
-    // This empty setState will trigger a re-render
-    setBoxes(prev => [...prev]);
-  };
-  
-  const interval = setInterval(forceExpiryCheck, 60000); // Check every minute
-  return () => clearInterval(interval);
-}, []);
+  useEffect(() => {
+    const forceExpiryCheck = () => {
+      // This empty setState will trigger a re-render
+      setBoxes(prev => [...prev]);
+    };
 
- // ─── Carousel ──────────────────────────────────────────────────────────────
-useEffect(() => {
-  // Get boxes that are both visible (by schedule) and not expired
-  const visibleActiveBoxes = boxes.filter(box => 
-    checkBoxVisibility(box) && !isBoxExpired(box)
-  );
-  
-  if (visibleActiveBoxes.length > 1 && autoRotate && !isEditorOpen) {
-    carouselInterval.current = setInterval(() => {
-      setCurrentBoxIndex(prev => (prev + 1) % visibleActiveBoxes.length);
-    }, 5000);
-  }
-  return () => clearInterval(carouselInterval.current);
-}, [boxes, autoRotate, isEditorOpen]);
+    const interval = setInterval(forceExpiryCheck, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
 
-// Reset currentBoxIndex if it's out of bounds for visible boxes
-useEffect(() => {
-  const visibleActiveBoxes = boxes.filter(box => 
-    checkBoxVisibility(box) && !isBoxExpired(box)
-  );
-  
-  if (visibleActiveBoxes.length === 0) {
-    setCurrentBoxIndex(0);
-  } else if (currentBoxIndex >= visibleActiveBoxes.length) {
-    setCurrentBoxIndex(visibleActiveBoxes.length - 1);
-  }
-}, [boxes, currentBoxIndex]);
+  // ─── Carousel ──────────────────────────────────────────────────────────────
+  useEffect(() => {
+    // Get boxes that are both visible (by schedule) and not expired
+    const visibleActiveBoxes = boxes.filter(box =>
+      checkBoxVisibility(box) && !isBoxExpired(box)
+    );
+
+    if (visibleActiveBoxes.length > 1 && autoRotate && !isEditorOpen) {
+      carouselInterval.current = setInterval(() => {
+        setCurrentBoxIndex(prev => (prev + 1) % visibleActiveBoxes.length);
+      }, 5000);
+    }
+    return () => clearInterval(carouselInterval.current);
+  }, [boxes, autoRotate, isEditorOpen]);
+
+  // Reset currentBoxIndex if it's out of bounds for visible boxes
+  useEffect(() => {
+    const visibleActiveBoxes = boxes.filter(box =>
+      checkBoxVisibility(box) && !isBoxExpired(box)
+    );
+
+    if (visibleActiveBoxes.length === 0) {
+      setCurrentBoxIndex(0);
+    } else if (currentBoxIndex >= visibleActiveBoxes.length) {
+      setCurrentBoxIndex(visibleActiveBoxes.length - 1);
+    }
+  }, [boxes, currentBoxIndex]);
 
   useEffect(() => {
     if (editorMode === 'edit' && boxes[currentBoxIndex]) setCurrentBox(boxes[currentBoxIndex]);
@@ -1104,11 +1122,11 @@ useEffect(() => {
                       </div>
 
                       {/* Mobile Size Toggle & Controls */}
-                      <div style={{ 
-                        marginTop: '16px', 
+                      <div style={{
+                        marginTop: '16px',
                         marginBottom: '20px',
-                        padding: '12px', 
-                        background: 'rgba(180,0,0,0.05)', 
+                        padding: '12px',
+                        background: 'rgba(180,0,0,0.05)',
                         borderRadius: '8px',
                         border: '1px solid rgba(180,0,0,0.2)'
                       }}>
@@ -1120,8 +1138,8 @@ useEffect(() => {
                             <input
                               type="checkbox"
                               checked={currentBox.useMobileSize || false}
-                              onChange={(e) => setCurrentBox(p => ({ 
-                                ...p, 
+                              onChange={(e) => setCurrentBox(p => ({
+                                ...p,
                                 useMobileSize: e.target.checked,
                                 mobileWidth: p.mobileWidth || p.width,
                                 mobileHeight: p.mobileHeight || p.height
@@ -1133,10 +1151,10 @@ useEffect(() => {
 
                         {currentBox.useMobileSize && (
                           <>
-                            <div style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              gap: '8px', 
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
                               marginBottom: '12px',
                               background: 'rgba(0,0,0,0.3)',
                               padding: '8px',
@@ -1152,17 +1170,17 @@ useEffect(() => {
                               <div>
                                 <label className="nm-label">Mobile Width (px)</label>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <input 
-                                    type="range" 
-                                    min="20" 
-                                    max="400" 
+                                  <input
+                                    type="range"
+                                    min="20"
+                                    max="400"
                                     value={currentBox.mobileWidth || currentBox.width}
-                                    onChange={(e) => setCurrentBox(p => ({ 
-                                      ...p, 
-                                      mobileWidth: parseInt(e.target.value) 
-                                    }))} 
-                                    className="nm-range" 
-                                    style={{ flex: 1 }} 
+                                    onChange={(e) => setCurrentBox(p => ({
+                                      ...p,
+                                      mobileWidth: parseInt(e.target.value)
+                                    }))}
+                                    className="nm-range"
+                                    style={{ flex: 1 }}
                                   />
                                   <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.5)', width: '42px', textAlign: 'right' }}>
                                     {currentBox.mobileWidth || currentBox.width}
@@ -1172,17 +1190,17 @@ useEffect(() => {
                               <div>
                                 <label className="nm-label">Mobile Height (px)</label>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <input 
-                                    type="range" 
-                                    min="20" 
-                                    max="400" 
+                                  <input
+                                    type="range"
+                                    min="20"
+                                    max="400"
                                     value={currentBox.mobileHeight || currentBox.height}
-                                    onChange={(e) => setCurrentBox(p => ({ 
-                                      ...p, 
-                                      mobileHeight: parseInt(e.target.value) 
-                                    }))} 
-                                    className="nm-range" 
-                                    style={{ flex: 1 }} 
+                                    onChange={(e) => setCurrentBox(p => ({
+                                      ...p,
+                                      mobileHeight: parseInt(e.target.value)
+                                    }))}
+                                    className="nm-range"
+                                    style={{ flex: 1 }}
                                   />
                                   <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.5)', width: '42px', textAlign: 'right' }}>
                                     {currentBox.mobileHeight || currentBox.height}
@@ -1634,15 +1652,15 @@ useEffect(() => {
                               }}>
                                 <div style={{ height: '100%', position: 'relative' }}>
                                   <div style={{ position: 'absolute', ...getBorderPosition(currentBox.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
-                                  <img 
-                                    src={currentBox.imageUrl} 
-                                    alt="Desktop Preview" 
-                                    style={{ 
-                                      width: '100%', 
-                                      height: '100%', 
-                                      objectFit: currentBox.imageFit, 
-                                      objectPosition: currentBox.imagePosition 
-                                    }} 
+                                  <img
+                                    src={currentBox.imageUrl}
+                                    alt="Desktop Preview"
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: currentBox.imageFit,
+                                      objectPosition: currentBox.imagePosition
+                                    }}
                                   />
                                   {currentBox.button?.enabled && currentBox.button.link && (
                                     <div style={{
@@ -1685,15 +1703,15 @@ useEffect(() => {
                                 }}>
                                   <div style={{ height: '100%', position: 'relative' }}>
                                     <div style={{ position: 'absolute', ...getBorderPosition(currentBox.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
-                                    <img 
-                                      src={currentBox.imageUrl} 
-                                      alt="Mobile Preview" 
-                                      style={{ 
-                                        width: '100%', 
-                                        height: '100%', 
-                                        objectFit: currentBox.imageFit, 
-                                        objectPosition: currentBox.imagePosition 
-                                      }} 
+                                    <img
+                                      src={currentBox.imageUrl}
+                                      alt="Mobile Preview"
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: currentBox.imageFit,
+                                        objectPosition: currentBox.imagePosition
+                                      }}
                                     />
                                     {currentBox.button?.enabled && currentBox.button.link && (
                                       <div style={{
@@ -1879,20 +1897,23 @@ useEffect(() => {
                                         console.log('Deleting box:', box.id);
                                         const response = await fetch(`${API_URL}/boxes/${box.id}`, {
                                           method: 'DELETE',
-                                          headers: { 'Content-Type': 'application/json' }
+                                          headers: getAuthHeaders()
                                         });
                                         console.log('Delete response status:', response.status);
                                         if (!response.ok) {
                                           const errorText = await response.text();
                                           throw new Error(`Server returned ${response.status}: ${errorText}`);
                                         }
+
+                                        // Delete from Cloudinary in background with auth
                                         if (box.imagePublicId) {
                                           fetch(`${API_URL}/delete-cloudinary-image`, {
                                             method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
+                                            headers: getAuthHeaders(),
                                             body: JSON.stringify({ publicId: box.imagePublicId })
                                           }).catch(err => console.warn('Cloudinary cleanup failed:', err));
                                         }
+
                                         setBoxes(prev => prev.filter(b => b.id !== box.id));
                                         if (i === currentBoxIndex) {
                                           setCurrentBoxIndex(prev => Math.max(0, prev - 1));
@@ -1940,116 +1961,116 @@ useEffect(() => {
         </AnimatePresence>
 
         {/* Display Floating Boxes - Only Show Visible (Based on Schedule) and Non-Expired */}
-<AnimatePresence>
-  {boxes.map((box, index) => {
-    // Check if box should be visible based on schedule
-    if (!checkBoxVisibility(box)) return null;
+        <AnimatePresence>
+          {boxes.map((box, index) => {
+            // Check if box should be visible based on schedule
+            if (!checkBoxVisibility(box)) return null;
 
-    // Check if box is expired
-    if (isBoxExpired(box)) return null;
+            // Check if box is expired
+            if (isBoxExpired(box)) return null;
 
-    // For carousel, only show current index when multiple boxes
-    const activeBoxes = boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b));
-    if (activeBoxes.length > 1 && currentBoxIndex !== index) return null;
+            // For carousel, only show current index when multiple boxes
+            const activeBoxes = boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b));
+            if (activeBoxes.length > 1 && currentBoxIndex !== index) return null;
 
-    const anim = animations[box.animation];
-    const isMobile = window.innerWidth <= 600; // Changed to 600px
-    
-    return (
-      <motion.div
-        key={box.id}
-        initial={anim.initial}
-        animate={anim.animate}
-        exit={anim.exit}
-        transition={anim.transition}
-        style={getBoxStyle(box, isMobile)} // FIX: Pass isMobile here
-        className="new-maker-box"
-      >
-        <div style={{ height: '100%', position: 'relative' }}>
-          <div style={{ position: 'absolute', ...getBorderPosition(box.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
-          <img src={box.imageUrl} alt="Content" style={{ width: '100%', height: '100%', objectFit: box.imageFit || 'cover', objectPosition: box.imagePosition || 'center', borderRadius: getBorderRadius(box) }} />
+            const anim = animations[box.animation];
+            const isMobile = window.innerWidth <= 600; // Changed to 600px
 
-          {/* Action Button - also use isMobile for button size */}
-          {box.button?.enabled && box.button.link && (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                const link = box.button.link;
+            return (
+              <motion.div
+                key={box.id}
+                initial={anim.initial}
+                animate={anim.animate}
+                exit={anim.exit}
+                transition={anim.transition}
+                style={getBoxStyle(box, isMobile)} // FIX: Pass isMobile here
+                className="new-maker-box"
+              >
+                <div style={{ height: '100%', position: 'relative' }}>
+                  <div style={{ position: 'absolute', ...getBorderPosition(box.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
+                  <img src={box.imageUrl} alt="Content" style={{ width: '100%', height: '100%', objectFit: box.imageFit || 'cover', objectPosition: box.imagePosition || 'center', borderRadius: getBorderRadius(box) }} />
 
-                if (link.startsWith('#')) {
-                  e.preventDefault();
-                  const element = document.getElementById(link.substring(1));
-                  if (element) {
-                    element.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'start'
-                    });
-                  } else {
-                    window.location.href = link;
-                  }
-                } else if (link.startsWith('http://') || link.startsWith('https://')) {
-                  window.open(link, '_blank', 'noopener,noreferrer');
-                } else {
-                  window.open(link, '_blank', 'noopener,noreferrer');
-                }
-              }}
-              style={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-                zIndex: 30,
-                background: box.button.color,
-                color: box.button.textColor,
-                padding: '6px 12px',
-                borderRadius: '4px',
-                fontSize: `${Math.max(10, Math.floor((isMobile && box.useMobileSize ? (box.mobileWidth || box.width) : box.width) * (box.button.size / 100) * 0.1))}px`,
-                fontWeight: 600,
-                cursor: 'pointer',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                transition: 'transform 0.2s',
-                maxWidth: `${box.button.size}%`,
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                border: 'none',
-                pointerEvents: 'auto'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              title={box.button.link.startsWith('#') ? 'Scroll to section' : 'Open link'}
-            >
-              {box.button.text || 'Learn More'}
-            </div>
-          )}
+                  {/* Action Button - also use isMobile for button size */}
+                  {box.button?.enabled && box.button.link && (
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const link = box.button.link;
 
-          {/* Duration expiry badge */}
-          {box.showTime === 'duration' && box.duration && box.createdDate && !isBoxExpired(box) && (
-            <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
-              Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
-            </div>
-          )}
+                        if (link.startsWith('#')) {
+                          e.preventDefault();
+                          const element = document.getElementById(link.substring(1));
+                          if (element) {
+                            element.scrollIntoView({
+                              behavior: 'smooth',
+                              block: 'start'
+                            });
+                          } else {
+                            window.location.href = link;
+                          }
+                        } else if (link.startsWith('http://') || link.startsWith('https://')) {
+                          window.open(link, '_blank', 'noopener,noreferrer');
+                        } else {
+                          window.open(link, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                      style={{
+                        position: 'absolute',
+                        bottom: '10px',
+                        right: '10px',
+                        zIndex: 30,
+                        background: box.button.color,
+                        color: box.button.textColor,
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        fontSize: `${Math.max(10, Math.floor((isMobile && box.useMobileSize ? (box.mobileWidth || box.width) : box.width) * (box.button.size / 100) * 0.1))}px`,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                        transition: 'transform 0.2s',
+                        maxWidth: `${box.button.size}%`,
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        border: 'none',
+                        pointerEvents: 'auto'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      title={box.button.link.startsWith('#') ? 'Scroll to section' : 'Open link'}
+                    >
+                      {box.button.text || 'Learn More'}
+                    </div>
+                  )}
 
-          {/* Mobile indicator */}
-          {box.useMobileSize && isMobile && (
-            <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(52,152,219,0.85)', border: '1px solid rgba(52,152,219,0.5)', borderRadius: '10px', fontSize: '10px', color: 'white', backdropFilter: 'blur(6px)' }}>
-              📱 Mobile
-            </div>
-          )}
+                  {/* Duration expiry badge */}
+                  {box.showTime === 'duration' && box.duration && box.createdDate && !isBoxExpired(box) && (
+                    <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
+                      Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
+                    </div>
+                  )}
 
-          {/* Carousel dots - only show for visible active boxes */}
-          {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).length > 1 && (
-            <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', zIndex: 20 }}>
-              {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).map((_, i) => (
-                <div key={i} style={{ width: i === currentBoxIndex ? '16px' : '6px', height: '6px', borderRadius: '3px', background: i === currentBoxIndex ? '#cc0000' : 'rgba(255,255,255,0.25)', transition: 'all 0.3s' }} />
-              ))}
-            </div>
-          )}
-        </div>
-      </motion.div>
-    );
-  })}
-</AnimatePresence>
+                  {/* Mobile indicator */}
+                  {box.useMobileSize && isMobile && (
+                    <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(52,152,219,0.85)', border: '1px solid rgba(52,152,219,0.5)', borderRadius: '10px', fontSize: '10px', color: 'white', backdropFilter: 'blur(6px)' }}>
+                      📱 Mobile
+                    </div>
+                  )}
+
+                  {/* Carousel dots - only show for visible active boxes */}
+                  {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).length > 1 && (
+                    <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', zIndex: 20 }}>
+                      {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).map((_, i) => (
+                        <div key={i} style={{ width: i === currentBoxIndex ? '16px' : '6px', height: '6px', borderRadius: '3px', background: i === currentBoxIndex ? '#cc0000' : 'rgba(255,255,255,0.25)', transition: 'all 0.3s' }} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
 
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>

@@ -274,6 +274,32 @@ The floating assistant remains available site‑wide.
 
 ---
 
+## 🖼 New Maker (Image Box Creator)
+
+A lightweight, admin-only editor for creating floating image boxes that appear across the site. It ships as `src/components/NewMaker.jsx` and supports uploads, scheduling, mobile-specific sizing, and automatic expiry cleanup.
+
+- **Uploads:** Images are uploaded to Cloudinary (5 MB limit) via an in-component helper. The component uses a `cloudName` and `uploadPreset` configured inside the file — consider moving these secrets to your backend or environment in production.
+- **Boxes:** Maximum of 4 active boxes. Each box supports:
+  - Image, fit & position
+  - Desktop + optional mobile-specific width/height
+  - Position (top-left, top-right, bottom-left, bottom-right)
+  - Background type (solid / gradient / glass), blur, opacity, border radius
+  - Button with text / link (predefined internal routes or custom)
+  - Animation presets and display duration / schedule
+- **Scheduling & Expiry:** Boxes can be shown always, for a duration (days since creation), or scheduled between start/end dates and times. Expired boxes are automatically detected and removed; the component also attempts Cloudinary cleanup for deleted images.
+- **Carousel & Auto-rotate:** If multiple visible boxes exist, the component can auto-rotate them (carousel behavior) with configurable timing.
+- **API / Backend:** New Maker expects a small backend API to persist boxes and to clean Cloudinary images. The component currently points at `https://school-backend-frri.onrender.com/api`. Required endpoints:
+  - `GET /boxes` — list boxes
+  - `POST /boxes` — create box
+  - `PUT /boxes/:id` — update box
+  - `DELETE /boxes/:id` — delete box
+  - `POST /delete-cloudinary-image` — remove an image by public id (optional helper)
+
+Notes:
+- The component contains helpful defaults but is intended to be wired to a backend for production use.
+- Consider adding a small `.env.example` with `VITE_API_BASE_URL` and moving Cloudinary secrets into the backend for security.
+
+
 ## 🧑‍💻 Developer Notes
 
 * Tailwind utility‑first styling
@@ -292,20 +318,17 @@ The floating assistant remains available site‑wide.
 
 ---
 
-## 🤝 Contributing
 
-Contributions are welcome!
 
-* Open an issue for bugs or feature requests
-* Submit PRs against the `main` branch
-* Keep commits clean and descriptive
+## ⚖️ License
 
----
+This project is released under the MIT License. See the included [LICENSE](LICENSE) file for full terms. Update the license or the copyright holder as appropriate for your project.
 
-If you want, I can also add:
+## 📬 Contact
 
-* ✅ `.env.example`
-* ✅ ESLint + Prettier setup
-* ✅ Production deployment guide (Vercel / Netlify)
+If you'd like to get in touch
 
-Just say the word 🙂
+- **Maintainer** Aboyade Matthew
+- **Email:** aboyadematthew@gmail.com
+- **Phone:** 09125701625
+
