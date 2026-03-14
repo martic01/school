@@ -489,28 +489,27 @@ const NewMaker = () => {
     return `${box.borderRadius.topLeft} ${box.borderRadius.topRight} ${box.borderRadius.bottomRight} ${box.borderRadius.bottomLeft}`;
   };
 
-  const getBoxStyle = (box, isMobile = false) => {
-    const pos = positions.find(p => p.value === box.position);
-    const bg = box.bgType === 'gradient' ? `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})` : box.bgColor || '#000';
-    
-    // Determine which dimensions to use based on screen size and user preference
-    const width = isMobile && box.useMobileSize 
-      ? Math.min(box.mobileWidth || box.width, 400) 
-      : Math.min(box.width, 400);
-    const height = isMobile && box.useMobileSize 
-      ? Math.min(box.mobileHeight || box.height, 400) 
-      : Math.min(box.height, 400);
-    
-    return {
-      position: 'fixed', width: `${width}px`, height: `${height}px`,
-      maxWidth: '400px', maxHeight: '400px', background: bg,
-      backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
-      boxShadow: '0 25px 50px -12px rgba(139,0,0,0.4), 0 0 0 1px rgba(139,0,0,0.2)',
-      borderRadius: getBorderRadius(box), opacity: box.opacity, zIndex: 9998, overflow: 'hidden',
-      ...pos?.style
-    };
+ const getBoxStyle = (box, isMobile = false) => {
+  const pos = positions.find(p => p.value === box.position);
+  const bg = box.bgType === 'gradient' ? `linear-gradient(135deg, ${box.bgGradient[0]}, ${box.bgGradient[1]})` : box.bgColor || '#000';
+  
+  // Determine which dimensions to use based on screen size and user preference
+  const width = isMobile && box.useMobileSize 
+    ? Math.min(box.mobileWidth || box.width, 400) 
+    : Math.min(box.width, 400);
+  const height = isMobile && box.useMobileSize 
+    ? Math.min(box.mobileHeight || box.height, 400) 
+    : Math.min(box.height, 400);
+  
+  return {
+    position: 'fixed', width: `${width}px`, height: `${height}px`,
+    maxWidth: '400px', maxHeight: '400px', background: bg,
+    backdropFilter: box.blur > 0 ? `blur(${box.blur}px)` : 'none',
+    boxShadow: '0 25px 50px -12px rgba(139,0,0,0.4), 0 0 0 1px rgba(139,0,0,0.2)',
+    borderRadius: getBorderRadius(box), opacity: box.opacity, zIndex: 9998, overflow: 'hidden',
+    ...pos?.style
   };
-
+};
   // Replace your existing isBoxExpired function with this improved version
   const isBoxExpired = (box) => {
   const now = new Date();
@@ -1155,7 +1154,7 @@ useEffect(() => {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                   <input 
                                     type="range" 
-                                    min="40" 
+                                    min="20" 
                                     max="400" 
                                     value={currentBox.mobileWidth || currentBox.width}
                                     onChange={(e) => setCurrentBox(p => ({ 
@@ -1175,7 +1174,7 @@ useEffect(() => {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                   <input 
                                     type="range" 
-                                    min="40" 
+                                    min="20" 
                                     max="400" 
                                     value={currentBox.mobileHeight || currentBox.height}
                                     onChange={(e) => setCurrentBox(p => ({ 
@@ -1941,116 +1940,116 @@ useEffect(() => {
         </AnimatePresence>
 
         {/* Display Floating Boxes - Only Show Visible (Based on Schedule) and Non-Expired */}
-        <AnimatePresence>
-          {boxes.map((box, index) => {
-            // Check if box should be visible based on schedule
-            if (!checkBoxVisibility(box)) return null;
+<AnimatePresence>
+  {boxes.map((box, index) => {
+    // Check if box should be visible based on schedule
+    if (!checkBoxVisibility(box)) return null;
 
-            // Check if box is expired
-            if (isBoxExpired(box)) return null;
+    // Check if box is expired
+    if (isBoxExpired(box)) return null;
 
-            // For carousel, only show current index when multiple boxes
-            const activeBoxes = boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b));
-            if (activeBoxes.length > 1 && currentBoxIndex !== index) return null;
+    // For carousel, only show current index when multiple boxes
+    const activeBoxes = boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b));
+    if (activeBoxes.length > 1 && currentBoxIndex !== index) return null;
 
-            const anim = animations[box.animation];
-            const isMobile = window.innerWidth <= 768;
-            
-            return (
-              <motion.div
-                key={box.id}
-                initial={anim.initial}
-                animate={anim.animate}
-                exit={anim.exit}
-                transition={anim.transition}
-                style={getBoxStyle(box, isMobile)}
-                className="new-maker-box"
-              >
-                <div style={{ height: '100%', position: 'relative' }}>
-                  <div style={{ position: 'absolute', ...getBorderPosition(box.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
-                  <img src={box.imageUrl} alt="Content" style={{ width: '100%', height: '100%', objectFit: box.imageFit || 'cover', objectPosition: box.imagePosition || 'center', borderRadius: getBorderRadius(box) }} />
+    const anim = animations[box.animation];
+    const isMobile = window.innerWidth <= 600; // Changed to 600px
+    
+    return (
+      <motion.div
+        key={box.id}
+        initial={anim.initial}
+        animate={anim.animate}
+        exit={anim.exit}
+        transition={anim.transition}
+        style={getBoxStyle(box, isMobile)} // FIX: Pass isMobile here
+        className="new-maker-box"
+      >
+        <div style={{ height: '100%', position: 'relative' }}>
+          <div style={{ position: 'absolute', ...getBorderPosition(box.borderSide), background: 'linear-gradient(180deg,#cc0000,#8b0000)', zIndex: 10 }} />
+          <img src={box.imageUrl} alt="Content" style={{ width: '100%', height: '100%', objectFit: box.imageFit || 'cover', objectPosition: box.imagePosition || 'center', borderRadius: getBorderRadius(box) }} />
 
-                  {/* Action Button */}
-                  {box.button?.enabled && box.button.link && (
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const link = box.button.link;
+          {/* Action Button - also use isMobile for button size */}
+          {box.button?.enabled && box.button.link && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                const link = box.button.link;
 
-                        if (link.startsWith('#')) {
-                          e.preventDefault();
-                          const element = document.getElementById(link.substring(1));
-                          if (element) {
-                            element.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'start'
-                            });
-                          } else {
-                            window.location.href = link;
-                          }
-                        } else if (link.startsWith('http://') || link.startsWith('https://')) {
-                          window.open(link, '_blank', 'noopener,noreferrer');
-                        } else {
-                          window.open(link, '_blank', 'noopener,noreferrer');
-                        }
-                      }}
-                      style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        right: '10px',
-                        zIndex: 30,
-                        background: box.button.color,
-                        color: box.button.textColor,
-                        padding: '6px 12px',
-                        borderRadius: '4px',
-                        fontSize: `${Math.max(10, Math.floor((isMobile && box.useMobileSize ? (box.mobileWidth || box.width) : box.width) * (box.button.size / 100) * 0.1))}px`,
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                        transition: 'transform 0.2s',
-                        maxWidth: `${box.button.size}%`,
-                        textAlign: 'center',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        border: 'none',
-                        pointerEvents: 'auto'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                      title={box.button.link.startsWith('#') ? 'Scroll to section' : 'Open link'}
-                    >
-                      {box.button.text || 'Learn More'}
-                    </div>
-                  )}
+                if (link.startsWith('#')) {
+                  e.preventDefault();
+                  const element = document.getElementById(link.substring(1));
+                  if (element) {
+                    element.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  } else {
+                    window.location.href = link;
+                  }
+                } else if (link.startsWith('http://') || link.startsWith('https://')) {
+                  window.open(link, '_blank', 'noopener,noreferrer');
+                } else {
+                  window.open(link, '_blank', 'noopener,noreferrer');
+                }
+              }}
+              style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                zIndex: 30,
+                background: box.button.color,
+                color: box.button.textColor,
+                padding: '6px 12px',
+                borderRadius: '4px',
+                fontSize: `${Math.max(10, Math.floor((isMobile && box.useMobileSize ? (box.mobileWidth || box.width) : box.width) * (box.button.size / 100) * 0.1))}px`,
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                transition: 'transform 0.2s',
+                maxWidth: `${box.button.size}%`,
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                border: 'none',
+                pointerEvents: 'auto'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              title={box.button.link.startsWith('#') ? 'Scroll to section' : 'Open link'}
+            >
+              {box.button.text || 'Learn More'}
+            </div>
+          )}
 
-                  {/* Duration expiry badge */}
-                  {box.showTime === 'duration' && box.duration && box.createdDate && !isBoxExpired(box) && (
-                    <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
-                      Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
-                    </div>
-                  )}
+          {/* Duration expiry badge */}
+          {box.showTime === 'duration' && box.duration && box.createdDate && !isBoxExpired(box) && (
+            <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(100,0,0,0.85)', border: '1px solid rgba(180,0,0,0.5)', borderRadius: '10px', fontSize: '10px', color: '#ff8888', backdropFilter: 'blur(6px)' }}>
+              Exp: {new Date(new Date(box.createdDate).getTime() + box.duration * 86400000).toLocaleDateString()}
+            </div>
+          )}
 
-                  {/* Mobile indicator */}
-                  {box.useMobileSize && isMobile && (
-                    <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(52,152,219,0.85)', border: '1px solid rgba(52,152,219,0.5)', borderRadius: '10px', fontSize: '10px', color: 'white', backdropFilter: 'blur(6px)' }}>
-                      📱 Mobile
-                    </div>
-                  )}
+          {/* Mobile indicator */}
+          {box.useMobileSize && isMobile && (
+            <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, padding: '3px 8px', background: 'rgba(52,152,219,0.85)', border: '1px solid rgba(52,152,219,0.5)', borderRadius: '10px', fontSize: '10px', color: 'white', backdropFilter: 'blur(6px)' }}>
+              📱 Mobile
+            </div>
+          )}
 
-                  {/* Carousel dots - only show for visible active boxes */}
-                  {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).length > 1 && (
-                    <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', zIndex: 20 }}>
-                      {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).map((_, i) => (
-                        <div key={i} style={{ width: i === currentBoxIndex ? '16px' : '6px', height: '6px', borderRadius: '3px', background: i === currentBoxIndex ? '#cc0000' : 'rgba(255,255,255,0.25)', transition: 'all 0.3s' }} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+          {/* Carousel dots - only show for visible active boxes */}
+          {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).length > 1 && (
+            <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '5px', zIndex: 20 }}>
+              {boxes.filter(b => checkBoxVisibility(b) && !isBoxExpired(b)).map((_, i) => (
+                <div key={i} style={{ width: i === currentBoxIndex ? '16px' : '6px', height: '6px', borderRadius: '3px', background: i === currentBoxIndex ? '#cc0000' : 'rgba(255,255,255,0.25)', transition: 'all 0.3s' }} />
+              ))}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    );
+  })}
+</AnimatePresence>
 
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
