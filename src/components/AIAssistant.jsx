@@ -338,10 +338,9 @@ const AIAssistant = () => {
   return (
     <>
       {/* Floating AI Button */}
-      {/* Floating AI Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 text-white rounded-full shadow-xl transition-all duration-300 shadow-red-600/30 flex items-center gap-2 pl-3 pr-4 py-2 ${isTripleTapActive
+        className={`fixed bottom-6 right-6 z-9999999 text-white rounded-full shadow-xl transition-all duration-300 shadow-red-600/30 flex items-center gap-2 pl-3 pr-4 py-2 ${isTripleTapActive
             ? 'bg-red-600/90 hover:bg-red-700/90 backdrop-blur-sm'
             : 'bg-red-600/90 hover:bg-red-700/90 backdrop-blur-sm'
           }`}
@@ -372,7 +371,7 @@ const AIAssistant = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/30 z-40"
+              className="fixed inset-0 bg-black/30 z-99"
               onClick={() => setIsOpen(false)}
             />
 
@@ -381,7 +380,7 @@ const AIAssistant = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-red-200 overflow-hidden"
+              className="fixed bottom-24 right-6 z-99999 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-red-200 overflow-hidden"
             >
               {/* Header */}
               <div className="bg-red-900/95 text-white p-3">

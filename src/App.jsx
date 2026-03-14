@@ -34,7 +34,7 @@ function RegisterRedirect() {
     < AlertProvider>
 
       <Navbar showHostel={location.pathname === '/hostel'} />
-      <NewMaker />
+
       <ScrollToTop />
 
       <Routes>
@@ -49,7 +49,7 @@ function RegisterRedirect() {
       </Routes>
 
       <AIAssistant />
-
+      <NewMaker />
       {showFooter && <Footer show={true} />}
     </ AlertProvider>
   );

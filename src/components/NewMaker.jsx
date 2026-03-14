@@ -942,12 +942,12 @@ useEffect(() => {
 
         .new-maker-box { transition: none; }
 
-        @media (max-width: 640px) {
-          .new-maker-box { width: 260px !important; height: 280px !important; }
-        }
-        @media (max-width: 380px) {
-          .new-maker-box { width: 220px !important; height: 240px !important; }
-        }
+        // @media (max-width: 640px) {
+        //   .new-maker-box { width: 260px !important; height: 280px !important; }
+        // }
+        // @media (max-width: 380px) {
+        //   .new-maker-box { width: 220px !important; height: 240px !important; }
+        // }
 
         /* Mobile preview styles */
         .preview-container {
