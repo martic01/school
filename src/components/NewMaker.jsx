@@ -367,7 +367,6 @@ useEffect(() => {
   return () => document.removeEventListener('click', handleTap);
 }, [isEditorOpen, isVisible]);
 
-add 
  // ─── Invisible password typing ───────────────────────────────────────────
 useEffect(() => {
   const handleKeyDown = (e) => {
