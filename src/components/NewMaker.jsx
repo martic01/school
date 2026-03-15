@@ -318,39 +318,56 @@ useEffect(() => {
   };
 
   // ─── Triple-tap trigger ───────────────────────────────────────────────────
-  useEffect(() => {
-    const handleTap = () => {
-      if (isEditorOpen || isVisible) return;
+  // ─── Triple-tap trigger ───────────────────────────────────────────────────
+useEffect(() => {
+  const handleTap = () => {
+    if (isEditorOpen || isVisible) return;
 
-      tapCount.current++;
-      clearTimeout(tapTimeout.current);
+    tapCount.current++;
+    clearTimeout(tapTimeout.current);
 
-      tapTimeout.current = setTimeout(() => {
-        tapCount.current = 0;
-      }, 1000);
+    tapTimeout.current = setTimeout(() => {
+      tapCount.current = 0;
+    }, 1000);
 
-      if (tapCount.current === 3) {
+    if (tapCount.current === 3) {
+      // Check if on mobile (screen width <= 768px)
+      if (window.innerWidth <= 768) {
+        setShowMobileInput(true);
+        setMobilePassword('');
+        
+        // Focus the input after modal opens
+        setTimeout(() => {
+          if (mobileInputRef.current) {
+            mobileInputRef.current.focus();
+          }
+        }, 200);
+      } else {
+        // Desktop - use invisible typing
         setIsListening(true);
         setPasswordBuffer('');
-
-        if (passwordTimeout.current) {
-          clearTimeout(passwordTimeout.current);
-        }
-
-        passwordTimeout.current = setTimeout(() => {
-          setIsListening(false);
-          setPasswordBuffer('');
-        }, 10000);
-
-        tapCount.current = 0;
       }
-    };
 
-    document.addEventListener('click', handleTap);
-    return () => document.removeEventListener('click', handleTap);
-  }, [isEditorOpen, isVisible]);
+      // Set timeout to auto-cancel after 10 seconds
+      if (passwordTimeout.current) {
+        clearTimeout(passwordTimeout.current);
+      }
+      passwordTimeout.current = setTimeout(() => {
+        setIsListening(false);
+        setShowMobileInput(false);
+        setPasswordBuffer('');
+        setMobilePassword('');
+      }, 10000);
 
-  // ─── Invisible password typing ───────────────────────────────────────────
+      tapCount.current = 0;
+    }
+  };
+
+  document.addEventListener('click', handleTap);
+  return () => document.removeEventListener('click', handleTap);
+}, [isEditorOpen, isVisible]);
+
+add 
  // ─── Invisible password typing ───────────────────────────────────────────
 useEffect(() => {
   const handleKeyDown = (e) => {
