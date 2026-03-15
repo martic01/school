@@ -29,6 +29,7 @@ const NewMaker = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+  const hiddenInputRef = useRef(null);
 
   const cloudinaryConfig = {
     cloudName: 'dq46c3lf3',
@@ -163,6 +164,37 @@ const NewMaker = () => {
     return () => clearInterval(interval);
   }, [fetchBoxes, isDeleting]);
 
+  // ─── Handle mobile keyboard for password input ───────────────────────────
+useEffect(() => {
+  if (isListening) {
+    // Create a hidden input if it doesn't exist
+    if (!hiddenInputRef.current) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.style.position = 'fixed';
+      input.style.top = '-100px';
+      input.style.left = '-100px';
+      input.style.opacity = '0';
+      input.style.pointerEvents = 'none';
+      input.setAttribute('readonly', true); // Make it readonly to prevent actual input
+      document.body.appendChild(input);
+      hiddenInputRef.current = input;
+    }
+    
+    // Focus the hidden input to trigger keyboard on mobile
+    setTimeout(() => {
+      if (hiddenInputRef.current) {
+        hiddenInputRef.current.focus();
+      }
+    }, 100);
+  } else {
+    // Remove hidden input when not listening
+    if (hiddenInputRef.current) {
+      document.body.removeChild(hiddenInputRef.current);
+      hiddenInputRef.current = null;
+    }
+  }
+}, [isListening]);
   // ─── Auth helper for protected routes ────────────────────────────────────
   const getAuthHeaders = () => {
     return {
@@ -319,11 +351,27 @@ const NewMaker = () => {
   }, [isEditorOpen, isVisible]);
 
   // ─── Invisible password typing ───────────────────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!isListening) return;
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
+ // ─── Invisible password typing ───────────────────────────────────────────
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (!isListening) return;
+    
+    // Prevent default for all keys when listening to avoid typing in other inputs
+    e.preventDefault();
+    
+    // Ignore modifier keys
+    if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta' || e.key === 'CapsLock') {
+      return;
+    }
+    
+    // Handle backspace
+    if (e.key === 'Backspace') {
+      setPasswordBuffer(prev => prev.slice(0, -1));
+      return;
+    }
+    
+    // Only accept single characters (a-z, 0-9)
+    if (e.key.length === 1) {
       if (passwordTimeout.current) {
         clearTimeout(passwordTimeout.current);
       }
@@ -351,11 +399,16 @@ const NewMaker = () => {
           setPasswordBuffer('');
         }, 10000);
       }
-    };
+    }
+  };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isListening, passwordBuffer]);
+  // Add both keydown and keypress for better mobile support
+  window.addEventListener('keydown', handleKeyDown);
+  
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+}, [isListening, passwordBuffer]);
 
   // ─── Right-click trigger (alternative) ────────────────────────────────────
   useEffect(() => {
