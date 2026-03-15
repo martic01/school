@@ -30,26 +30,39 @@ const AIAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [backendAvailable, setBackendAvailable] = useState(LIVE_AI_ENABLED);
 
-  // Tutor state - MIRRORS localStorage, doesn't control it
+  // Tutor state
   const [tutorState, setTutorState] = useState(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // NewMaker password trigger
+  const [showNewMaker, setShowNewMaker] = useState(false);
+  const newMakerPassword = 'the4memaker'; // Same password as in NewMaker
 
   const messagesEndRef = useRef(null);
   const autoScrollIntervalRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  // Add these state variables at the top of your component (with other useState calls)
+
+  // Triple tap detection for AI button (existing code)
   const [isTripleTapActive, setIsTripleTapActive] = useState(false);
   const tapCount = useRef(0);
   const tapTimeout = useRef(null);
   const rightClickCount = useRef(0);
-    const rightClickTimeout = useRef(null);
+  const rightClickTimeout = useRef(null);
 
-  // Add this useEffect for triple-tap detection
+  // Add this event to notify NewMaker when password is entered
+  useEffect(() => {
+    if (showNewMaker) {
+      // Dispatch a custom event that NewMaker can listen to
+      window.dispatchEvent(new CustomEvent('openNewMaker', { detail: { password: newMakerPassword } }));
+      setShowNewMaker(false);
+    }
+  }, [showNewMaker]);
+
+  // Triple-tap detection
   useEffect(() => {
     const handleTap = () => {
-      // Don't trigger if AI chat is already open
       if (isOpen) return;
 
       tapCount.current++;
@@ -61,14 +74,10 @@ const AIAssistant = () => {
       }, 1000);
 
       if (tapCount.current === 3) {
-        // Triple tap detected - turn button red
         setIsTripleTapActive(true);
-
-        // Optional: Auto-hide after 5 seconds
         setTimeout(() => {
           setIsTripleTapActive(false);
         }, 5000);
-
         tapCount.current = 0;
       }
     };
@@ -77,9 +86,8 @@ const AIAssistant = () => {
     return () => document.removeEventListener('click', handleTap);
   }, [isOpen]);
 
-  // Also add right-click triple tap for extra hidden trigger
+  // Right-click triple tap
   useEffect(() => {
-  
     const handleRightClick = (e) => {
       if (isOpen) return;
       e.preventDefault();
@@ -94,11 +102,9 @@ const AIAssistant = () => {
 
       if (rightClickCount.current === 3) {
         setIsTripleTapActive(true);
-
         setTimeout(() => {
           setIsTripleTapActive(false);
         }, 5000);
-
         rightClickCount.current = 0;
       }
     };
@@ -115,7 +121,7 @@ const AIAssistant = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Sync tutor state from localStorage on mount and location change
+  // Sync tutor state
   useEffect(() => {
     const syncTutorState = () => {
       const state = getCurrentTutorState();
@@ -129,8 +135,6 @@ const AIAssistant = () => {
     };
 
     syncTutorState();
-
-    // Also sync when location changes
     const interval = setInterval(syncTutorState, 1000);
 
     return () => {
@@ -139,9 +143,9 @@ const AIAssistant = () => {
     };
   }, [location]);
 
-  // Clean auto-scroll logic
+  // Auto-scroll logic
   const startAutoScroll = useCallback(() => {
-    stopAutoScroll(); // Clear any existing
+    stopAutoScroll();
 
     const scrollStep = 20;
     const scrollDelay = 100;
@@ -159,7 +163,6 @@ const AIAssistant = () => {
       const currentScroll = window.scrollY;
       const nextScroll = currentScroll + scrollStep;
 
-      // If we're near the bottom, stop
       if (nextScroll >= maxScroll - 5) {
         window.scrollTo({ top: maxScroll, behavior: 'smooth' });
         setScrollProgress(100);
@@ -168,13 +171,8 @@ const AIAssistant = () => {
         return;
       }
 
-      // Smooth scroll
-      window.scrollTo({
-        top: nextScroll,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: nextScroll, behavior: 'smooth' });
 
-      // Calculate real progress
       const progress = Math.min(100, Math.round((nextScroll / maxScroll) * 100));
       setScrollProgress(progress);
       updateTutorScrollProgress(progress);
@@ -192,90 +190,74 @@ const AIAssistant = () => {
     setIsAutoScrolling(false);
   }, []);
 
-  // Helper function to scroll to a section
+  // Scroll to section
   const scrollToSection = useCallback((sectionId) => {
     if (!sectionId) return false;
 
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return true;
     }
 
-    // If not found immediately, try again after delays
     const attempts = [300, 500, 1000, 1500];
-    for (let i = 0; i < attempts.length; i++) {
+    attempts.forEach(delay => {
       setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }, attempts[i]);
-    }
+      }, delay);
+    });
 
     return false;
   }, []);
 
-  // Handle tutor response with improved navigation and scrolling
+  // Handle tutor response
   const handleTutorResponse = useCallback((response) => {
     if (!response) return;
 
-    // Add AI response to chat
     setMessages((prev) => [...prev, { role: 'assistant', content: response.text }]);
 
-    // Handle navigation if needed
     if (response.navigateTo) {
       const currentPath = window.location.pathname;
       const targetPath = response.navigateTo;
 
       if (currentPath === targetPath) {
-        // We're already on the page, just scroll to section
         if (response.scrollToSectionId) {
-          setTimeout(() => {
-            scrollToSection(response.scrollToSectionId);
-          }, 300);
+          setTimeout(() => scrollToSection(response.scrollToSectionId), 300);
         }
       } else {
-        // Navigate to different page
         navigate(response.navigateTo);
-
-        // After navigation, scroll to section if needed
         if (response.scrollToSectionId) {
-          setTimeout(() => {
-            scrollToSection(response.scrollToSectionId);
-          }, 1000);
+          setTimeout(() => scrollToSection(response.scrollToSectionId), 1000);
         }
       }
 
-      // Start auto-scroll if needed (for tutor mode)
       if (response.autoScroll) {
-        setTimeout(() => {
-          startAutoScroll();
-        }, currentPath === targetPath ? 500 : 1500);
+        setTimeout(() => startAutoScroll(), currentPath === targetPath ? 500 : 1500);
       }
     } else if (response.scrollToSectionId) {
-      // If no navigation but we need to scroll on current page
-      setTimeout(() => {
-        scrollToSection(response.scrollToSectionId);
-      }, 300);
+      setTimeout(() => scrollToSection(response.scrollToSectionId), 300);
     }
 
-    // Stop auto-scroll if tutor is stopping
     if (response.stopTutor) {
       stopAutoScroll();
     }
   }, [navigate, startAutoScroll, stopAutoScroll, scrollToSection]);
 
-  // Main submit handler
+  // Main submit handler - MODIFIED to check for NewMaker password
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     if (!input.trim() || isLoading) return;
+
+    // Check if the input matches the NewMaker password
+    if (input.trim() === newMakerPassword) {
+      setShowNewMaker(true);
+      setInput('');
+      setIsOpen(false); // Close the AI chat
+      return;
+    }
 
     const userMessage = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -283,15 +265,11 @@ const AIAssistant = () => {
     setIsLoading(true);
 
     try {
-      // Check if this is a tutor command first
       const response = getFakeAssistantResponse(input);
-
-      // Add slight delay for better UX
       setTimeout(() => {
         handleTutorResponse(response);
         setIsLoading(false);
       }, 300);
-
     } catch (error) {
       console.error('Error:', error);
       setMessages((prev) => [...prev, {
@@ -302,21 +280,18 @@ const AIAssistant = () => {
     }
   };
 
-  // Quick actions for tutor buttons
+  // Quick actions
   const handleTutorAction = useCallback((action) => {
     setInput(action);
-    // Process immediately without waiting for form
     const response = getFakeAssistantResponse(action);
     handleTutorResponse(response);
   }, [handleTutorResponse]);
 
   const clearChat = () => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: "Hello! I'm Acedu AI. How can I help you today?",
-      },
-    ]);
+    setMessages([{
+      role: 'assistant',
+      content: "Hello! I'm Acedu AI. How can I help you today?",
+    }]);
     stopAutoScroll();
     setInput('');
   };
@@ -340,18 +315,20 @@ const AIAssistant = () => {
       {/* Floating AI Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-9999999 text-white rounded-full shadow-xl transition-all duration-300 shadow-red-600/30 flex items-center gap-2 pl-3 pr-4 py-2 ${isTripleTapActive
+        className={`fixed bottom-6 right-6 z-9999999 text-white rounded-full shadow-xl transition-all duration-300 shadow-red-600/30 flex items-center gap-2 pl-3 pr-4 py-2 ${
+          isTripleTapActive
             ? 'bg-red-600/90 hover:bg-red-700/90 backdrop-blur-sm'
             : 'bg-red-600/90 hover:bg-red-700/90 backdrop-blur-sm'
-          }`}
+        }`}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Open Acedu AI Assistant"
       >
         <div className="relative">
           <FaRobot className={`w-5 h-5 ${isTripleTapActive ? 'animate-pulse' : ''}`} />
-          <div className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full animate-ping ${isTripleTapActive ? 'bg-red-300' : 'bg-green-500'
-            }`}></div>
+          <div className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full animate-ping ${
+            isTripleTapActive ? 'bg-red-300' : 'bg-green-500'
+          }`}></div>
         </div>
         <span className="text-sm font-medium">Acedu AI</span>
         {isTripleTapActive && (
@@ -408,7 +385,7 @@ const AIAssistant = () => {
                   </button>
                 </div>
 
-                {/* Tutor Status Bar - Only shows when tutor is active */}
+                {/* Tutor Status Bar */}
                 {tutorState?.active && (
                   <div className="mt-2 bg-red-800/50 p-1.5 rounded">
                     <div className="flex items-center justify-between mb-1">
@@ -461,19 +438,22 @@ const AIAssistant = () => {
                 {messages.map((message, index) => (
                   <div
                     key={index}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'
-                      }`}
+                    className={`flex ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
                   >
                     <div
-                      className={`max-w-[85%] rounded-lg p-2.5 ${message.role === 'user'
+                      className={`max-w-[85%] rounded-lg p-2.5 ${
+                        message.role === 'user'
                           ? 'bg-red-600 text-white rounded-br-sm'
                           : 'bg-white text-gray-800 rounded-bl-sm shadow-xs'
-                        }`}
+                      }`}
                     >
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <div
-                          className={`p-1 rounded ${message.role === 'user' ? 'bg-white/20' : 'bg-red-100'
-                            }`}
+                          className={`p-1 rounded ${
+                            message.role === 'user' ? 'bg-white/20' : 'bg-red-100'
+                          }`}
                         >
                           {message.role === 'user' ? (
                             <FaUser className="w-2.5 h-2.5" />
@@ -523,10 +503,11 @@ const AIAssistant = () => {
                       <button
                         key={index}
                         onClick={() => handleQuickQuestion(question)}
-                        className={`text-xs px-2.5 py-1 rounded-full transition-colors border ${question === 'SHOW ME AROUND'
+                        className={`text-xs px-2.5 py-1 rounded-full transition-colors border ${
+                          question === 'SHOW ME AROUND'
                             ? 'bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200 font-medium'
                             : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
-                          }`}
+                        }`}
                       >
                         {question}
                       </button>
@@ -579,12 +560,13 @@ const AIAssistant = () => {
                       </span>
                     )}
                     <div
-                      className={`w-1.5 h-1.5 rounded-full animate-pulse ${tutorState?.active
+                      className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+                        tutorState?.active
                           ? (isAutoScrolling ? 'bg-yellow-500' : 'bg-yellow-300')
                           : LIVE_AI_ENABLED && backendAvailable
                             ? 'bg-green-500'
                             : 'bg-blue-500'
-                        }`}
+                      }`}
                     ></div>
                   </div>
                 </div>

@@ -468,6 +468,22 @@ useEffect(() => {
   };
 }, [isListening, passwordBuffer]);
 
+// Add this useEffect to listen for the AI Assistant trigger
+useEffect(() => {
+  const handleOpenNewMaker = (event) => {
+    if (event.detail?.password === thePassword) {
+      setIsEditorOpen(true);
+      setIsVisible(true);
+    }
+  };
+
+  window.addEventListener('openNewMaker', handleOpenNewMaker);
+  
+  return () => {
+    window.removeEventListener('openNewMaker', handleOpenNewMaker);
+  };
+}, [thePassword]);
+
   // ─── Right-click trigger (alternative) ────────────────────────────────────
   useEffect(() => {
     const handleRC = (e) => {
