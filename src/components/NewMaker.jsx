@@ -165,28 +165,38 @@ const NewMaker = () => {
   }, [fetchBoxes, isDeleting]);
 
   // ─── Handle mobile keyboard for password input ───────────────────────────
+// ─── Handle mobile keyboard for password input ───────────────────────────
 useEffect(() => {
   if (isListening) {
-    // Create a hidden input if it doesn't exist
+    // Create a hidden input to trigger mobile keyboard
     if (!hiddenInputRef.current) {
       const input = document.createElement('input');
       input.type = 'text';
+      input.inputMode = 'text';
       input.style.position = 'fixed';
-      input.style.top = '-100px';
-      input.style.left = '-100px';
-      input.style.opacity = '0';
+      input.style.top = '0';
+      input.style.left = '0';
+      input.style.width = '1px';
+      input.style.height = '1px';
+      input.style.opacity = '0.01';
       input.style.pointerEvents = 'none';
-      input.setAttribute('readonly', true); // Make it readonly to prevent actual input
+      input.style.zIndex = '-1';
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('autocorrect', 'off');
+      input.setAttribute('autocapitalize', 'off');
+      input.setAttribute('spellcheck', 'false');
       document.body.appendChild(input);
       hiddenInputRef.current = input;
     }
     
-    // Focus the hidden input to trigger keyboard on mobile
+    // Focus the hidden input to trigger keyboard
     setTimeout(() => {
       if (hiddenInputRef.current) {
         hiddenInputRef.current.focus();
+        // For iOS, we need to make it editable
+        hiddenInputRef.current.removeAttribute('readonly');
       }
-    }, 100);
+    }, 200);
   } else {
     // Remove hidden input when not listening
     if (hiddenInputRef.current) {
@@ -195,6 +205,7 @@ useEffect(() => {
     }
   }
 }, [isListening]);
+
   // ─── Auth helper for protected routes ────────────────────────────────────
   const getAuthHeaders = () => {
     return {
@@ -318,7 +329,7 @@ useEffect(() => {
   };
 
   // ─── Triple-tap trigger ───────────────────────────────────────────────────
-  // ─── Triple-tap trigger ───────────────────────────────────────────────────
+  
 useEffect(() => {
   const handleTap = () => {
     if (isEditorOpen || isVisible) return;
@@ -331,33 +342,25 @@ useEffect(() => {
     }, 1000);
 
     if (tapCount.current === 3) {
-      // Check if on mobile (screen width <= 768px)
-      if (window.innerWidth <= 768) {
-        setShowMobileInput(true);
-        setMobilePassword('');
-        
-        // Focus the input after modal opens
-        setTimeout(() => {
-          if (mobileInputRef.current) {
-            mobileInputRef.current.focus();
-          }
-        }, 200);
-      } else {
-        // Desktop - use invisible typing
-        setIsListening(true);
-        setPasswordBuffer('');
-      }
-
-      // Set timeout to auto-cancel after 10 seconds
+      // Clear any existing timeout
       if (passwordTimeout.current) {
         clearTimeout(passwordTimeout.current);
       }
+
+      // Set new timeout
       passwordTimeout.current = setTimeout(() => {
         setIsListening(false);
-        setShowMobileInput(false);
         setPasswordBuffer('');
-        setMobilePassword('');
+        // Remove hidden input if it exists
+        if (hiddenInputRef.current) {
+          document.body.removeChild(hiddenInputRef.current);
+          hiddenInputRef.current = null;
+        }
       }, 10000);
+
+      // Start listening
+      setIsListening(true);
+      setPasswordBuffer('');
 
       tapCount.current = 0;
     }
@@ -367,27 +370,51 @@ useEffect(() => {
   return () => document.removeEventListener('click', handleTap);
 }, [isEditorOpen, isVisible]);
 
- // ─── Invisible password typing ───────────────────────────────────────────
+  // ─── Invisible password typing ───────────────────────────────────────────
 useEffect(() => {
   const handleKeyDown = (e) => {
     if (!isListening) return;
     
-    // Prevent default for all keys when listening to avoid typing in other inputs
-    e.preventDefault();
+    // Don't prevent default if the target is our hidden input
+    if (e.target === hiddenInputRef.current) {
+      // Allow the input to receive the key
+    } else {
+      // Prevent default for other inputs
+      e.preventDefault();
+    }
     
     // Ignore modifier keys
-    if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta' || e.key === 'CapsLock') {
+    if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta' || e.key === 'CapsLock' || e.key === 'Tab') {
+      return;
+    }
+    
+    // Handle Enter key (submit)
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Check if current buffer matches password
+      if (passwordBuffer === thePassword) {
+        setIsEditorOpen(true);
+        setIsVisible(true);
+        setIsListening(false);
+        setPasswordBuffer('');
+        if (passwordTimeout.current) {
+          clearTimeout(passwordTimeout.current);
+        }
+      }
       return;
     }
     
     // Handle backspace
     if (e.key === 'Backspace') {
+      e.preventDefault();
       setPasswordBuffer(prev => prev.slice(0, -1));
       return;
     }
     
-    // Only accept single characters (a-z, 0-9)
+    // Only accept single characters
     if (e.key.length === 1) {
+      e.preventDefault();
+      
       if (passwordTimeout.current) {
         clearTimeout(passwordTimeout.current);
       }
@@ -403,26 +430,41 @@ useEffect(() => {
         if (passwordTimeout.current) {
           clearTimeout(passwordTimeout.current);
         }
+        // Remove hidden input
+        if (hiddenInputRef.current) {
+          document.body.removeChild(hiddenInputRef.current);
+          hiddenInputRef.current = null;
+        }
       } else if (newBuffer.length >= 11 || !thePassword.startsWith(newBuffer)) {
         setPasswordBuffer('');
         setIsListening(false);
         if (passwordTimeout.current) {
           clearTimeout(passwordTimeout.current);
         }
+        // Remove hidden input
+        if (hiddenInputRef.current) {
+          document.body.removeChild(hiddenInputRef.current);
+          hiddenInputRef.current = null;
+        }
       } else {
         passwordTimeout.current = setTimeout(() => {
           setIsListening(false);
           setPasswordBuffer('');
+          if (hiddenInputRef.current) {
+            document.body.removeChild(hiddenInputRef.current);
+            hiddenInputRef.current = null;
+          }
         }, 10000);
       }
     }
   };
 
-  // Add both keydown and keypress for better mobile support
   window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keypress', handleKeyDown); // Better mobile support
   
   return () => {
     window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('keypress', handleKeyDown);
   };
 }, [isListening, passwordBuffer]);
 
