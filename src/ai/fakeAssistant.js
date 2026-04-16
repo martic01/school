@@ -17,7 +17,7 @@ const TUTOR_STORAGE_KEY = 'acedu_tutor_state';
 const TUTOR_TIMEOUT = 30 * 60 * 1000; // 30 minutes (extended)
 
 // Updated tutor pages to include new sections
-const tutorPages = ['home', 'about', 'course', 'projects', 'products', 'hostel', 'AIpage', 'Enroll'];
+const tutorPages = ['home', 'about', 'course', 'projects', 'products', 'AIpage', 'Enroll'];
 
 // Tutor state structure
 let tutorState = null;
