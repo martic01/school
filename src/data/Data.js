@@ -9,8 +9,8 @@ import ceopic from "../assets/images/ceopic (2).jpg"
 
 import projectimg1 from "../assets/images/t-shop-port1-Deq0R8ZK.png"
 import projectimg2 from "../assets/images/convex-port-CJDSUGOk.png"
-import projectimg3 from "../assets/images/inventory-port-B7XKVIhZ.png"
-import projectimg4 from "../assets/images/mcommerce1.png"
+import projectimg3 from "../assets/images/bs.png"
+import projectimg4 from "../assets/images/qh.png"
 
 
 
@@ -279,6 +279,41 @@ export const projectsData = [
   },
   {
     id: 2,
+    ownerName: "Matthew",
+    projectName: "weSHOP E-commerce with Voice assistant Web Application",
+    year: "2024",
+    reason: "For fast and easy shoping exprience.",
+    description:
+      "This project is a modern, interactive e-commerce web application that integrates a voice assistant to create a seamless and user-friendly shopping experience. The application is designed to allow users to interact with the platform using voice commands, making it accessible and efficient. This unique functionality simplifies common actions like browsing products, searching for specific items by category or name, and managing a shopping cart, all without requiring manual input. The voice assistant leverages advanced speech recognition and text-to-speech technology to enhance usability. Users can speak commands to search for products, scroll through the page, or interact with the cart, and the application provides real-time audio feedback. This makes the shopping process not only more engaging but also accessible to users with physical disabilities or those who prefer hands-free interaction.",
+    image: projectimg4,
+    siteUrl: "https://queenshaven.vercel.app",
+    techStack: [
+      "Neonbase",
+      "Vite React",
+      "JAVASCRIPT",
+      "TailwindCss"
+    ],
+  },
+  
+  {
+    id: 3,
+    ownerName: "Matthew",
+    projectName: "Business solutions",
+    year: "2024+1",
+    reason: "To Provide strategic business solutions that drive growth and efficiency.",
+    description:
+      "Business Solutions is a comprehensive platform designed to provide strategic solutions for businesses. It offers a range of services including business consulting, process optimization, and technology integration. The platform helps businesses identify growth opportunities, streamline operations, and implement effective strategies to enhance overall performance and competitiveness in the market.",
+    image: projectimg3,
+    siteUrl: "https://rrbs-bs.vercel.app",
+    techStack: [
+      "vite react",
+      "Javascript",
+      "Node.js",
+      "Tailwind.css"
+    ],
+  },
+  {
+    id: 4,
     ownerName: "Tega",
     projectName: "Metrack coms",
     year: "2023",
@@ -291,40 +326,6 @@ export const projectsData = [
       "Convex",
       "Typescript",
       "Tailwind.css"
-    ],
-  },
-  {
-    id: 3,
-    ownerName: "Tega",
-    projectName: "Tegstock - Full Stack Inventory Management Dashboard",
-    year: "2021",
-    reason: "To enable seamless inventory tracking in the cloud.",
-    description:
-      "Tegstock is a full-stack inventory management dashboard designed for seamless inventory tracking, built with Next.js, Redux, Node.js, and AWS. The frontend features a responsive UI styled with Tailwind CSS, utilizing Material UI Data Grid for data handling, Redux Toolkit for state management, and Recharts for data visualization. The backend, powered by Node.js, Express, and Prisma, integrates PostgreSQL for structured data storage. Hosted on AWS, it leverages RDS for database management, EC2 for backend hosting, API Gateway for secure endpoints, Amplify for frontend deployment, and S3 for storage. Key features include real-time inventory tracking, advanced search and filtering, supplier management,and analytics, ensuring a scalable and efficient cloud-based solution.",
-    image: projectimg3,
-    siteUrl: "https://main.d1exwyzl9jqwbo.amplifyapp.com/",
-    techStack: [
-      "Next.js",
-      "Typescript",
-      "Node.js",
-      "Tailwind.css"
-    ],
-  },
-  {
-    id: 4,
-    ownerName: "Matthew",
-    projectName: "weSHOP E-commerce with Voice assistant Web Application",
-    year: "2024",
-    reason: "For fast and easy shoping exprience.",
-    description:
-      "This project is a modern, interactive e-commerce web application that integrates a voice assistant to create a seamless and user-friendly shopping experience. The application is designed to allow users to interact with the platform using voice commands, making it accessible and efficient. This unique functionality simplifies common actions like browsing products, searching for specific items by category or name, and managing a shopping cart, all without requiring manual input. The voice assistant leverages advanced speech recognition and text-to-speech technology to enhance usability. Users can speak commands to search for products, scroll through the page, or interact with the cart, and the application provides real-time audio feedback. This makes the shopping process not only more engaging but also accessible to users with physical disabilities or those who prefer hands-free interaction.",
-    image: projectimg4,
-    siteUrl: "https://github.com/martic01/weshop",
-    techStack: [
-      "CSS",
-      "HTML",
-      "JAVASCRIPT",
-      "JQUERY"
     ],
   },
 
