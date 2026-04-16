@@ -1,7 +1,7 @@
 // Updated Navbar.jsx with automatic festive greeting
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Home, Info, BookOpen, Phone, ChevronDown, Bot, Building} from 'lucide-react';
+import { Menu, X, Home, Info, BookOpen, Phone, ChevronDown, Bot, Building } from 'lucide-react';
 import {
   FaFacebookF,
   FaYoutube,
@@ -12,7 +12,8 @@ import {
   FaMapMarkerAlt,
   FaRobot,
   FaBed,
-  FaWhatsapp
+  FaWhatsapp,
+  FaSignInAlt as FaSignIn
 } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './AppButton';
@@ -32,7 +33,7 @@ const link = [
 const getIslamicDate = (year) => {
   // Approximation for Islamic calendar (Hijri) to Gregorian
   // Actual dates may vary by 1-2 days based on moon sighting
-  
+
   const islamicToGregorian = {
     2024: { ramadanStart: new Date(2024, 2, 11), ramadanEnd: new Date(2024, 3, 9) },
     2025: { ramadanStart: new Date(2025, 2, 1), ramadanEnd: new Date(2025, 2, 31) },
@@ -42,7 +43,7 @@ const getIslamicDate = (year) => {
     2029: { ramadanStart: new Date(2029, 0, 16), ramadanEnd: new Date(2029, 1, 14) },
     2030: { ramadanStart: new Date(2030, 0, 6), ramadanEnd: new Date(2030, 1, 4) }
   };
-  
+
   return islamicToGregorian[year] || islamicToGregorian[2025];
 };
 
@@ -52,10 +53,10 @@ const getCurrentFestive = () => {
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1; // 1-12
   const currentDate = today.getDate();
-  
+
   // Get Islamic dates for current year
   const islamicDates = getIslamicDate(currentYear);
-  
+
   // Check Christmas (Dec 20-27)
   if (currentMonth === 12 && currentDate >= 20 && currentDate <= 27) {
     return {
@@ -68,7 +69,7 @@ const getCurrentFestive = () => {
       year: currentYear
     };
   }
-  
+
   // Check New Year (Dec 28 - Jan 5)
   if (
     (currentMonth === 12 && currentDate >= 28) ||
@@ -84,11 +85,10 @@ const getCurrentFestive = () => {
       year: currentYear
     };
   }
-  
   // Check Ramadan
   const ramadanStart = islamicDates.ramadanStart;
   const ramadanEnd = islamicDates.ramadanEnd;
-  
+
   if (today >= ramadanStart && today <= ramadanEnd) {
     return {
       id: 'ramadan',
@@ -100,13 +100,13 @@ const getCurrentFestive = () => {
       year: currentYear
     };
   }
-  
+
   // Check Eid al-Fitr (3 days after Ramadan)
   const eidAlFitrStart = new Date(ramadanEnd);
   eidAlFitrStart.setDate(eidAlFitrStart.getDate() + 1);
   const eidAlFitrEnd = new Date(eidAlFitrStart);
   eidAlFitrEnd.setDate(eidAlFitrEnd.getDate() + 2);
-  
+
   if (today >= eidAlFitrStart && today <= eidAlFitrEnd) {
     return {
       id: 'eid',
@@ -118,7 +118,7 @@ const getCurrentFestive = () => {
       year: currentYear
     };
   }
-  
+
   // Add more festivals as needed
   // Valentine's Day
   if (currentMonth === 2 && currentDate === 14) {
@@ -132,12 +132,12 @@ const getCurrentFestive = () => {
       year: currentYear
     };
   }
-  
+
   // Easter (simplified - first Sunday after first full moon after March 21)
   const easterDate = new Date(currentYear, 2, 21); // Approximation
   const daysToAdd = (7 - easterDate.getDay()) % 7;
   easterDate.setDate(easterDate.getDate() + daysToAdd + 7);
-  
+
   if (
     today.getMonth() === easterDate.getMonth() &&
     today.getDate() === easterDate.getDate()
@@ -152,7 +152,7 @@ const getCurrentFestive = () => {
       year: currentYear
     };
   }
-  
+
   return null;
 };
 
@@ -170,7 +170,7 @@ const Navbar = ({ showHostel = true }) => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -180,7 +180,7 @@ const Navbar = ({ showHostel = true }) => {
     const checkFestive = () => {
       const festive = getCurrentFestive();
       setCurrentFestive(festive);
-      
+
       // Check localStorage for dismissed greetings
       const dismissed = localStorage.getItem('dismissedFestive');
       if (dismissed === festive?.id) {
@@ -189,9 +189,9 @@ const Navbar = ({ showHostel = true }) => {
         setShowFestiveGreeting(true);
       }
     };
-    
+
     checkFestive();
-    
+
     // Check every hour for festive period changes
     const interval = setInterval(checkFestive, 60 * 60 * 1000);
     return () => clearInterval(interval);
@@ -201,17 +201,17 @@ const Navbar = ({ showHostel = true }) => {
   const contact = contactInfoData;
   // Track scroll position for navbar background
   const socialIcons = [
-    { icon: FaYoutube, link:mediaLink.youtube, name: "YouTube", bgColor: "hover:bg-red-600" },
-    { icon: FaFacebookF, link:mediaLink.facebook, name: "Facebook", bgColor: "hover:bg-blue-600" },
-    { icon: FaLinkedinIn, link:mediaLink.linkedin, name: "LinkedIn", bgColor: "hover:bg-blue-700" },
-    { icon: FaTwitter, link:mediaLink.twitter, name: "Twitter", bgColor: "hover:bg-sky-500" },
-    { icon: FaWhatsapp, link:mediaLink.whatsapp, name: "WhatsApp", bgColor: "hover:bg-green-500" },
+    { icon: FaYoutube, link: mediaLink.youtube, name: "YouTube", bgColor: "hover:bg-red-600" },
+    { icon: FaFacebookF, link: mediaLink.facebook, name: "Facebook", bgColor: "hover:bg-blue-600" },
+    { icon: FaLinkedinIn, link: mediaLink.linkedin, name: "LinkedIn", bgColor: "hover:bg-blue-700" },
+    { icon: FaTwitter, link: mediaLink.twitter, name: "Twitter", bgColor: "hover:bg-sky-500" },
+    { icon: FaWhatsapp, link: mediaLink.whatsapp, name: "WhatsApp", bgColor: "hover:bg-green-500" },
   ];
 
   const contactInfo = [
-    { icon: FaPhone, text:contact.phone },
-    { icon: FaEnvelope, text:contact.email },
-    { icon: FaMapMarkerAlt, text:contact.country},
+    { icon: FaPhone, text: contact.phone },
+    { icon: FaEnvelope, text: contact.email },
+    { icon: FaMapMarkerAlt, text: contact.country },
   ];
 
   useEffect(() => {
@@ -312,7 +312,7 @@ const Navbar = ({ showHostel = true }) => {
 
   // Helper functions for active states
   const getActiveColor = (item) => {
-    switch(item.name) {
+    switch (item.name) {
       case 'AI Assistant': return 'text-blue-600';
       case 'Products': return 'text-green-600';
       case 'Courses': return 'text-yellow-600';
@@ -321,7 +321,7 @@ const Navbar = ({ showHostel = true }) => {
   };
 
   const getIconActiveColor = (item) => {
-    switch(item.name) {
+    switch (item.name) {
       case 'AI Assistant': return 'text-blue-600';
       case 'Products': return 'text-green-600';
       case 'Courses': return 'text-yellow-600';
@@ -330,7 +330,7 @@ const Navbar = ({ showHostel = true }) => {
   };
 
   const getMobileActiveBg = (item) => {
-    switch(item.name) {
+    switch (item.name) {
       case 'AI Assistant': return 'bg-blue-50';
       case 'Products': return 'bg-green-50';
       case 'Courses': return 'bg-yellow-50';
@@ -350,8 +350,8 @@ const Navbar = ({ showHostel = true }) => {
             transition={{ duration: 0.3 }}
             className={`w-full ${currentFestive.bgColor} border-b ${currentFestive.color.replace('text', 'border').replace('600', '200')} z-40`}
           >
-            <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-              <motion.div 
+            <div className="container mx-auto px-4 py-2 flex justify-between items-center relative">
+              <motion.div
                 className="flex items-center gap-2 text-sm font-medium"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
@@ -360,12 +360,12 @@ const Navbar = ({ showHostel = true }) => {
                 <span>{currentFestive.greeting}</span>
                 <span className="text-xs opacity-70">@ACEDU</span>
               </motion.div>
-              
+
               <div className="flex items-center gap-3">
                 <span className="text-xs opacity-60 hidden sm:block">
                   {currentFestive.year} • {currentFestive.name}
                 </span>
-                <button 
+                <button
                   onClick={handleDismissFestive}
                   className="text-xs opacity-50 hover:opacity-100 transition-opacity"
                   aria-label="Dismiss greeting"
@@ -408,7 +408,7 @@ const Navbar = ({ showHostel = true }) => {
           ))}
         </div>
       </div>
-      
+
       <motion.nav
         className="flex w-full h-17 sticky top-0 z-50 md:h-20 justify-between items-center border-b border-red-200 px-4 md:px-8"
         initial="top"
@@ -422,15 +422,15 @@ const Navbar = ({ showHostel = true }) => {
             className='text-2xl md:text-3xl font-bold text-red-600 cursor-pointer'
             onClick={() => handleNavClick({ action: 'home' })}
           >
-            <img 
-              src={logo} 
-              alt="ACEDU Coding BootCamp Logo" 
-              className='w-32 md:w-40 object-contain cursor-pointer' 
+            <img
+              src={logo}
+              alt="ACEDU Coding BootCamp Logo"
+              className='w-32 md:w-40 object-contain cursor-pointer'
             />
           </div>
-            {/* Festive indicator next to logo for desktop */}
+          {/* Festive indicator next to logo for desktop */}
           {currentFestive && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex ml-3"
@@ -446,7 +446,7 @@ const Navbar = ({ showHostel = true }) => {
               </div>
             </motion.div>
           )}
-         
+
         </div>
 
         {/* Desktop Navigation - Responsive with shrinking text */}
@@ -457,9 +457,8 @@ const Navbar = ({ showHostel = true }) => {
               <button
                 key={index}
                 onClick={() => handleNavClick(item)}
-                className={`flex items-center gap-1 font-medium transition-all duration-300 relative group ${item.color} whitespace-nowrap ${
-                  active ? getActiveColor(item) : 'text-gray-700'
-                }`}
+                className={`flex items-center gap-1 font-medium transition-all duration-300 relative group ${item.color} whitespace-nowrap ${active ? getActiveColor(item) : 'text-gray-700'
+                  }`}
               >
                 {item.name === 'AI Assistant' ? (
                   <div className="relative">
@@ -472,18 +471,17 @@ const Navbar = ({ showHostel = true }) => {
                   <item.icon className={`w-3.5 h-3.5 ${active ? getIconActiveColor(item) : ''}`} />
                 )}
                 <span className={active ? getActiveColor(item) : ''}>
-                  {item.name} 
+                  {item.name}
                 </span>
-                
+
                 {/* Active indicator - blinking animation with different delays */}
                 {active && (
                   <motion.span
-                    className={`absolute -top-1.5 -right-1.5 w-2.5 h-2.5 rounded-full ${
-                      item.name === 'AI Assistant' ? 'bg-blue-600' : 
+                    className={`absolute -top-1.5 -right-1.5 w-2.5 h-2.5 rounded-full ${item.name === 'AI Assistant' ? 'bg-blue-600' :
                       item.name === 'Products' ? 'bg-green-600' :
-                      item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
-                    }`}
-                    animate={{ 
+                        item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
+                      }`}
+                    animate={{
                       scale: [1, 1.2, 1],
                       opacity: [0.8, 1, 0.8]
                     }}
@@ -496,13 +494,12 @@ const Navbar = ({ showHostel = true }) => {
                     style={{ animationDelay: `${getBlinkDelay(index)}s` }}
                   />
                 )}
-                
+
                 {/* Underline effect */}
-                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300 ${
-                  item.name === 'AI Assistant' ? 'bg-blue-600' : 
+                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300 ${item.name === 'AI Assistant' ? 'bg-blue-600' :
                   item.name === 'Products' ? 'bg-green-600' :
-                  item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
-                } ${active ? 'w-full' : ''}`}></span>
+                    item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
+                  } ${active ? 'w-full' : ''}`}></span>
               </button>
             );
           })}
@@ -518,18 +515,28 @@ const Navbar = ({ showHostel = true }) => {
 
         {/* Desktop CTA Button - Responsive */}
         <div className="hidden md:flex items-center space-x-3">
-          <Button 
-            className={`gap-2 font-medium ${
-              windowWidth < 900 ? 'py-5 px-4 text-sm' : 'py-6 px-6'
-            }`} 
-            onClick={() => navigate('/register')}
-            icon="edit"
+          <Button
+            className={`gap-2 font-medium ${windowWidth < 900 ? 'py-5 px-4 text-sm' : 'py-6 px-6'
+              }`}
+            onClick={() => navigate('/login')}
+            icon="login"
           >
-            {windowWidth < 900 ? 'Enroll' : 'Enroll Now'}
+
+            Login
           </Button>
         </div>
       </motion.nav>
-      
+
+      {/* <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        className='bg-white/10 flex gap-3 items-center backdrop-blur-lg shadow-lg  h-10 absolute md-top-30 right-8 z-2 font-semibold text-md text-white/70 transition-all duration-200 hover:text-white p-3'>
+          <FaSignIn className="w-5 h-5" />
+          Login
+
+      </motion.div> */}
+
       {/* Floating Hostel Button - Bottom Right */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -541,13 +548,13 @@ const Navbar = ({ showHostel = true }) => {
           className={`${showHostel ? "hidden" : "block"} bg-blue-900 hover:bg-blue-700 py-2 px-2 text-white shadow-lg shadow-blue-600/30`}
           onClick={() => navigate('/hostel')}
           icon="bed"
-           disabled={!hostelData.status} // set hosteldata.status to true to enable everything concerning hostel in data.js
+          disabled={!hostelData.status} // set hosteldata.status to true to enable everything concerning hostel in data.js
         >
           <FaBed className="mr-2" />
           View Our Hostel
         </Button>
       </motion.div>
-      
+
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -603,9 +610,8 @@ const Navbar = ({ showHostel = true }) => {
                       initial="closed"
                       animate="open"
                       transition={{ delay: index * 0.1 }}
-                      className={`flex items-center justify-between w-full p-4 rounded-lg transition-all duration-300 relative ${
-                        active ? getMobileActiveBg(item) : 'hover:bg-gray-50'
-                      } ${item.color}`}
+                      className={`flex items-center justify-between w-full p-4 rounded-lg transition-all duration-300 relative ${active ? getMobileActiveBg(item) : 'hover:bg-gray-50'
+                        } ${item.color}`}
                       onClick={() => handleNavClick(item)}
                     >
                       <div className="flex items-center space-x-3">
@@ -619,9 +625,8 @@ const Navbar = ({ showHostel = true }) => {
                         ) : (
                           <item.icon className={`w-5 h-5 ${active ? getIconActiveColor(item) : ''}`} />
                         )}
-                        <span className={`font-medium ${
-                          active ? getActiveColor(item) : ''
-                        }`}>
+                        <span className={`font-medium ${active ? getActiveColor(item) : ''
+                          }`}>
                           {item.name}
                           {item.name === 'AI Assistant' && (
                             <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
@@ -630,16 +635,15 @@ const Navbar = ({ showHostel = true }) => {
                           )}
                         </span>
                       </div>
-                      
+
                       {/* Active indicator for mobile */}
                       {active && (
                         <motion.div
-                          className={`w-2 h-2 rounded-full ${
-                            item.name === 'AI Assistant' ? 'bg-blue-600' : 
+                          className={`w-2 h-2 rounded-full ${item.name === 'AI Assistant' ? 'bg-blue-600' :
                             item.name === 'Products' ? 'bg-green-600' :
-                            item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
-                          }`}
-                          animate={{ 
+                              item.name === 'Courses' ? 'bg-yellow-600' : 'bg-red-600'
+                            }`}
+                          animate={{
                             scale: [1, 1.3, 1],
                             opacity: [0.7, 1, 0.7]
                           }}
@@ -651,7 +655,7 @@ const Navbar = ({ showHostel = true }) => {
                           }}
                         />
                       )}
-                      
+
                       {item.action === 'scrollToFooter' && !active ? (
                         <ChevronDown className="w-4 h-4" />
                       ) : item.name === 'AI Assistant' && !active ? (

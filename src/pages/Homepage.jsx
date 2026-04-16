@@ -11,8 +11,22 @@ import ContactSection from '../components/ContactSection';
 import ProductsShowcase from '../components/ProductsShowcase';
 import bgImg from "../assets/images/bg-vid1.mp4";
 import bgImg2 from "../assets/images/bg-vid2.mp4";
+import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 
 const Homepage = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const whyCourse = [
     { text: 'Beginners starting their tech journey.' },
     { text: 'Students building future-proof digital skills' },
@@ -40,7 +54,7 @@ const Homepage = () => {
                 <source src={bgImg2} type="video/mp4" />
               </video>
             </div>
-            
+
             {/* Right Video */}
             <div className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden">
               <video
@@ -75,6 +89,16 @@ const Homepage = () => {
               <p className="text-white mt-2 text-base sm:text-lg md:text-xl mb-4 md:mb-6">
                 Growing Local Talent For The Global Digital Economy
               </p>
+              <div className="flex items-center space-x-3">
+                <Button
+                  className={`gap-2 font-medium ${windowWidth < 900 ? 'py-5 px-4 text-sm' : 'py-6 px-6'
+                    }`}
+                  onClick={() => navigate('/register')}
+                  icon="edit"
+                >
+                  Enroll Now
+                </Button>
+              </div>
             </div>
 
             {/* Right VS Code editor */}
@@ -147,7 +171,7 @@ const Homepage = () => {
       <div className="w-full h-fit" id="courses-section">
         <CourseModulesHome />
       </div>
- 
+
 
       <div className="w-full h-fit" id="product-section">
         <ProductsShowcase />

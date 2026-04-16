@@ -22,7 +22,15 @@ function AppLayout() {
 
 function RegisterRedirect() {
   useEffect(() => {
-    window.location.href = "http://acedu.camp/application?AT=1";
+    window.location.href = "https://aceducamp.com/application?AT=1";
+  }, []);
+
+  return null;
+}
+
+function LoginRedirect() {
+  useEffect(() => {
+    window.location.href = "https://aceducamp.com";
   }, []);
 
   return null;
@@ -43,6 +51,7 @@ function RegisterRedirect() {
         <Route path="/course/:id" element={<CoursePage />} />
         <Route path="/projects" element={<ProjectsShowcasePage />} />
         <Route path="/register" element={<RegisterRedirect />} />
+        <Route path="/login" element={<LoginRedirect />} />
         <Route path="/ai-chat" element={<AIChatPage />} />
         <Route path="/hostel" element={<HostelPage />} />
         <Route path="/products" element={<ProductsPage />} />

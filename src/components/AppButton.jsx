@@ -1,6 +1,7 @@
 // src/components/ui/AppButton.jsx
 import { Edit, Lock } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp,  FaSignInAlt as FaSignIn
+   } from "react-icons/fa";
 import clsx from 'clsx'; // You might need to install: npm install clsx
 
 const baseClasses = `
@@ -60,6 +61,7 @@ const Button = ({
         ) : (
           <>
             {icon === "edit" && <Edit />}
+              {icon === "login" && <FaSignIn />}
             {children}
             {icon === "chat" && <FaWhatsapp />}
           </>
